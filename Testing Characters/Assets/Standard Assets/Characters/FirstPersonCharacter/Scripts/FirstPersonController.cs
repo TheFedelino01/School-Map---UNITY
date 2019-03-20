@@ -118,16 +118,18 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
                 if (m_Jump)
                 {
-                    if (anim.GetCurrentAnimatorStateInfo(0).IsName("Jump"))
+                    if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Jump"))
                     {
                         m_MoveDir.y = m_JumpSpeed;
                         PlayJumpSound();
                         m_Jump = false;
                         m_Jumping = true;
-                        //anim.CrossFade("Jump",0.2f);
+                        Debug.Log("Jumping");
+                        anim.CrossFade("Jump",0.2f);
                     }
 
                 }
+                
             }
             else
             {
@@ -158,18 +160,32 @@ namespace UnityStandardAssets.Characters.FirstPerson
                              Time.fixedDeltaTime;
             }
 
+            float velocita = m_CharacterController.velocity.sqrMagnitude;
+            if (velocita <= 1)
+            {
+                anim.SetBool("walk", false);
+            }
+            else if(velocita <= 40)
+            {
+                anim.SetBool("walk", true);
+            }
+
             if (!(m_StepCycle > m_NextStep))
             {
+                //anim.SetBool("walk", false);
                 return;
             }
 
             m_NextStep = m_StepCycle + m_StepInterval;
 
-            PlayFootStepAudio();
+            
+            Debug.Log("Velocitá: " + velocita);
+            PlayFootStepAudio(velocita);
+            
         }
 
 
-        private void PlayFootStepAudio()
+        private void PlayFootStepAudio(float velocita)
         {
             if (!m_CharacterController.isGrounded)
             {
@@ -183,6 +199,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
             // move picked sound to index 0 so it's not picked next time
             m_FootstepSounds[n] = m_FootstepSounds[0];
             m_FootstepSounds[0] = m_AudioSource.clip;
+            
+            
+            Debug.Log("Step");
         }
 
 
