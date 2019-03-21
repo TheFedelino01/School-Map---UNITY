@@ -27,35 +27,27 @@ public class vanguardAnimController : MonoBehaviour
         translation *= Time.deltaTime;//?
         rotation *= Time.deltaTime;//?
 
-        if (translation > 0)//Solo se vuole andare in avanti
-        {
-            transform.Translate(0, 0, translation);
-            Debug.Log(translation);
-        }
-        //transform.Rotate(0, rotation, 0);
+        transform.Translate(0, 0, translation);
+        transform.Rotate(0, rotation, 0);
 
 
 
         //Vedo se ha premuto il tasto "W"
-        checkMoveForward();
+        checkMove(translation);
 
         checkJump();
 
-        checkMoveRight();
-
-        checkMoveBack(translation);
-
     }
 
-    private void checkMoveForward()
+    private void checkMove(float translation)
     {
-        if (Input.GetKey(KeyCode.W) == true)
+        if (translation != 0)
         {
 
             //Controllo se corre
             if (Input.GetKey(KeyCode.LeftShift) == true)
             {
-                //checkJump();
+                checkJump();
                 if (isRunning == false)
                 {
                     //E' la prima volta che inizio a correre, smetto quindi di camminare
@@ -63,12 +55,12 @@ public class vanguardAnimController : MonoBehaviour
                 }
                 _speed = speed*10;
                 anim.SetBool("isRunning", true);
-                Debug.Log("Corre! ");
+                Debug.Log("Corre! " + translation);
                 isRunning = true;
             }
             else if (Input.GetKey(KeyCode.LeftShift) == false)
             {
-                //checkJump();
+                checkJump();
                 if (isRunning == true)
                 {
                     //Sto correndo e ora voglio camminare, dico che smetto di correre
@@ -77,7 +69,7 @@ public class vanguardAnimController : MonoBehaviour
                 //Non corre, allora cammina
                 speed = 2.0f;
                 anim.SetBool("isWalking", true);
-                Debug.Log("Cammina! ");
+                Debug.Log("Cammina! " + translation);
                 isRunning = false;
             }
 
@@ -101,37 +93,6 @@ public class vanguardAnimController : MonoBehaviour
         else
         {
             anim.SetBool("wantJump", false);
-        }
-    }
-
-
-    private void checkMoveRight()
-    {
-        if (Input.GetKey(KeyCode.D) == true)
-        {
-            anim.SetBool("walkRight", true);
-            transform.Translate(0.18f, 0, 0);
-            Debug.Log("Vado a Destra!");
-        }
-        else
-        {
-            anim.SetBool("walkRight", false);
-        }
-    }
-
-    private void checkMoveBack(float translation)
-    {
-        if (Input.GetKey(KeyCode.S) == true)
-        {
-            anim.SetBool("walkBack", true);
-            //TODO SISTEMARE LA SPEED ALL'INDIETRO
-            transform.Translate(0, 0, translation);
-            Debug.Log("Indietro");
-            Debug.Log(translation);
-        }
-        else
-        {
-            anim.SetBool("walkBack", false);
         }
     }
 }
