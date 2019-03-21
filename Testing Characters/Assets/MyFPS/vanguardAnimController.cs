@@ -6,6 +6,7 @@ public class vanguardAnimController : MonoBehaviour
 {
     static Animator anim;
     public float speed = 2.0f;
+    public float jumpSpeed = 5;
     public float rotationSpeed = 75.0f;
     private bool isRunning = false;
     private float _speed;
@@ -41,7 +42,9 @@ public class vanguardAnimController : MonoBehaviour
 
         checkJump();
 
-        checkMoveRight();
+        checkMoveRight(rotation);
+        checkMoveLeft(rotation);
+
 
         checkMoveBack(translation);
 
@@ -97,6 +100,8 @@ public class vanguardAnimController : MonoBehaviour
         if(Input.GetKey(KeyCode.Space) == true)
         {
             anim.SetBool("wantJump", true);
+            //TODO DA SISTEMARE IL SALTO
+           // transform.Translate(0, jumpSpeed, 0);
         }
         else
         {
@@ -105,12 +110,12 @@ public class vanguardAnimController : MonoBehaviour
     }
 
 
-    private void checkMoveRight()
+    private void checkMoveRight(float orizzontale)
     {
         if (Input.GetKey(KeyCode.D) == true)
         {
             anim.SetBool("walkRight", true);
-            transform.Translate(0.18f, 0, 0);
+            transform.Translate(orizzontale, 0, 0);
             Debug.Log("Vado a Destra!");
         }
         else
@@ -119,12 +124,26 @@ public class vanguardAnimController : MonoBehaviour
         }
     }
 
+    private void checkMoveLeft(float orizzontale)
+    {
+        if (Input.GetKey(KeyCode.A) == true)
+        {
+            anim.SetBool("walkLeft", true);
+            transform.Translate(orizzontale, 0, 0);
+            Debug.Log("Vado a Sinistra");
+        }
+        else
+        {
+            anim.SetBool("walkLeft", false);
+        }
+    }
+
     private void checkMoveBack(float translation)
     {
         if (Input.GetKey(KeyCode.S) == true)
         {
             anim.SetBool("walkBack", true);
-            //TODO SISTEMARE LA SPEED ALL'INDIETRO
+            
             transform.Translate(0, 0, translation);
             Debug.Log("Indietro");
             Debug.Log(translation);
