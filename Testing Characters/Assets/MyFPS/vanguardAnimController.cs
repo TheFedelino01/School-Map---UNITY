@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityStandardAssets.Characters.FirstPerson;
 
 public class vanguardAnimController : MonoBehaviour
 {
@@ -11,16 +12,24 @@ public class vanguardAnimController : MonoBehaviour
     private bool isRunning = false;
     private float _speed;
 
+
+    //Gestione visuale (DA TESTARE)
+    private Camera cam;
+    private MouseLook mouseLook;
+
     // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();//Prendo il vanguardAnim con tutte le animazioni
         _speed = speed;
+        cam = Camera.current;
+        mouseLook.Init(transform, cam.transform);
     }
 
     // Update is called once per frame
     void Update()
     {
+        
         
         float translation = Input.GetAxis("Vertical")* _speed;
         float rotation = Input.GetAxis("Horizontal")*rotationSpeed;
@@ -35,7 +44,8 @@ public class vanguardAnimController : MonoBehaviour
         }
         //transform.Rotate(0, rotation, 0);
 
-
+        //Verifica se viene mossa la visuale
+        //checkMouseMovement(); //DA TESTARE
 
         //Vedo se ha premuto il tasto "W"
         checkMoveForward();
@@ -153,4 +163,12 @@ public class vanguardAnimController : MonoBehaviour
             anim.SetBool("walkBack", false);
         }
     }
+
+
+    private void checkMouseMovement()
+    {
+        //DA TESTARE !!
+        mouseLook.LookRotation(transform, cam.transform);
+    }
+
 }
