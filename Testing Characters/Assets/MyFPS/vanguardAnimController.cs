@@ -11,14 +11,10 @@ public class vanguardAnimController : MonoBehaviour
     public float rotationSpeed = 75.0f;
     private bool isRunning = false;
     private float _speed;
-<<<<<<< HEAD
     public CharacterController cc;
-
-=======
-
+    
     private float _mouseY; //la salvo per non farlo muovere troppo in verticale
     
->>>>>>> 7ec9b428fecde9c5ff5469146d89361942d39655
     //Gestione visuale (DA TESTARE)
     //private Camera cam;
     //private MouseLook mouseLook;
@@ -28,16 +24,13 @@ public class vanguardAnimController : MonoBehaviour
     {
         anim = GetComponent<Animator>();//Prendo il vanguardAnim con tutte le animazioni
         _speed = speed;
-<<<<<<< HEAD
-        cam = Camera.current;
-        mouseLook.Init(transform, cam.transform);
+        //cam = Camera.current;
+        //mouseLook.Init(transform, cam.transform);
 
         //cc = GetComponent<CharacterController>();
-=======
         //cam = Camera.current;
         //mouseLook.Init(transform, cam.transform);
         Cursor.lockState = CursorLockMode.Locked;
->>>>>>> 7ec9b428fecde9c5ff5469146d89361942d39655
     }
 
     // Update is called once per frame
@@ -88,11 +81,8 @@ public class vanguardAnimController : MonoBehaviour
                     //E' la prima volta che inizio a correre, smetto quindi di camminare
                     anim.SetBool("isWalking", false);
                 }
-<<<<<<< HEAD
-                _speed = speed*5;
-=======
+                //_speed = speed*5;
                 _speed = speed * 10;
->>>>>>> 7ec9b428fecde9c5ff5469146d89361942d39655
                 anim.SetBool("isRunning", true);
                 Debug.Log("Corre! ");
                 isRunning = true;
