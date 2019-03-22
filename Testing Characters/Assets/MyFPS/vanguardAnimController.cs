@@ -10,11 +10,12 @@ public class vanguardAnimController : MonoBehaviour
     public float jumpSpeed = 500;
     public float rotationSpeed = 75.0f;
     private bool isRunning = false;
+    private bool _isJumping = false;
     private float _speed;
-    public CharacterController cc;
-    
+
+    private int _actualCollision;
     private float _mouseY; //la salvo per non farlo muovere troppo in verticale
-    
+
     //Gestione visuale (DA TESTARE)
     //private Camera cam;
     //private MouseLook mouseLook;
@@ -27,17 +28,15 @@ public class vanguardAnimController : MonoBehaviour
         //cam = Camera.current;
         //mouseLook.Init(transform, cam.transform);
 
-        //cc = GetComponent<CharacterController>();
         //cam = Camera.current;
         //mouseLook.Init(transform, cam.transform);
         Cursor.lockState = CursorLockMode.Locked;
+        _actualCollision = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-
-
         float translation = Input.GetAxis("Vertical") * _speed;
         float rotation = Input.GetAxis("Horizontal") * rotationSpeed;
 
@@ -47,33 +46,31 @@ public class vanguardAnimController : MonoBehaviour
         if (translation > 0)//Solo se vuole andare in avanti
         {
             transform.Translate(0, 0, translation);
-            Debug.Log(translation);
+            //Debug.Log(translation);
         }
         //transform.Rotate(0, rotation, 0);
 
         //Verifica se viene mossa la visuale
-        checkMouseMovement(); //DA TESTARE
-
-        //Vedo se ha premuto il tasto "W"
-        checkMoveForward();
+        checkMouseMovement();
 
         checkJump();
-
-        checkMoveRight(rotation);
-        checkMoveLeft(rotation);
-
-
-        checkMoveBack(translation);
-
+        _isJumping = isJumping();
+        if (!anim.GetBool("wantJump"))
+        {
+            //Vedo se ha premuto il tasto "W"
+            checkMoveForward();
+            checkMoveRight(rotation);
+            checkMoveLeft(rotation);
+            checkMoveBack(translation);
+        }
     }
 
     private void checkMoveForward()
     {
         if (Input.GetKey(KeyCode.W) == true)
         {
-
-            //Controllo se corre
-            if (Input.GetKey(KeyCode.LeftShift) == true)
+            //Controllo se corre    (se non sta saltando)
+            if (Input.GetKey(KeyCode.LeftShift) == true && !_isJumping)
             {
                 //checkJump();
                 if (isRunning == false)
@@ -97,8 +94,9 @@ public class vanguardAnimController : MonoBehaviour
                 }
                 //Non corre, allora cammina
                 _speed = 2.0f;
-                anim.SetBool("isWalking", true);
-                Debug.Log("Cammina! ");
+                if (!_isJumping)
+                    anim.SetBool("isWalking", true);
+                //Debug.Log("Cammina! ");
                 isRunning = false;
 
                 audio sn = gameObject.GetComponent<audio>();
@@ -106,10 +104,7 @@ public class vanguardAnimController : MonoBehaviour
                 {
                     sn.playWalk();
                 }
-                
-                
             }
-
         }
         else
         {
@@ -123,14 +118,15 @@ public class vanguardAnimController : MonoBehaviour
 
     private void checkJump()
     {
-        if (Input.GetKey(KeyCode.Space) == true && GetComponent<Rigidbody>().velocity.y == 0) //salta solo se non si sta gia muovendo in verticale
+        if (Input.GetKey(KeyCode.Space) == true && /*GetComponent<Rigidbody>().velocity.y == 0 &&*/ isColliding() && !_isJumping && !anim.GetBool("wantJump"))
+        //salta solose non sta già saltanto, se non si sta gia muovendo in verticale e se è appoggiato a qualcosa
         {
+            Debug.Log(anim.GetBool("isWalking"));
+            Debug.Log("SALTO");
+            anim.SetBool("isRunning", false);
+            anim.SetBool("isWalking", false);
             anim.SetBool("wantJump", true);
             GetComponent<Rigidbody>().AddForce(new Vector3(0, jumpSpeed, 0), ForceMode.Impulse);
-        }
-        else
-        {
-            anim.SetBool("wantJump", false);
         }
     }
 
@@ -139,7 +135,8 @@ public class vanguardAnimController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.D) == true)
         {
-            anim.SetBool("walkRight", true);
+            if (!_isJumping)
+                anim.SetBool("walkRight", true);
             transform.Translate(orizzontale, 0, 0);
             Debug.Log("Vado a Destra!");
         }
@@ -153,7 +150,8 @@ public class vanguardAnimController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.A) == true)
         {
-            anim.SetBool("walkLeft", true);
+            if (!_isJumping)
+                anim.SetBool("walkLeft", true);
             transform.Translate(orizzontale, 0, 0);
             Debug.Log("Vado a Sinistra");
         }
@@ -167,7 +165,8 @@ public class vanguardAnimController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.S) == true)
         {
-            anim.SetBool("walkBack", true);
+            if (!_isJumping)
+                anim.SetBool("walkBack", true);
 
             transform.Translate(0, 0, translation);
             Debug.Log("Indietro");
@@ -185,13 +184,41 @@ public class vanguardAnimController : MonoBehaviour
         float mouseX = Input.GetAxis("Mouse X");
         float mouseY = -Input.GetAxis("Mouse Y");
         this.transform.Rotate(0, mouseX, 0);    //routo il GIOCATORE
-        Debug.Log(_mouseY);
         if (_mouseY + mouseY > -30 && _mouseY + mouseY < 70)
-        {       
+        {
             GetComponentInChildren<Camera>().transform.Rotate(mouseY, 0, 0);//se non è troppo alto o basso ruoto la CAMERA
             _mouseY += mouseY;
         }
         //mouseLook.LookRotation(transform, cam.transform);
+    }
+
+    void OnCollisionEnter()
+    {
+        _actualCollision++;
+    }
+
+    void OnCollisionExit()
+    {
+        _actualCollision--;
+    }
+
+    private bool isColliding()  //true se sta collidendo con qualcosa
+    {
+        return _actualCollision > 0;
+    }
+
+    private bool isJumping()    //controlla se sta eseguendo l'animazione salto
+    {
+        if (anim.GetCurrentAnimatorStateInfo(0).length >
+               anim.GetCurrentAnimatorStateInfo(0).normalizedTime
+               && anim.GetCurrentAnimatorStateInfo(0).IsName("Jump"))
+        {
+            anim.SetBool("wantJump", false);
+            return true;
+        }
+        else
+            return false;
+
     }
 
 }
