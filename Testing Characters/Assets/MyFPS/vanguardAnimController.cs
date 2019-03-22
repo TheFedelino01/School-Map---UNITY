@@ -7,32 +7,34 @@ public class vanguardAnimController : MonoBehaviour
 {
     static Animator anim;
     public float speed = 2.0f;
-    public float jumpSpeed = 5;
+    public float jumpSpeed = 10;
     public float rotationSpeed = 75.0f;
     private bool isRunning = false;
     private float _speed;
 
 
+    // private Vector2 rotation=new Vector2(0,0),
+
     //Gestione visuale (DA TESTARE)
-    private Camera cam;
-    private MouseLook mouseLook;
+    //private Camera cam;
+    //private MouseLook mouseLook;
 
     // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();//Prendo il vanguardAnim con tutte le animazioni
         _speed = speed;
-        cam = Camera.current;
-        mouseLook.Init(transform, cam.transform);
+        //cam = Camera.current;
+        //mouseLook.Init(transform, cam.transform);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-        
-        float translation = Input.GetAxis("Vertical")* _speed;
-        float rotation = Input.GetAxis("Horizontal")*rotationSpeed;
+
+
+        float translation = Input.GetAxis("Vertical") * _speed;
+        float rotation = Input.GetAxis("Horizontal") * rotationSpeed;
 
         translation *= Time.deltaTime;//?
         rotation *= Time.deltaTime;//?
@@ -45,7 +47,7 @@ public class vanguardAnimController : MonoBehaviour
         //transform.Rotate(0, rotation, 0);
 
         //Verifica se viene mossa la visuale
-        //checkMouseMovement(); //DA TESTARE
+        checkMouseMovement(); //DA TESTARE
 
         //Vedo se ha premuto il tasto "W"
         checkMoveForward();
@@ -74,7 +76,7 @@ public class vanguardAnimController : MonoBehaviour
                     //E' la prima volta che inizio a correre, smetto quindi di camminare
                     anim.SetBool("isWalking", false);
                 }
-                _speed = speed*10;
+                _speed = speed * 10;
                 anim.SetBool("isRunning", true);
                 Debug.Log("Corre! ");
                 isRunning = true;
@@ -107,11 +109,11 @@ public class vanguardAnimController : MonoBehaviour
 
     private void checkJump()
     {
-        if(Input.GetKey(KeyCode.Space) == true)
+        if (Input.GetKey(KeyCode.Space) == true)
         {
             anim.SetBool("wantJump", true);
             //TODO DA SISTEMARE IL SALTO
-           // transform.Translate(0, jumpSpeed, 0);
+            // transform.Translate(0, jumpSpeed, 0);
         }
         else
         {
@@ -153,7 +155,7 @@ public class vanguardAnimController : MonoBehaviour
         if (Input.GetKey(KeyCode.S) == true)
         {
             anim.SetBool("walkBack", true);
-            
+
             transform.Translate(0, 0, translation);
             Debug.Log("Indietro");
             Debug.Log(translation);
@@ -167,8 +169,11 @@ public class vanguardAnimController : MonoBehaviour
 
     private void checkMouseMovement()
     {
-        //DA TESTARE !!
-        mouseLook.LookRotation(transform, cam.transform);
+        float y = Input.GetAxis("Mouse X");
+        float x = -Input.GetAxis("Mouse Y");
+        this.transform.Rotate(0, y, 0);
+        GetComponentInChildren<Camera>().transform.Rotate(x, 0, 0);
+        //mouseLook.LookRotation(transform, cam.transform);
     }
 
 }
