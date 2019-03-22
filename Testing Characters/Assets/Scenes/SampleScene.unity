@@ -707,7 +707,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
-  jumpSpeed: 0.5
+  jumpSpeed: 500
   rotationSpeed: 5
   cc: {fileID: 0}
 --- !u!114 &1412049067

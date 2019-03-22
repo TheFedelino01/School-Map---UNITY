@@ -7,7 +7,7 @@ public class vanguardAnimController : MonoBehaviour
 {
     static Animator anim;
     public float speed = 2.0f;
-    public float jumpSpeed = 10;
+    public float jumpSpeed = 500;
     public float rotationSpeed = 75.0f;
     private bool isRunning = false;
     private float _speed;
@@ -123,11 +123,10 @@ public class vanguardAnimController : MonoBehaviour
 
     private void checkJump()
     {
-        if (Input.GetKey(KeyCode.Space) == true)
+        if (Input.GetKey(KeyCode.Space) == true && GetComponent<Rigidbody>().velocity.y == 0) //salta solo se non si sta gia muovendo in verticale
         {
             anim.SetBool("wantJump", true);
-            //TODO DA SISTEMARE IL SALTO
-            // transform.Translate(0, jumpSpeed, 0);
+            GetComponent<Rigidbody>().AddForce(new Vector3(0, jumpSpeed, 0), ForceMode.Impulse);
         }
         else
         {
