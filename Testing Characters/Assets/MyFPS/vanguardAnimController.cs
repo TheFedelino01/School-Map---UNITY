@@ -12,9 +12,8 @@ public class vanguardAnimController : MonoBehaviour
     private bool isRunning = false;
     private float _speed;
 
-
-    // private Vector2 rotation=new Vector2(0,0),
-
+    private float _mouseY; //la salvo per non farlo muovere troppo in verticale
+    
     //Gestione visuale (DA TESTARE)
     //private Camera cam;
     //private MouseLook mouseLook;
@@ -26,6 +25,7 @@ public class vanguardAnimController : MonoBehaviour
         _speed = speed;
         //cam = Camera.current;
         //mouseLook.Init(transform, cam.transform);
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     // Update is called once per frame
@@ -169,10 +169,15 @@ public class vanguardAnimController : MonoBehaviour
 
     private void checkMouseMovement()
     {
-        float y = Input.GetAxis("Mouse X");
-        float x = -Input.GetAxis("Mouse Y");
-        this.transform.Rotate(0, y, 0);
-        GetComponentInChildren<Camera>().transform.Rotate(x, 0, 0);
+        float mouseX = Input.GetAxis("Mouse X");
+        float mouseY = -Input.GetAxis("Mouse Y");
+        this.transform.Rotate(0, mouseX, 0);    //routo il GIOCATORE
+        Debug.Log(_mouseY);
+        if (_mouseY + mouseY > -30 && _mouseY + mouseY < 70)
+        {       
+            GetComponentInChildren<Camera>().transform.Rotate(mouseY, 0, 0);//se non è troppo alto o basso ruoto la CAMERA
+            _mouseY += mouseY;
+        }
         //mouseLook.LookRotation(transform, cam.transform);
     }
 
