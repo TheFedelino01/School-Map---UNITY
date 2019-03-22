@@ -54,8 +54,9 @@ public class vanguardAnimController : MonoBehaviour
         checkMouseMovement();
 
         checkJump();
-        _isJumping = isJumping();
-        if (!anim.GetBool("wantJump"))
+        _isJumping = isJumping();   //salvo se sta saltando o no per non doverlo richiamare per ogni direzione
+
+        if (!anim.GetBool("wantJump"))  //controllo i movimenti solo se non vuole saltare
         {
             //Vedo se ha premuto il tasto "W"
             checkMoveForward();
@@ -211,9 +212,9 @@ public class vanguardAnimController : MonoBehaviour
     {
         if (anim.GetCurrentAnimatorStateInfo(0).length >
                anim.GetCurrentAnimatorStateInfo(0).normalizedTime
-               && anim.GetCurrentAnimatorStateInfo(0).IsName("Jump"))
+               && anim.GetCurrentAnimatorStateInfo(0).IsName("Jump"))   //(cose copiate)
         {
-            anim.SetBool("wantJump", false);
+            anim.SetBool("wantJump", false);    //imposto che non vuole più saltare perchè sta gia saltando
             return true;
         }
         else
