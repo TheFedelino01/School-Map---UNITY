@@ -24,13 +24,22 @@ public class audio : MonoBehaviour
         
     }
 
-    //public void play`Run()
-    //{
-    //    player.clip = run;
-    //    player.Play();
-    //}
+    public void playRun()
+    {
+        player.clip = run;
+        emetti();
+    }
 
     public void playWalk()
+    {
+        setForSteps();
+
+        Debug.Log("SUONO walk");
+
+        emetti();
+    }
+
+    private void setForSteps()
     {
         //Quando cammina faccio riprodurre
         //una volta step1 e la seconda volta step2
@@ -44,17 +53,11 @@ public class audio : MonoBehaviour
             player.clip = step2;
             isStep1 = true;
         }
-
-        Debug.Log("SUONO walk");
-
-        emetti();
-
-
-
     }
 
     public void playJump()
     {
+        Debug.Log("SUONO jump");
         player.clip = jump;
 
         emetti();
@@ -64,6 +67,17 @@ public class audio : MonoBehaviour
     {
         player.volume = Random.Range(0.8f, 1f);
         //player.pitch = Random.Range(0.85f, 1.1f); ;
+        player.Play();
+    }
+
+    public void playMoveNoAvanti()
+    {
+        //Mi muovo in laterale Dx o Sx oppure in dietro
+        //la differenza con playWalk() é che in questo metodo il volume é piú basso
+        setForSteps();
+        Debug.Log("SUONO laterale o indietro");
+
+        player.volume = 0.4f;
         player.Play();
     }
 }

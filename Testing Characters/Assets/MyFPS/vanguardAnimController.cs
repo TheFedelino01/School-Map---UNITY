@@ -15,6 +15,7 @@ public class vanguardAnimController : MonoBehaviour
 
     private int _actualCollision;
     private float _mouseY; //la salvo per non farlo muovere troppo in verticale
+    private audio sound;
 
     //Gestione visuale (DA TESTARE)
     //private Camera cam;
@@ -32,6 +33,8 @@ public class vanguardAnimController : MonoBehaviour
         //mouseLook.Init(transform, cam.transform);
         Cursor.lockState = CursorLockMode.Locked;
         _actualCollision = 0;
+
+        sound = gameObject.GetComponent<audio>();
     }
 
     // Update is called once per frame
@@ -80,10 +83,17 @@ public class vanguardAnimController : MonoBehaviour
                     anim.SetBool("isWalking", false);
                 }
                 //_speed = speed*5;
-                _speed = speed * 10;
+                _speed = speed * 0;
                 anim.SetBool("isRunning", true);
                 Debug.Log("Corre! ");
                 isRunning = true;
+
+                if (sound.player.isPlaying == false && _isJumping == false)
+                {
+                    sound.playRun();
+                }
+
+
             }
             else if (Input.GetKey(KeyCode.LeftShift) == false)
             {
@@ -100,11 +110,7 @@ public class vanguardAnimController : MonoBehaviour
                 //Debug.Log("Cammina! ");
                 isRunning = false;
 
-                audio sn = gameObject.GetComponent<audio>();
-                if (sn.player.isPlaying == false)
-                {
-                    sn.playWalk();
-                }
+                emettiSuonoWalk(false);
             }
         }
         else
@@ -128,6 +134,9 @@ public class vanguardAnimController : MonoBehaviour
             anim.SetBool("isWalking", false);
             anim.SetBool("wantJump", true);
             GetComponent<Rigidbody>().AddForce(new Vector3(0, jumpSpeed, 0), ForceMode.Impulse);
+
+            sound.playJump();
+
         }
     }
 
@@ -140,6 +149,8 @@ public class vanguardAnimController : MonoBehaviour
                 anim.SetBool("walkRight", true);
             transform.Translate(orizzontale, 0, 0);
             Debug.Log("Vado a Destra!");
+
+            emettiSuonoWalk(true);
         }
         else
         {
@@ -155,6 +166,8 @@ public class vanguardAnimController : MonoBehaviour
                 anim.SetBool("walkLeft", true);
             transform.Translate(orizzontale, 0, 0);
             Debug.Log("Vado a Sinistra");
+
+            emettiSuonoWalk(true);
         }
         else
         {
@@ -172,6 +185,8 @@ public class vanguardAnimController : MonoBehaviour
             transform.Translate(0, 0, translation);
             Debug.Log("Indietro");
             Debug.Log(translation);
+
+            emettiSuonoWalk(true);
         }
         else
         {
@@ -220,6 +235,24 @@ public class vanguardAnimController : MonoBehaviour
         else
             return false;
 
+    }
+
+    private void emettiSuonoWalk(bool silezioso)
+    {
+        //Se non salta e non sta riproducendo nessun suono
+        if (sound.player.isPlaying == false && _isJumping == false)
+        {
+            if (silezioso == true)//Se il suono deve avere volume basso
+            {
+                //Utilizzato per movimenti laterali Dx e Sx e per movimento all'indietro
+                sound.playMoveNoAvanti();
+            }
+            else
+            {
+                sound.playWalk();
+            }
+            
+        }
     }
 
 }
