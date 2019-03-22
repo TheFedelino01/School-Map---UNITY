@@ -11,7 +11,7 @@ public class vanguardAnimController : MonoBehaviour
     public float rotationSpeed = 75.0f;
     private bool isRunning = false;
     private float _speed;
-
+    public CharacterController cc;
 
     //Gestione visuale (DA TESTARE)
     private Camera cam;
@@ -24,6 +24,8 @@ public class vanguardAnimController : MonoBehaviour
         _speed = speed;
         cam = Camera.current;
         mouseLook.Init(transform, cam.transform);
+
+        //cc = GetComponent<CharacterController>();
     }
 
     // Update is called once per frame
@@ -74,7 +76,7 @@ public class vanguardAnimController : MonoBehaviour
                     //E' la prima volta che inizio a correre, smetto quindi di camminare
                     anim.SetBool("isWalking", false);
                 }
-                _speed = speed*10;
+                _speed = speed*5;
                 anim.SetBool("isRunning", true);
                 Debug.Log("Corre! ");
                 isRunning = true;
@@ -88,17 +90,25 @@ public class vanguardAnimController : MonoBehaviour
                     anim.SetBool("isRunning", false);
                 }
                 //Non corre, allora cammina
-                speed = 2.0f;
+                _speed = 2.0f;
                 anim.SetBool("isWalking", true);
                 Debug.Log("Cammina! ");
                 isRunning = false;
+
+                audio sn = gameObject.GetComponent<audio>();
+                if (sn.player.isPlaying == false)
+                {
+                    sn.playWalk();
+                }
+                
+                
             }
 
         }
         else
         {
             //E' fermo, dico che non corre
-            speed = 2.0f;
+            _speed = 2.0f;
             anim.SetBool("isRunning", false);
             anim.SetBool("isWalking", false);
             isRunning = false;
