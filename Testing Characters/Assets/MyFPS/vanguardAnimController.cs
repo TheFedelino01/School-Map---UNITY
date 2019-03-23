@@ -83,7 +83,7 @@ public class vanguardAnimController : MonoBehaviour
                     anim.SetBool("isWalking", false);
                 }
                 //_speed = speed*5;
-                _speed = speed * 0;
+                _speed = speed * 5;
                 anim.SetBool("isRunning", true);
                 Debug.Log("Corre! ");
                 isRunning = true;
@@ -111,6 +111,10 @@ public class vanguardAnimController : MonoBehaviour
                 isRunning = false;
 
                 emettiSuonoWalk(false);
+
+                //TODO DA SISTEMARE QUESTA CLASSE:
+                //weaponsManager wm = gameObject.GetComponent<weaponsManager>();
+                //wm.setWeaponToWalk();
             }
         }
         else
