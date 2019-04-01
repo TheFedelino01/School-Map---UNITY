@@ -1191,6 +1191,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 032a14a72ac26634784d11fb64229b24, type: 3}
+--- !u!1 &327010646 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100064, guid: 032a14a72ac26634784d11fb64229b24,
+    type: 3}
+  m_PrefabInstance: {fileID: 327010645}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &534669902
 GameObject:
   m_ObjectHideFlags: 0
@@ -1494,7 +1500,7 @@ MonoBehaviour:
   mouseSensitivity: 1
   spallaSinistra: {fileID: 1078676917}
   spallaDestra: {fileID: 2127412194}
-  collo: {fileID: 1862376134}
+  collo: {fileID: 327010646}
 --- !u!114 &1412049067
 MonoBehaviour:
   m_ObjectHideFlags: 0
