@@ -17,6 +17,8 @@ public class vanguardAnimController : MonoBehaviour
     private float _mouseY; //la salvo per non farlo muovere troppo in verticale
     private audio sound;
 
+    public GameObject spallaSinistra, spallaDestra;
+
     //Gestione visuale (DA TESTARE)
     //private Camera cam;
     //private MouseLook mouseLook;
@@ -49,12 +51,10 @@ public class vanguardAnimController : MonoBehaviour
         if (translation > 0)//Solo se vuole andare in avanti
         {
             transform.Translate(0, 0, translation);
-            //Debug.Log(translation);
         }
         //transform.Rotate(0, rotation, 0);
 
-        //Verifica se viene mossa la visuale
-        checkMouseMovement();
+
 
         checkJump();
         _isJumping = isJumping();   //salvo se sta saltando o no per non doverlo richiamare per ogni direzione
@@ -67,6 +67,12 @@ public class vanguardAnimController : MonoBehaviour
             checkMoveLeft(rotation);
             checkMoveBack(translation);
         }
+    }
+
+    void LateUpdate()
+    {
+        //Verifica se viene mossa la visuale dopo che sono state applicate le animazioni per muovere le braccia
+        checkMouseMovement();
     }
 
     private void checkMoveForward()
@@ -209,6 +215,10 @@ public class vanguardAnimController : MonoBehaviour
             GetComponentInChildren<Camera>().transform.Rotate(mouseY, 0, 0);//se non è troppo alto o basso ruoto la CAMERA
             _mouseY += mouseY;
         }
+        //GetComponent<Transform>().GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(0).Rotate(_mouseY, 0, 0);         //spalla sinistra
+        //GetComponent<Transform>().GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(2).Rotate(_mouseY, 0, 0);         //spalla destra      
+        spallaDestra.transform.Rotate(_mouseY, 0, 0);
+        spallaSinistra.transform.Rotate(_mouseY, 0, 0);
         //mouseLook.LookRotation(transform, cam.transform);
     }
 
