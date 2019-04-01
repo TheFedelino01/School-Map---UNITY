@@ -18,7 +18,7 @@ public class vanguardAnimController : MonoBehaviour
     private float _mouseY; //la salvo per non farlo muovere troppo in verticale
     private audio sound;
 
-    public GameObject spallaSinistra, spallaDestra;
+    public GameObject spallaSinistra, spallaDestra, collo;
 
     //Gestione visuale (DA TESTARE)
     //private Camera cam;
@@ -224,6 +224,7 @@ public class vanguardAnimController : MonoBehaviour
         //GetComponent<Transform>().GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(2).Rotate(_mouseY, 0, 0);         //spalla destra      
         spallaDestra.transform.Rotate(_mouseY, 0, 0);
         spallaSinistra.transform.Rotate(_mouseY, 0, 0);
+        collo.transform.Rotate(_mouseY - 25, 0, 0);
         //mouseLook.LookRotation(transform, cam.transform);
     }
 

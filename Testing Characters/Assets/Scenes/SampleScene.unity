@@ -1494,6 +1494,7 @@ MonoBehaviour:
   mouseSensitivity: 1
   spallaSinistra: {fileID: 1078676917}
   spallaDestra: {fileID: 2127412194}
+  collo: {fileID: 1862376134}
 --- !u!114 &1412049067
 MonoBehaviour:
   m_ObjectHideFlags: 0
