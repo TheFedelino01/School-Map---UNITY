@@ -8,7 +8,8 @@ public class vanguardAnimController : MonoBehaviour
     static Animator anim;
     public float speed = 2.0f;
     public float jumpSpeed = 500;
-    public float rotationSpeed = 75.0f;
+    public float rotationSpeed = 75.0f; //velocità movimenti destra/sinistra
+    public float mouseSensitivity = 1;
     private bool isRunning = false;
     private bool _isJumping = false;
     private float _speed;
@@ -110,7 +111,7 @@ public class vanguardAnimController : MonoBehaviour
                     anim.SetBool("isRunning", false);
                 }
                 //Non corre, allora cammina
-                _speed = 2.0f;
+                _speed = speed;
                 if (!_isJumping)
                     anim.SetBool("isWalking", true);
                 //Debug.Log("Cammina! ");
@@ -126,7 +127,7 @@ public class vanguardAnimController : MonoBehaviour
         else
         {
             //E' fermo, dico che non corre
-            _speed = 2.0f;
+            _speed = speed;
             anim.SetBool("isRunning", false);
             anim.SetBool("isWalking", false);
             isRunning = false;
@@ -138,15 +139,19 @@ public class vanguardAnimController : MonoBehaviour
         if (Input.GetKey(KeyCode.Space) == true && /*GetComponent<Rigidbody>().velocity.y == 0 &&*/ isColliding() && !_isJumping && !anim.GetBool("wantJump"))
         //salta solose non sta già saltanto, se non si sta gia muovendo in verticale e se è appoggiato a qualcosa
         {
-            Debug.Log(anim.GetBool("isWalking"));
             Debug.Log("SALTO");
+
+            //disattivo tutte le altre animazioni
             anim.SetBool("isRunning", false);
             anim.SetBool("isWalking", false);
+            anim.SetBool("walkRight", false);
+            anim.SetBool("walkLeft", false);
+            anim.SetBool("walkBack", false);
+
             anim.SetBool("wantJump", true);
             GetComponent<Rigidbody>().AddForce(new Vector3(0, jumpSpeed, 0), ForceMode.Impulse);
 
             sound.playJump();
-
         }
     }
 
@@ -207,8 +212,8 @@ public class vanguardAnimController : MonoBehaviour
 
     private void checkMouseMovement()
     {
-        float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = -Input.GetAxis("Mouse Y");
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
+        float mouseY = -Input.GetAxis("Mouse Y") * mouseSensitivity;
         this.transform.Rotate(0, mouseX, 0);    //routo il GIOCATORE
         if (_mouseY + mouseY > -30 && _mouseY + mouseY < 70)
         {
@@ -265,7 +270,7 @@ public class vanguardAnimController : MonoBehaviour
             {
                 sound.playWalk();
             }
-            
+
         }
     }
 
