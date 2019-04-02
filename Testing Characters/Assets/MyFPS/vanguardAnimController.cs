@@ -65,7 +65,7 @@ public class vanguardAnimController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //head.rotation = cam.rotation;
+        head.rotation = cam.rotation;
         cam.position = ancoraggio.position;
 
         float translation = Input.GetAxis("Vertical") * _speed;
