@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c6698d82f9a8e924d8106f1ab57a2e39
+guid: dff86af2fabb81c4f86ce8a1b43e6cb2
 TextureImporter:
   fileIDToRecycleName:
     21300000: JumpButton
@@ -76,7 +76,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: ae51850568e4ace4d9c59420f2b2c643
+    spriteID: aa456e0416ee35d4c8bf023906f6e154
     vertices: []
     indices: 
     edges: []

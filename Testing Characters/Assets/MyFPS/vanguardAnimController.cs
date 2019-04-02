@@ -20,15 +20,37 @@ public class vanguardAnimController : MonoBehaviour
 
     public GameObject spallaSinistra, spallaDestra, collo;
 
-    //Gestione visuale (DA TESTARE)
-    //private Camera cam;
-    //private MouseLook mouseLook;
 
-    // Start is called before the first frame update
+
+    private Transform head;
+    private Transform chest;
+    private Transform spine;
+    private Transform rightHand;
+    private Transform leftHand;
+    public Transform cam;
+    public Transform ancoraggio;
+
+    // Use this for initialization
     void Start()
     {
+        //Gestione visuale (DA TESTARE)
+        //private Camera cam;
+        //private MouseLook mouseLook;
+
+        // Start is called before the first frame update
+
         anim = GetComponent<Animator>();//Prendo il vanguardAnim con tutte le animazioni
         _speed = speed;
+
+        anim = GetComponent<Animator>();
+        head = anim.GetBoneTransform(HumanBodyBones.Head);
+        chest = anim.GetBoneTransform(HumanBodyBones.Chest);
+        spine = anim.GetBoneTransform(HumanBodyBones.Spine);
+        rightHand = anim.GetBoneTransform(HumanBodyBones.RightHand);
+        leftHand = anim.GetBoneTransform(HumanBodyBones.LeftHand);
+
+        
+
         //cam = Camera.current;
         //mouseLook.Init(transform, cam.transform);
 
@@ -43,6 +65,9 @@ public class vanguardAnimController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //head.rotation = cam.rotation;
+        cam.position = ancoraggio.position;
+
         float translation = Input.GetAxis("Vertical") * _speed;
         float rotation = Input.GetAxis("Horizontal") * rotationSpeed;
 
@@ -88,6 +113,7 @@ public class vanguardAnimController : MonoBehaviour
                 {
                     //E' la prima volta che inizio a correre, smetto quindi di camminare
                     anim.SetBool("isWalking", false);
+
                 }
                 //_speed = speed*5;
                 _speed = speed * 5;

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d9ea0ad9b7dd1604f95ee6da24d420f9
+guid: 3ed4d52b851525e4ea99481c49f68f18
 TextureImporter:
   fileIDToRecycleName:
     21300000: ResetButton
@@ -76,7 +76,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: a535d2591b35e75459a05e39c9e0d2f3
+    spriteID: 09d3ec19499a632489457015c6f818be
     vertices: []
     indices: 
     edges: []
