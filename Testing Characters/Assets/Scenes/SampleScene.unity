@@ -112,6 +112,42 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!4 &33638490 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400012, guid: 032a14a72ac26634784d11fb64229b24,
+    type: 3}
+  m_PrefabInstance: {fileID: 327010645}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &92969072
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 92969073}
+  m_Layer: 0
+  m_Name: mirino
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &92969073
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 92969072}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.152, y: 0.129, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1820901686}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &170076733
 GameObject:
   m_ObjectHideFlags: 0
@@ -1334,6 +1370,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &839480194 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400126, guid: 032a14a72ac26634784d11fb64229b24,
+    type: 3}
+  m_PrefabInstance: {fileID: 327010645}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &952934542
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1607,6 +1649,24 @@ MonoBehaviour:
   run: {fileID: 0}
   jump: {fileID: 8300000, guid: 3fe273f1c6856704997985e3f0e0e465, type: 3}
   player: {fileID: 181502223}
+--- !u!114 &1412049069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1412049063}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76ad7c5b204d4d343a98f3d743dfdc64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mirinoTesta: {fileID: 1997587852}
+  mirinoFucile: {fileID: 92969073}
+  manoDestra: {fileID: 1042226318}
+  manoSinistra: {fileID: 33638490}
+  chest: {fileID: 839480194}
+  spine: {fileID: 2124055468}
 --- !u!54 &1412049070
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1795,6 +1855,12 @@ Transform:
   m_Father: {fileID: 533251345}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1820901686 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400000, guid: 2871c243e394f9d4fbc887a077a821b6,
+    type: 3}
+  m_PrefabInstance: {fileID: 1420118104}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1936806077
 GameObject:
   m_ObjectHideFlags: 0
@@ -1856,6 +1922,42 @@ Transform:
   m_Father: {fileID: 1114278858}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1997587851
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1997587852}
+  m_Layer: 0
+  m_Name: aimPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1997587852
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1997587851}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: 0.105, z: 0.218}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1114278858}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &2124055468 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400124, guid: 032a14a72ac26634784d11fb64229b24,
+    type: 3}
+  m_PrefabInstance: {fileID: 327010645}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2127412194 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100116, guid: 032a14a72ac26634784d11fb64229b24,

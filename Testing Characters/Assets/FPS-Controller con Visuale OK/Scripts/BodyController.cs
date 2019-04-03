@@ -57,18 +57,18 @@ public class BodyController : MonoBehaviour {
 		//
 
 		//Setting target gun aimpoint coords
-		gunAimpoint.position = aimpoint.position;
-		gunAimpoint.rotation = aimpoint.rotation;
+		//gunAimpoint.position = aimpoint.position;
+		//gunAimpoint.rotation = aimpoint.rotation;
 		//
 
 		//Restoring saved hands coords from aimpoint space to world space
-		targetRightHandCoords.position = gunAimpoint.TransformPoint (localRightHandCoords.position);
-		targetRightHandCoords.up = gunAimpoint.TransformDirection (localRightHandCoords.up);
-		targetRightHandCoords.forward = gunAimpoint.TransformDirection (localRightHandCoords.forward);
+		targetRightHandCoords.position = aimpoint.TransformPoint (localRightHandCoords.position);
+		targetRightHandCoords.up = aimpoint.TransformDirection (localRightHandCoords.up);
+		targetRightHandCoords.forward = aimpoint.TransformDirection (localRightHandCoords.forward);
 
-		targetLeftHandCoords.position = gunAimpoint.TransformPoint (localLeftHandCoords.position);
-		targetLeftHandCoords.up = gunAimpoint.TransformDirection (localLeftHandCoords.up);
-		targetLeftHandCoords.forward = gunAimpoint.TransformDirection (localLeftHandCoords.forward);
+		targetLeftHandCoords.position = aimpoint.TransformPoint (localLeftHandCoords.position);
+		targetLeftHandCoords.up = aimpoint.TransformDirection (localLeftHandCoords.up);
+		targetLeftHandCoords.forward = aimpoint.TransformDirection (localLeftHandCoords.forward);
 		//
 
 		//Restoring original gun aimpoint coords
