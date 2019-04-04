@@ -9,24 +9,18 @@ public class vanguardAnimController : MonoBehaviour
     public float speed = 2.0f;
     public float jumpSpeed = 500;
     public float rotationSpeed = 75.0f; //velocità movimenti destra/sinistra
-    public float mouseSensitivity = 1;
-    private bool isRunning = false;
-    private bool _isJumping = false;
+    public bool IsRunning { get; set; }
+    public bool IsJumping { get; set; }
     private float _speed;
 
     private int _actualCollision;
-    private float _mouseY; //la salvo per non farlo muovere troppo in verticale
     private audio sound;
-
-    public GameObject spallaSinistra, spallaDestra, collo;
-
-
-
-    private Transform head;
-    private Transform chest;
-    private Transform spine;
-    private Transform rightHand;
-    private Transform leftHand;
+         
+    //private Transform head;
+    //private Transform chest;
+    //private Transform spine;
+    //private Transform rightHand;
+    //private Transform leftHand;
     public Transform cam;
     public Transform ancoraggio;
 
@@ -43,13 +37,11 @@ public class vanguardAnimController : MonoBehaviour
         _speed = speed;
 
         anim = GetComponent<Animator>();
-        head = anim.GetBoneTransform(HumanBodyBones.Head);
-        chest = anim.GetBoneTransform(HumanBodyBones.Chest);
-        spine = anim.GetBoneTransform(HumanBodyBones.Spine);
-        rightHand = anim.GetBoneTransform(HumanBodyBones.RightHand);
-        leftHand = anim.GetBoneTransform(HumanBodyBones.LeftHand);
-
-        
+        //head = anim.GetBoneTransform(HumanBodyBones.Head);
+        //chest = anim.GetBoneTransform(HumanBodyBones.Chest);
+        //spine = anim.GetBoneTransform(HumanBodyBones.Spine);
+        //rightHand = anim.GetBoneTransform(HumanBodyBones.RightHand);
+        //leftHand = anim.GetBoneTransform(HumanBodyBones.LeftHand);
 
         //cam = Camera.current;
         //mouseLook.Init(transform, cam.transform);
@@ -83,7 +75,7 @@ public class vanguardAnimController : MonoBehaviour
 
 
         checkJump();
-        _isJumping = isJumping();   //salvo se sta saltando o no per non doverlo richiamare per ogni direzione
+        IsJumping = checkIsJumping();   //salvo se sta saltando o no per non doverlo richiamare per ogni direzione
 
         if (!anim.GetBool("wantJump"))  //controllo i movimenti solo se non vuole saltare
         {
@@ -95,21 +87,15 @@ public class vanguardAnimController : MonoBehaviour
         }
     }
 
-    void LateUpdate()
-    {
-        //Verifica se viene mossa la visuale dopo che sono state applicate le animazioni per muovere le braccia
-        checkMouseMovement();
-    }
-
     private void checkMoveForward()
     {
         if (Input.GetKey(KeyCode.W) == true)
         {
             //Controllo se corre    (se non sta saltando)
-            if (Input.GetKey(KeyCode.LeftShift) == true && !_isJumping)
+            if (Input.GetKey(KeyCode.LeftShift) == true && !IsJumping)
             {
                 //checkJump();
-                if (isRunning == false)
+                if (IsRunning == false)
                 {
                     //E' la prima volta che inizio a correre, smetto quindi di camminare
                     anim.SetBool("isWalking", false);
@@ -119,9 +105,9 @@ public class vanguardAnimController : MonoBehaviour
                 _speed = speed * 5;
                 anim.SetBool("isRunning", true);
                 Debug.Log("Corre! ");
-                isRunning = true;
+                IsRunning = true;
 
-                if (sound.player.isPlaying == false && _isJumping == false)
+                if (sound.player.isPlaying == false && IsJumping == false)
                 {
                     sound.playRun();
                 }
@@ -131,17 +117,17 @@ public class vanguardAnimController : MonoBehaviour
             else if (Input.GetKey(KeyCode.LeftShift) == false)
             {
                 //checkJump();
-                if (isRunning == true)
+                if (IsRunning == true)
                 {
                     //Sto correndo e ora voglio camminare, dico che smetto di correre
                     anim.SetBool("isRunning", false);
                 }
                 //Non corre, allora cammina
                 _speed = speed;
-                if (!_isJumping)
+                if (!IsJumping)
                     anim.SetBool("isWalking", true);
                 //Debug.Log("Cammina! ");
-                isRunning = false;
+                IsRunning = false;
 
                 emettiSuonoWalk(false);
 
@@ -156,13 +142,13 @@ public class vanguardAnimController : MonoBehaviour
             _speed = speed;
             anim.SetBool("isRunning", false);
             anim.SetBool("isWalking", false);
-            isRunning = false;
+            IsRunning = false;
         }
     }
 
     private void checkJump()
     {
-        if (Input.GetKey(KeyCode.Space) == true && /*GetComponent<Rigidbody>().velocity.y == 0 &&*/ isColliding() && !_isJumping && !anim.GetBool("wantJump"))
+        if (Input.GetKey(KeyCode.Space) == true && /*GetComponent<Rigidbody>().velocity.y == 0 &&*/ isColliding() && !IsJumping && !anim.GetBool("wantJump"))
         //salta solose non sta già saltanto, se non si sta gia muovendo in verticale e se è appoggiato a qualcosa
         {
             Debug.Log("SALTO");
@@ -186,7 +172,7 @@ public class vanguardAnimController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.D) == true)
         {
-            if (!_isJumping)
+            if (!IsJumping)
                 anim.SetBool("walkRight", true);
             transform.Translate(orizzontale, 0, 0);
             Debug.Log("Vado a Destra!");
@@ -203,7 +189,7 @@ public class vanguardAnimController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.A) == true)
         {
-            if (!_isJumping)
+            if (!IsJumping)
                 anim.SetBool("walkLeft", true);
             transform.Translate(orizzontale, 0, 0);
             Debug.Log("Vado a Sinistra");
@@ -220,7 +206,7 @@ public class vanguardAnimController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.S) == true)
         {
-            if (!_isJumping)
+            if (!IsJumping)
                 anim.SetBool("walkBack", true);
 
             transform.Translate(0, 0, translation);
@@ -233,25 +219,6 @@ public class vanguardAnimController : MonoBehaviour
         {
             anim.SetBool("walkBack", false);
         }
-    }
-
-
-    private void checkMouseMovement()
-    {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
-        float mouseY = -Input.GetAxis("Mouse Y") * mouseSensitivity;
-        this.transform.Rotate(0, mouseX, 0);    //routo il GIOCATORE
-        if (_mouseY + mouseY > -30 && _mouseY + mouseY < 70)
-        {
-            GetComponentInChildren<Camera>().transform.Rotate(mouseY, 0, 0);//se non è troppo alto o basso ruoto la CAMERA
-            _mouseY += mouseY;
-        }
-        //GetComponent<Transform>().GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(0).Rotate(_mouseY, 0, 0);         //spalla sinistra
-        //GetComponent<Transform>().GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(2).Rotate(_mouseY, 0, 0);         //spalla destra      
-        spallaDestra.transform.Rotate(_mouseY, 0, 0);
-        spallaSinistra.transform.Rotate(_mouseY, 0, 0);
-        collo.transform.Rotate(_mouseY - 25, 0, 0);
-        //mouseLook.LookRotation(transform, cam.transform);
     }
 
     void OnCollisionEnter()
@@ -269,7 +236,7 @@ public class vanguardAnimController : MonoBehaviour
         return _actualCollision > 0;
     }
 
-    private bool isJumping()    //controlla se sta eseguendo l'animazione salto
+    public bool checkIsJumping()    //controlla se sta eseguendo l'animazione salto
     {
         if (anim.GetCurrentAnimatorStateInfo(0).length >
                anim.GetCurrentAnimatorStateInfo(0).normalizedTime
@@ -286,7 +253,7 @@ public class vanguardAnimController : MonoBehaviour
     private void emettiSuonoWalk(bool silezioso)
     {
         //Se non salta e non sta riproducendo nessun suono
-        if (sound.player.isPlaying == false && _isJumping == false)
+        if (sound.player.isPlaying == false && IsJumping == false)
         {
             if (silezioso == true)//Se il suono deve avere volume basso
             {
