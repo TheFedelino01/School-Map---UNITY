@@ -12,12 +12,13 @@ public class Flag : MonoBehaviour
         Debug.Log("Start");
     }
 
-    void OnTriggerEnter(Collider other)
+    void OnCollisionEnter(Collision other)
     {
-        
         isFlagCaptured = true;
         Debug.Log("Bandiera catturata !!");
-
+        
         //TO DO
     }
+
+    
 }
