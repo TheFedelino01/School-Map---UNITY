@@ -127,26 +127,7 @@ public class bodyController : MonoBehaviour
             Debug.Log("fucile ROTATION: " + fucile.transform.localRotation.ToString());
             Debug.Log("Right Arm: " + manoDestra.transform.localRotation.ToString());
 
-            //posizioneStandard.transform.localRotation = new Quaternion(0.1f, 0.8f, 0.8f, -0.2f);
-
-            //manoSinistra.position = mio.position;
-            Coord coordManoDestra = new Coord(manoDestra);
-            Coord coordManoSinistra = new Coord(manoSinistra);
-
-            coordManoDestra.toLocal(mirinoFucile);
-            coordManoSinistra.toLocal(mirinoFucile);
-
-            coordManoDestra.toGlobal(mirinoTesta);
-            coordManoSinistra.toGlobal(mirinoTesta);
-
-            IK.ik(manoDestra, coordManoDestra.position, Quaternion.LookRotation(coordManoDestra.forward, coordManoDestra.up), 1, 1);
-            IK.ik(manoSinistra, coordManoSinistra.position, Quaternion.LookRotation(coordManoSinistra.forward, coordManoSinistra.up), 1, 1);
-            //manoDestra.position = coordManoDestra.position;
-            //manoDestra.forward = coordManoDestra.forward;
-            //manoDestra.up = coordManoDestra.up;
-            //manoSinistra.position = coordManoSinistra.position;
-            //manoSinistra.forward = coordManoSinistra.forward;
-            //manoSinistra.up = coordManoSinistra.up;
+            spostaFucile(mirinoTesta);
 
             //sistemo le altre parti del corpo
             spallaDestra.Rotate(0, 15, 0);
@@ -155,11 +136,35 @@ public class bodyController : MonoBehaviour
         }
     }
 
-    private void mettiFucileInPosizione()
+    //private void mettiFucileInPosizione()
+    //{
+    //    //Dico che il fucile deve avere le stesse posizioni del mio posizioneStandard 
+    //    fucile.transform.localPosition = posizioneStandard.transform.localPosition;
+    //    fucile.transform.localRotation = posizioneStandard.transform.localRotation;
+    //    fucile.transform.localScale = posizioneStandard.transform.localScale;
+    //}
+
+    private void spostaFucile(Transform newPosition)
     {
-        //Dico che il fucile deve avere le stesse posizioni del mio posizioneStandard 
-        fucile.transform.localPosition = posizioneStandard.transform.localPosition;
-        fucile.transform.localRotation = posizioneStandard.transform.localRotation;
-        fucile.transform.localScale = posizioneStandard.transform.localScale;
+        //posizioneStandard.transform.localRotation = new Quaternion(0.1f, 0.8f, 0.8f, -0.2f);
+
+        //manoSinistra.position = mio.position;
+        Coord coordManoDestra = new Coord(manoDestra);
+        Coord coordManoSinistra = new Coord(manoSinistra);
+        coordManoDestra.toLocal(mirinoFucile);
+        coordManoSinistra.toLocal(mirinoFucile);
+
+        coordManoDestra.toGlobal(newPosition);
+        coordManoSinistra.toGlobal(newPosition);
+
+        IK.ik(manoDestra, coordManoDestra.position, Quaternion.LookRotation(coordManoDestra.forward, coordManoDestra.up), 1, 1);
+        IK.ik(manoSinistra, coordManoSinistra.position, Quaternion.LookRotation(coordManoSinistra.forward, coordManoSinistra.up), 1, 1);
+        //manoDestra.position = coordManoDestra.position;
+        //manoDestra.forward = coordManoDestra.forward;
+        //manoDestra.up = coordManoDestra.up;
+        //manoSinistra.position = coordManoSinistra.position;
+        //manoSinistra.forward = coordManoSinistra.forward;
+        //manoSinistra.up = coordManoSinistra.up;
+
     }
 }
