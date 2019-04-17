@@ -21,8 +21,6 @@ public class vanguardAnimController : MonoBehaviour
     //private Transform spine;
     //private Transform rightHand;
     //private Transform leftHand;
-    public Transform cam;
-    public Transform ancoraggio;
 
     // Use this for initialization
     void Start()
@@ -57,9 +55,6 @@ public class vanguardAnimController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //head.rotation = cam.rotation;
-        cam.position = ancoraggio.position;
-
         float translation = Input.GetAxis("Vertical") * _speed;
         float rotation = Input.GetAxis("Horizontal") * rotationSpeed;
 

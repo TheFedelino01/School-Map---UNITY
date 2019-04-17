@@ -22,6 +22,11 @@ public class bodyController : MonoBehaviour
     private Vector2 mousePosition;
     private Transform polsoPosizioneIniziale;
 
+    public Transform cam;
+    public Transform ancoraggio;
+
+    private bool mirando = false;
+
     class Coord
     {
         public Vector3 position { get; set; }
@@ -58,18 +63,29 @@ public class bodyController : MonoBehaviour
         //chest = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.Chest);
         //spine = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.Spine);
         animController = GetComponent<vanguardAnimController>();
-
+        manoSinistra.Translate(0, -1, 1);
         //manoDestra.transform.SetParent(fucile.transform);
-        mettiFucileInPosizione();
+        //mettiFucileInPosizione();
 
         //manoDestra.transform.localPosition = posizioneManoDestra.transform.localPosition;
         //manoDestra.transform.localRotation = posizioneManoDestra.transform.localRotation;
         //manoDestra.transform.localScale = posizioneManoDestra.transform.localScale;
     }
 
+    void Update()
+    {
+        //se preme il pulsante destro sposta la camera sul mirino
+        if (Input.GetButtonDown("Fire2"))
+            mirando = !mirando;
+        if (mirando)
+            cam.position = mirinoTesta.position;
+        else
+            cam.position = ancoraggio.position;
+    }
+
     void LateUpdate()
     {
-        correggiPosBraccia();        
+        correggiPosBraccia();
         checkMouseMovement();
     }
 
@@ -79,13 +95,14 @@ public class bodyController : MonoBehaviour
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float mouseY = -Input.GetAxis("Mouse Y") * mouseSensitivity;
         this.transform.Rotate(0, mouseX, 0);    //routo il GIOCATORE
-        if (mousePosition.y + mouseY > -30 && mousePosition.y + mouseY < 70)
+        if (mousePosition.y + mouseY > -60 && mousePosition.y + mouseY < 60)
         {
             mousePosition.y += mouseY;
-            GetComponentInChildren<Camera>().transform.Rotate(mouseY, 0, 0);    //se non è troppo alto o basso ruoto la CAMERA
+            cam.transform.Rotate(mouseY, 0, 0);    //se non è troppo alto o basso ruoto la CAMERA
         }
-        //chest.Rotate(mousePosition.y / 2f, 0, 0);
+        chest.Rotate(mousePosition.y / 2f, 0, 0);
         spine.Rotate(mousePosition.y / 2f, 0, 0);
+        spine.Rotate(0, 10, 0);
         mousePosition.x += mouseX;
 
         //spallaDestra.transform.Rotate(mousePosition.y, 0, 0);
@@ -99,38 +116,43 @@ public class bodyController : MonoBehaviour
 
     private void correggiPosBraccia()
     {
-        mettiFucileInPosizione();
+        //mettiFucileInPosizione();
 
-        //if (!animController.IsJumping && !animController.IsRunning) //se non sta saltando o correndo sposto il fucile vicino alla testa
-        //{
+        if (!animController.IsJumping && !animController.IsRunning) //se non sta saltando o correndo sposto il fucile vicino alla testa
+        {
             float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
             float mouseY = -Input.GetAxis("Mouse Y") * mouseSensitivity;
             //fucile.transform.localRotation = new Quaternion(mouseX, mouseY, fucile.transform.rotation.z, fucile.transform.rotation.w);
-            Debug.Log("CAMERA ROTATION: "+GetComponentInChildren<Camera>().transform.localRotation.ToString());
+            Debug.Log("CAMERA ROTATION: " + GetComponentInChildren<Camera>().transform.localRotation.ToString());
             Debug.Log("fucile ROTATION: " + fucile.transform.localRotation.ToString());
             Debug.Log("Right Arm: " + manoDestra.transform.localRotation.ToString());
 
-        //posizioneStandard.transform.localRotation = new Quaternion(0.1f, 0.8f, 0.8f, -0.2f);
+            //posizioneStandard.transform.localRotation = new Quaternion(0.1f, 0.8f, 0.8f, -0.2f);
 
-        //manoSinistra.position = mio.position;
-        //Coord coordManoDestra = new Coord(manoDestra);
-        //Coord coordManoSinistra = new Coord(manoSinistra);
+            //manoSinistra.position = mio.position;
+            Coord coordManoDestra = new Coord(manoDestra);
+            Coord coordManoSinistra = new Coord(manoSinistra);
 
-        //coordManoDestra.toLocal(mirinoFucile);
-        //coordManoSinistra.toLocal(mirinoFucile);
+            coordManoDestra.toLocal(mirinoFucile);
+            coordManoSinistra.toLocal(mirinoFucile);
 
-        //coordManoDestra.toGlobal(mirinoTesta);
-        //coordManoSinistra.toGlobal(mirinoTesta);
+            coordManoDestra.toGlobal(mirinoTesta);
+            coordManoSinistra.toGlobal(mirinoTesta);
 
-        //IK.ik(manoDestra, coordManoDestra.position, Quaternion.LookRotation(coordManoDestra.forward, coordManoDestra.up), 1, 1);
-        //IK.ik(manoSinistra, coordManoSinistra.position, Quaternion.LookRotation(coordManoSinistra.forward, coordManoSinistra.up), 1, 1);
-        //manoDestra.position = coordTargetManoDestra.position;
-        //manoDestra.forward = coordTargetManoDestra.foward;
-        //manoDestra.up = coordTargetManoDestra.up;
-        //manoSinistra.position = coordTargetManoSinistra.position;
-        //manoSinistra.forward = coordTargetManoSinistra.foward;
-        //manoSinistra.up = coordTargetManoSinistra.up;
-        //}
+            IK.ik(manoDestra, coordManoDestra.position, Quaternion.LookRotation(coordManoDestra.forward, coordManoDestra.up), 1, 1);
+            IK.ik(manoSinistra, coordManoSinistra.position, Quaternion.LookRotation(coordManoSinistra.forward, coordManoSinistra.up), 1, 1);
+            //manoDestra.position = coordManoDestra.position;
+            //manoDestra.forward = coordManoDestra.forward;
+            //manoDestra.up = coordManoDestra.up;
+            //manoSinistra.position = coordManoSinistra.position;
+            //manoSinistra.forward = coordManoSinistra.forward;
+            //manoSinistra.up = coordManoSinistra.up;
+
+            //sistemo le altre parti del corpo
+            spallaDestra.Rotate(0, 15, 0);
+            spallaSinistra.Rotate(0, 15, 0);
+            collo.Rotate(0, 10, 0);
+        }
     }
 
     private void mettiFucileInPosizione()
