@@ -6,6 +6,7 @@ public class bodyController : MonoBehaviour
 {
     public Transform mirinoTesta, mirinoFucile;
     public Transform manoDestra, manoSinistra;
+    public Transform mirinoPosCorsa;
 
     public Transform chest;
     public Transform spine;
@@ -13,14 +14,14 @@ public class bodyController : MonoBehaviour
     public float mouseSensitivity = 1;
 
     public Transform spallaSinistra, spallaDestra, collo;
-    public GameObject fucile;
-    public GameObject posizioneStandard;
-    public GameObject posizioneManoDestra;
+    //public GameObject fucile;
+    //public GameObject posizioneStandard;
+    //public GameObject posizioneManoDestra;
 
 
     private vanguardAnimController animController;
     private Vector2 mousePosition;
-    private Transform polsoPosizioneIniziale;
+    //private Transform polsoPosizioneIniziale;
 
     public Transform cam;
     public Transform ancoraggio;
@@ -117,23 +118,30 @@ public class bodyController : MonoBehaviour
     private void correggiPosBraccia()
     {
         //mettiFucileInPosizione();
-
-        if (!animController.IsJumping && !animController.IsRunning) //se non sta saltando o correndo sposto il fucile vicino alla testa
+        if (!animController.IsJumping)
         {
-            float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
-            float mouseY = -Input.GetAxis("Mouse Y") * mouseSensitivity;
-            //fucile.transform.localRotation = new Quaternion(mouseX, mouseY, fucile.transform.rotation.z, fucile.transform.rotation.w);
-            //Debug.Log("CAMERA ROTATION: " + GetComponentInChildren<Camera>().transform.localRotation.ToString());
-            //Debug.Log("fucile ROTATION: " + fucile.transform.localRotation.ToString());
-            //Debug.Log("Right Arm: " + manoDestra.transform.localRotation.ToString());
+            if (!animController.IsRunning) //se non sta saltando o correndo sposto il fucile vicino alla testa
+            {
+                //fucile.transform.localRotation = new Quaternion(mouseX, mouseY, fucile.transform.rotation.z, fucile.transform.rotation.w);
+                //Debug.Log("CAMERA ROTATION: " + GetComponentInChildren<Camera>().transform.localRotation.ToString());
+                //Debug.Log("fucile ROTATION: " + fucile.transform.localRotation.ToString());
+                //Debug.Log("Right Arm: " + manoDestra.transform.localRotation.ToString());
 
-            spostaFucile(mirinoTesta);
+                spostaFucile(mirinoTesta);
+            }
+            else
+            {
+                Debug.Log(manoSinistra.position.ToString());
+                spostaFucile(mirinoPosCorsa);
+                Debug.Log(manoSinistra.position.ToString());
+            }
 
             //sistemo le altre parti del corpo
             spallaDestra.Rotate(0, 15, 0);
             spallaSinistra.Rotate(0, 15, 0);
             collo.Rotate(0, 10, 0);
         }
+
     }
 
     //private void mettiFucileInPosizione()
