@@ -7,6 +7,7 @@ using UnityEngine.Networking;
 public class PlayerShoot : NetworkBehaviour
 {
     public float danno = 10f;
+
     public string tagNemico = "PlayerREMOTE";
 
     [SerializeField]
@@ -55,16 +56,22 @@ public class PlayerShoot : NetworkBehaviour
             {
                 //Dico che ho colpito il player e gli passo il nome
                 //del player colpito
-                CmdPlayerAsBeenShoot(_hit.collider.name);
+                CmdPlayerAsBeenShoot(_hit.collider.name, danno);
             }
 
         }
     }
 
     [Command]
-    void CmdPlayerAsBeenShoot(string idDelPlayerColpito)
+    void CmdPlayerAsBeenShoot(string idDelPlayerColpito, float danno)
     {
+        //Metodo fatto dal server
+
         Debug.Log("COLPITO UN Giocatore: " + idDelPlayerColpito);
+
+        Player giocatoreColpito = GameManager.getPlayer(idDelPlayerColpito);
+
+        giocatoreColpito.RpcPrendiDanno(danno);
         
     }
     

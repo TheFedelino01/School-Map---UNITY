@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
+[RequireComponent(typeof(Player))]
 public class playerSetup : NetworkBehaviour
 {
     [SerializeField]
@@ -15,8 +16,6 @@ public class playerSetup : NetworkBehaviour
 
     void Start()
     {
-        
-
         //Controllo se questo player non e' comandato da me
         //(Non sono io questo player)
         if (isLocalPlayer == false)
@@ -32,6 +31,7 @@ public class playerSetup : NetworkBehaviour
         }
         else
         {
+            //Sono io questo player
             setAsLocalPlayer();
             sceneCamera = Camera.main;
             if (sceneCamera != null)
@@ -40,15 +40,19 @@ public class playerSetup : NetworkBehaviour
             }
         }
 
-        //Imposto l'identia' del player
-        //ogni player ha un ID unico
-        setIdentityPlayer();
+        GetComponent<Player>().Setup();//Faccio partire il setUp
+
     }
 
-    void setIdentityPlayer()
+    //Quando entra il player
+    public override void OnStartClient()
     {
-        string ID = "Giocatore."+GetComponent<NetworkIdentity>().netId;
-        transform.name = ID;
+        //Imposto l'identia' del player
+        //ogni player ha un ID unico
+        string netId = GetComponent<NetworkIdentity>().netId.ToString();
+        Player _player = GetComponent<Player>();
+
+        GameManager.RegisterPlayer(netId, _player);//Aggiungo il giocatore alla lista dei players
     }
 
     void setAsRemotePlayer()
@@ -63,11 +67,14 @@ public class playerSetup : NetworkBehaviour
         gameObject.tag = TAGlocal;
     }
 
+    //Quando il player esce
     void onDisable()
     {
         if (sceneCamera != null)
         {
             sceneCamera.gameObject.SetActive(true);
         }
+
+        GameManager.unRegisterPlayer(transform.name);//Lo tolgo dalla lista dei players
     }
 }
