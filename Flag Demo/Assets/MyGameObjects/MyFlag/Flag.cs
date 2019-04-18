@@ -4,17 +4,26 @@ using UnityEngine;
 
 public class Flag : MonoBehaviour
 {
-    private bool isFlagCaptured { get; set; }
+    public bool isFlagCaptured { get; set; }
+    public bool isFlagConquered { get; set; }
 
     private void conqueredFlag()
     {
+        isFlagCaptured = false; //La bandiera non è più nelle mani del player attaccante
+        isFlagConquered = true; //La bandiera è stata conquistata
+
+        GetComponent<matchManager>().flagConquered++; //Viene incrementato il numero di bandiere conquistato dalla squadra d'attacco
+
+
         //TO DO
+        //Incrementa punteggio player
         //Incrementa punteggio squadra attaccante...
     }
 
 
     private void chkPlayerPosition()
     {
+        Debug.Log("Sto controllando la posizione...");
         //Controlla la posizione del player che si è impossessato della bandiera 
         //Se quest'ultimo giunge allo spawn d'attacco la bandiera è conquistata
         //if(player.Position == spawn)
@@ -26,10 +35,12 @@ public class Flag : MonoBehaviour
     {
         isFlagCaptured = true;
         Debug.Log("Flag captured !!");
-        while (isFlagCaptured)
-        {
-            chkPlayerPosition();
-        }
+    }
+
+
+    void OnCollisionEnter(Collision other)
+    {
+        flagCaptured();
     }
 
     void Start()
@@ -38,11 +49,10 @@ public class Flag : MonoBehaviour
         Debug.Log("Start");
     }
 
-    void OnCollisionEnter(Collision other)
+    void Update()
     {
-        flagCaptured();
+        if (isFlagCaptured)
+            chkPlayerPosition();
     }
-
-
     
 }
