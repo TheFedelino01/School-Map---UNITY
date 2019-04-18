@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class bodyController : MonoBehaviour
 {
-    public Transform mirinoTesta, mirinoFucile;
+    public Transform mirinoTesta;//, mirinoFucile;
     public Transform manoDestra, manoSinistra;
     public Transform mirinoPosCorsa;
 
@@ -15,10 +15,10 @@ public class bodyController : MonoBehaviour
 
     public Transform spallaSinistra, spallaDestra, collo;
     //public GameObject fucile;
-    //public GameObject posizioneStandard;
+    public Transform posizioneIdleManoSinistra;
     //public GameObject posizioneManoDestra;
 
-
+    private weaponsManager weaponsManager;
     private vanguardAnimController animController;
     private Vector2 mousePosition;
     //private Transform polsoPosizioneIniziale;
@@ -56,6 +56,11 @@ public class bodyController : MonoBehaviour
             forward = point.TransformDirection(forward);
             up = point.TransformDirection(up);
         }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
     }
 
     // Start is called before the first frame update
@@ -63,6 +68,7 @@ public class bodyController : MonoBehaviour
     {
         //chest = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.Chest);
         //spine = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.Spine);
+        weaponsManager = GetComponent<weaponsManager>();
         animController = GetComponent<vanguardAnimController>();
         manoSinistra.Translate(0, -1, 1);
         //manoDestra.transform.SetParent(fucile.transform);
@@ -154,6 +160,7 @@ public class bodyController : MonoBehaviour
 
     private void spostaFucile(Transform newPosition)
     {
+        Transform mirinoFucile = weaponsManager.getMirino();
         //posizioneStandard.transform.localRotation = new Quaternion(0.1f, 0.8f, 0.8f, -0.2f);
 
         //manoSinistra.position = mio.position;
@@ -165,8 +172,17 @@ public class bodyController : MonoBehaviour
         coordManoDestra.toGlobal(newPosition);
         coordManoSinistra.toGlobal(newPosition);
 
-        IK.ik(manoDestra, coordManoDestra.position, Quaternion.LookRotation(coordManoDestra.forward, coordManoDestra.up), 1, 1);
+
+        if (weaponsManager.GetWeaponType() == WeaponType.PISTOLA)
+        {
+            coordManoSinistra = (Coord)coordManoDestra.Clone();
+            coordManoSinistra.up = -coordManoDestra.up;
+            Vector3 pos = coordManoSinistra.position;
+            pos.x -= 1f;
+            coordManoSinistra.position = pos;
+        }
         IK.ik(manoSinistra, coordManoSinistra.position, Quaternion.LookRotation(coordManoSinistra.forward, coordManoSinistra.up), 1, 1);
+        IK.ik(manoDestra, coordManoDestra.position, Quaternion.LookRotation(coordManoDestra.forward, coordManoDestra.up), 1, 1);
         //manoDestra.position = coordManoDestra.position;
         //manoDestra.forward = coordManoDestra.forward;
         //manoDestra.up = coordManoDestra.up;
