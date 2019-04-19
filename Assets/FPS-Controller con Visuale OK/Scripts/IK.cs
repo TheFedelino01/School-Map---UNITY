@@ -4,10 +4,10 @@ using UnityEngine;
 
 public static class IK {
 	public static void ik(Transform End,Vector3 TargetPosition, Quaternion TargetRotation,float positionsWeight,float rotationWeight){
-		Transform Middle = End.parent;
+        Transform Middle = End.parent;
 		Transform Start = Middle.parent;
 
-		TargetPosition = Vector3.Lerp (End.position,TargetPosition,positionsWeight);
+        TargetPosition = Vector3.Lerp (End.position,TargetPosition,positionsWeight);
 		TargetRotation = Quaternion.Slerp (End.rotation,TargetRotation,rotationWeight);
 
 		ActualIK(End,Middle,Start,TargetPosition,TargetRotation);
