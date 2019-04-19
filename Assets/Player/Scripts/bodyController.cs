@@ -123,7 +123,7 @@ public class bodyController : MonoBehaviour
     {
         if (mirando)
         {
-            Debug.Log("RESETTO zoom");
+            //Debug.Log("RESETTO zoom");
             cam.GetComponent<Camera>().fieldOfView = defaultFieldOfView;
         }
         mirando = false;
@@ -178,9 +178,9 @@ public class bodyController : MonoBehaviour
             }
             else
             {
-                Debug.Log(manoSinistra.position.ToString());
+                //Debug.Log(manoSinistra.position.ToString());
                 spostaFucile(mirinoPosCorsa);
-                Debug.Log(manoSinistra.position.ToString());
+                //Debug.Log(manoSinistra.position.ToString());
             }
 
             //sistemo le altre parti del corpo
@@ -204,7 +204,7 @@ public class bodyController : MonoBehaviour
         Transform mirinoFucile = weaponsManager.getMirino();
 
         //posizioneStandard.transform.localRotation = new Quaternion(0.1f, 0.8f, 0.8f, -0.2f);
-        Debug.Log("PRIMA" + mirinoFucile.position);
+        //Debug.Log("PRIMA" + mirinoFucile.position);
         //Debug.Log(mirinoFucile.parent.localScale);
         //Vector3 posm = mirinoFucile.position;
         //posm.Scale(mirinoFucile.parent.localScale);
@@ -216,11 +216,11 @@ public class bodyController : MonoBehaviour
         Coord coordManoSinistra = new Coord(manoSinistra);
         coordManoDestra.toLocalUnscaled(mirinoFucile);
         coordManoSinistra.toLocalUnscaled(mirinoFucile);
-        Debug.Log("LOCAL: " + coordManoDestra.position);
+        //Debug.Log("LOCAL: " + coordManoDestra.position);
 
         coordManoDestra.toGlobalUnscaled(newPosition);
         coordManoSinistra.toGlobalUnscaled(newPosition);
-        Debug.Log("GLOBAL: " + coordManoDestra.position);
+        //Debug.Log("GLOBAL: " + coordManoDestra.position);
 
 
         if (weaponsManager.GetWeaponType() == WeaponType.PISTOLA)
