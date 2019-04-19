@@ -8,6 +8,8 @@ public class weaponsManager : MonoBehaviour
     public Transform weaponPosition;
     private GameObject activeWeapon;
     private int activeIndex;
+    public GameObject proiettile;
+    public float shootForce;
 
 
     // Start is called before the first frame update
@@ -73,6 +75,14 @@ public class weaponsManager : MonoBehaviour
             default:
                 return WeaponType.FUCILE;
         }
+    }
+
+    public void spara()
+    {
+        Transform shootPoint = activeWeapon.transform.Find("shootPoint");
+        var proiet = Instantiate(proiettile, shootPoint.position, shootPoint.rotation);
+        proiet.GetComponent<Rigidbody>().AddForce(shootPoint.forward * shootForce, ForceMode.Impulse);
+        Destroy(proiet.gameObject, 3);
     }
 }
 

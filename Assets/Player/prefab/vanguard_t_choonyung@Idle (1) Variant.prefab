@@ -654,6 +654,7 @@ MonoBehaviour:
   posizioneIdleManoSinistra: {fileID: 958158367836396971}
   cam: {fileID: 533251345}
   ancoraggio: {fileID: 1982610917}
+  defaultFieldOfView: 60
 --- !u!114 &1412049071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -670,6 +671,9 @@ MonoBehaviour:
   - {fileID: 3618006581677377298, guid: 731ebb4b8c7feac458ed8fce94c82e36, type: 3}
   - {fileID: 5354087647610181616, guid: 787375c0e0466464a954d0ce7bc0f078, type: 3}
   weaponPosition: {fileID: 3418980837060885314}
+  proiettile: {fileID: 4448605771639950761, guid: 1f6a3d87b3ba92e4390188a878ea933d,
+    type: 3}
+  shootForce: 200
 --- !u!114 &4090526966138553338
 MonoBehaviour:
   m_ObjectHideFlags: 0

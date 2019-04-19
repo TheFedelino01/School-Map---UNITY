@@ -242,4 +242,10 @@ public class bodyController : MonoBehaviour
         //manoSinistra.up = coordManoSinistra.up;
 
     }
+
+
+    public void spara()
+    {
+
+    }
 }
