@@ -10,8 +10,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
     [RequireComponent(typeof (AudioSource))]
     public class FirstPersonController : MonoBehaviour
     {
-
-        public Animator anim;
         [SerializeField] private bool m_IsWalking;
         [SerializeField] private float m_WalkSpeed;
         [SerializeField] private float m_RunSpeed;
@@ -43,6 +41,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private float m_NextStep;
         private bool m_Jumping;
         private AudioSource m_AudioSource;
+        public Animator animator;
 
         // Use this for initialization
         private void Start()
@@ -68,7 +67,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             if (!m_Jump)
             {
                 m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
-                
+                animator.SetFloat("InputY", 1);
             }
 
             if (!m_PreviouslyGrounded && m_CharacterController.isGrounded)
@@ -118,23 +117,15 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
                 if (m_Jump)
                 {
-                    if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Jump"))
-                    {
-                        m_MoveDir.y = m_JumpSpeed;
-                        PlayJumpSound();
-                        m_Jump = false;
-                        m_Jumping = true;
-                        Debug.Log("Jumping");
-                        anim.CrossFade("Jump",0.2f);
-                    }
-
+                    m_MoveDir.y = m_JumpSpeed;
+                    PlayJumpSound();
+                    m_Jump = false;
+                    m_Jumping = true;
                 }
-                
             }
             else
             {
                 m_MoveDir += Physics.gravity*m_GravityMultiplier*Time.fixedDeltaTime;
-                
             }
             m_CollisionFlags = m_CharacterController.Move(m_MoveDir*Time.fixedDeltaTime);
 
@@ -160,32 +151,18 @@ namespace UnityStandardAssets.Characters.FirstPerson
                              Time.fixedDeltaTime;
             }
 
-            float velocita = m_CharacterController.velocity.sqrMagnitude;
-            if (velocita <= 1)
-            {
-                anim.SetBool("walk", false);
-            }
-            else if(velocita <= 40)
-            {
-                anim.SetBool("walk", true);
-            }
-
             if (!(m_StepCycle > m_NextStep))
             {
-                //anim.SetBool("walk", false);
                 return;
             }
 
             m_NextStep = m_StepCycle + m_StepInterval;
 
-            
-            Debug.Log("Velocitá: " + velocita);
-            PlayFootStepAudio(velocita);
-            
+            PlayFootStepAudio();
         }
 
 
-        private void PlayFootStepAudio(float velocita)
+        private void PlayFootStepAudio()
         {
             if (!m_CharacterController.isGrounded)
             {
@@ -199,9 +176,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
             // move picked sound to index 0 so it's not picked next time
             m_FootstepSounds[n] = m_FootstepSounds[0];
             m_FootstepSounds[0] = m_AudioSource.clip;
-            
-            
-            Debug.Log("Step");
         }
 
 
