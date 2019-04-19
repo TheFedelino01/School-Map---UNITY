@@ -7,6 +7,7 @@ public class bodyController : MonoBehaviour
     public Transform mirinoTesta;//, mirinoFucile;
     public Transform manoDestra, manoSinistra;
     public Transform mirinoPosCorsa;
+    public Transform mirinoPosMirando;
 
     public Transform chest;
     public Transform spine;
@@ -27,6 +28,7 @@ public class bodyController : MonoBehaviour
     public Transform ancoraggio;
 
     private bool mirando = false;
+    public int defaultFieldOfView = 60;
 
     class Coord
     {
@@ -102,13 +104,29 @@ public class bodyController : MonoBehaviour
 
     void Update()
     {
-        //se preme il pulsante destro sposta la camera sul mirino
-        if (Input.GetButtonDown("Fire2"))
+        //se preme il pulsante destro e non sta correndo sposta la camera sul mirino
+        if (Input.GetButtonDown("Fire2") && !animController.IsRunning)
+        {
             mirando = !mirando;
+            if (mirando)
+                cam.GetComponent<Camera>().fieldOfView -= weaponsManager.getZoom();
+            else
+                cam.GetComponent<Camera>().fieldOfView += weaponsManager.getZoom();
+        }
         if (mirando)
             cam.position = mirinoTesta.position;
         else
             cam.position = ancoraggio.position;
+    }
+
+    public void resetZoom()
+    {
+        if (mirando)
+        {
+            Debug.Log("RESETTO zoom");
+            cam.GetComponent<Camera>().fieldOfView = defaultFieldOfView;
+        }
+        mirando = false;
     }
 
     void LateUpdate()
@@ -153,8 +171,10 @@ public class bodyController : MonoBehaviour
                 //Debug.Log("CAMERA ROTATION: " + GetComponentInChildren<Camera>().transform.localRotation.ToString());
                 //Debug.Log("fucile ROTATION: " + fucile.transform.localRotation.ToString());
                 //Debug.Log("Right Arm: " + manoDestra.transform.localRotation.ToString());
-
-                spostaFucile(mirinoTesta);
+                if (!mirando)
+                    spostaFucile(mirinoTesta);
+                else
+                    spostaFucile(mirinoPosMirando);
             }
             else
             {
@@ -182,7 +202,7 @@ public class bodyController : MonoBehaviour
     private void spostaFucile(Transform newPosition)
     {
         Transform mirinoFucile = weaponsManager.getMirino();
-        
+
         //posizioneStandard.transform.localRotation = new Quaternion(0.1f, 0.8f, 0.8f, -0.2f);
         Debug.Log("PRIMA" + mirinoFucile.position);
         //Debug.Log(mirinoFucile.parent.localScale);

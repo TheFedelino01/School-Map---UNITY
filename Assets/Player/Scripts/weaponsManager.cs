@@ -45,10 +45,21 @@ public class weaponsManager : MonoBehaviour
         //TODO ANIMAZIONI CAMBIO ARMA
         if (activeIndex != index)
         {
+            GetComponent<bodyController>().resetZoom();
             Destroy(activeWeapon);
             activeWeapon = GameObject.Instantiate(weapons[index], weaponPosition);
             activeIndex = index;
         }
+    }
+
+    public int getZoom()
+    {
+        switch (GetWeaponType())
+        {
+            case WeaponType.FUCILE: return 30;
+            case WeaponType.PISTOLA: return 10;
+        }
+        return 0;
     }
 
     public WeaponType GetWeaponType()
