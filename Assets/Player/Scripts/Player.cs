@@ -46,7 +46,7 @@ public class Player : NetworkBehaviour
     [ClientRpc]
     public void RpcPrendiDanno(float danno)
     {
-        float futureSalute = currentSalute -= danno;
+        float futureSalute = currentSalute - danno;
 
         if (futureSalute <= 0)
             isDead = true;

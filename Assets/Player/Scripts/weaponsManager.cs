@@ -11,12 +11,26 @@ public class weaponsManager : MonoBehaviour
     public GameObject proiettile;
     public float shootForce;
 
+    private vanguardAnimController animController;
+
+
+    public bool Mirando { get; set; }
+    public int defaultFieldOfView = 60;
+
+    private Camera cam;
+    private GameObject imgMirino;
+
 
     // Start is called before the first frame update
     void Start()
     {
         activeWeapon = GameObject.Instantiate(weapons[0], weaponPosition);
         //POSIZIONE ARMA CAMMINATA FRONTALE: 22.9 -11.1 22.3
+        animController = GetComponent<vanguardAnimController>();
+        cam = GetComponentInChildren<Camera>();
+        imgMirino = GameObject.Find("Canvas").transform.Find("imgMirino").gameObject;
+        Debug.Log(imgMirino);
+        Mirando = false;
     }
 
     // Update is called once per frame
@@ -27,6 +41,18 @@ public class weaponsManager : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Alpha2))
             cambiaArma(1);
         //weapon.transform.rotation = new Quaternion(-76.40601f, -340.81f, 540.438f,-3);
+
+
+        //se preme il pulsante destro e non sta correndo sposta la camera sul mirino
+        if (Input.GetButtonDown("Fire2") && !animController.IsRunning && !animController.IsJumping)
+        {
+            Mirando = !Mirando;
+            if (Mirando)
+                cam.fieldOfView -= getZoom();
+            else
+                cam.fieldOfView += getZoom();
+        }
+        chkMirino();
     }
 
     //public void setWeaponToWalk()
@@ -47,7 +73,7 @@ public class weaponsManager : MonoBehaviour
         //TODO ANIMAZIONI CAMBIO ARMA
         if (activeIndex != index)
         {
-            GetComponent<bodyController>().resetZoom();
+            resetZoom();
             Destroy(activeWeapon);
             activeWeapon = GameObject.Instantiate(weapons[index], weaponPosition);
             activeIndex = index;
@@ -83,6 +109,30 @@ public class weaponsManager : MonoBehaviour
         var proiet = Instantiate(proiettile, shootPoint.position, shootPoint.rotation);
         proiet.GetComponent<Rigidbody>().AddForce(shootPoint.forward * shootForce, ForceMode.Impulse);
         Destroy(proiet.gameObject, 3);
+    }
+
+
+    public void resetZoom()
+    {
+        if (Mirando)
+        {
+            //Debug.Log("RESETTO zoom");
+            cam.fieldOfView = defaultFieldOfView;
+        }
+        Mirando = false;
+    }
+
+
+
+
+    private void chkMirino()
+    {
+        if (animController.IsJumping || animController.IsRunning)
+            resetZoom();
+        if (!GameManager.instance.partitaAvviata && imgMirino.active)
+            imgMirino.SetActive(false);
+         if (GameManager.instance.partitaAvviata && !imgMirino.active)
+            imgMirino.SetActive(true);
     }
 }
 

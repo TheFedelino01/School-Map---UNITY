@@ -2,30 +2,46 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 public class GameManager : MonoBehaviour
 {
     private static GameManager _instance;
     public static GameManager instance
     {
-        get {
+        get
+        {
             if (_instance == null)
+            {
+                Debug.LogError("CREO NUOVO - SINGLETON TAROCCO:/");
                 _instance = new GameManager();
-
-
+            }
             return _instance;
         }
     }
 
     private GameManager()
     {
-
+        partitaAvviata = false;
     }
-    
+
+    //setto qui l'istanza in modo che poi nel get dovrebbe essere gia pronta
+    void Awake()
+    {
+        if (_instance == null)
+            //if not, set instance to this
+            _instance = this;
+
+        //If instance already exists and it's not this:
+        else if (_instance != this)
+            //Then destroy this. This enforces our singleton pattern, meaning there can only ever be one instance of a GameManager.
+            Destroy(this.gameObject);
+    }
+
 
 
     public GameSettings gameSettings = new GameSettings();
-
+    public bool partitaAvviata { get; set; }
 
     private static string PrefixPlayer = "Player.";
     private static Dictionary<string, Player> giocatori = new Dictionary<string, Player>();

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class bodyController : MonoBehaviour
 {
-    public Transform mirinoTesta;//, mirinoFucile;
+    public Transform mirinoTesta;
     public Transform manoDestra, manoSinistra;
     public Transform mirinoPosCorsa;
     public Transform mirinoPosMirando;
@@ -27,8 +27,6 @@ public class bodyController : MonoBehaviour
     public Transform cam;
     public Transform ancoraggio;
 
-    private bool mirando = false;
-    public int defaultFieldOfView = 60;
 
     class Coord
     {
@@ -104,30 +102,12 @@ public class bodyController : MonoBehaviour
 
     void Update()
     {
-        //se preme il pulsante destro e non sta correndo sposta la camera sul mirino
-        if (Input.GetButtonDown("Fire2") && !animController.IsRunning)
-        {
-            mirando = !mirando;
-            if (mirando)
-                cam.GetComponent<Camera>().fieldOfView -= weaponsManager.getZoom();
-            else
-                cam.GetComponent<Camera>().fieldOfView += weaponsManager.getZoom();
-        }
-        if (mirando)
-            cam.position = mirinoTesta.position;
-        else
+        if (!weaponsManager.Mirando)
             cam.position = ancoraggio.position;
+        else
+            cam.position = mirinoTesta.position;
     }
 
-    public void resetZoom()
-    {
-        if (mirando)
-        {
-            //Debug.Log("RESETTO zoom");
-            cam.GetComponent<Camera>().fieldOfView = defaultFieldOfView;
-        }
-        mirando = false;
-    }
 
     void LateUpdate()
     {
@@ -171,7 +151,7 @@ public class bodyController : MonoBehaviour
                 //Debug.Log("CAMERA ROTATION: " + GetComponentInChildren<Camera>().transform.localRotation.ToString());
                 //Debug.Log("fucile ROTATION: " + fucile.transform.localRotation.ToString());
                 //Debug.Log("Right Arm: " + manoDestra.transform.localRotation.ToString());
-                if (!mirando)
+                if (!weaponsManager.Mirando)
                     spostaFucile(mirinoTesta);
                 else
                     spostaFucile(mirinoPosMirando);
