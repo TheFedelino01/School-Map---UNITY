@@ -7,11 +7,20 @@ public class Flag : MonoBehaviour
     public bool isFlagCaptured { get; set; }
     public bool isFlagConquered { get; set; }
 
+    private Collision collisionPlayer;
+
+
+    private void followThePlayer()
+    {
+        //TO DO posizione player da aggiornare !!
+        this.transform.position = GameManager.getPlayer(collisionPlayer.collider.name).transform.position;
+        Debug.Log("Sto seguendo il player ...");
+    }
+
     private void conqueredFlag()
     {
         isFlagCaptured = false; //La bandiera non è più nelle mani del player attaccante
         isFlagConquered = true; //La bandiera è stata conquistata
-
         GetComponent<matchManager>().flagConquered++; //Viene incrementato il numero di bandiere conquistato dalla squadra d'attacco
 
 
@@ -31,16 +40,17 @@ public class Flag : MonoBehaviour
     }
 
 
-    private void flagCaptured()
+    private void flagCaptured(Collision other)
     {
         isFlagCaptured = true;
+        collisionPlayer = other;
         Debug.Log("Flag captured !!");
     }
 
 
     void OnCollisionEnter(Collision other)
     {
-        flagCaptured();
+        flagCaptured(other);
     }
 
     void Start()
@@ -52,7 +62,11 @@ public class Flag : MonoBehaviour
     void Update()
     {
         if (isFlagCaptured)
+        {
             chkPlayerPosition();
+            followThePlayer();
+        }
+            
     }
     
 }
