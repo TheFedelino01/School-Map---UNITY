@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class matchManager : MonoBehaviour
+public class matchManager : MonoBehaviour //Controlla tutto ciò che riguarda il match
 {
     public int flagNumber { get; set; } //Numero di bandiere da conquistare
     public int flagConquered { get; set; } //Numero di bandiere conquistate
