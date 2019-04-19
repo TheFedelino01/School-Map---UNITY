@@ -109,6 +109,7 @@ public class weaponsManager : MonoBehaviour
         var proiet = Instantiate(proiettile, shootPoint.position, shootPoint.rotation);
         proiet.GetComponent<Rigidbody>().AddForce(shootPoint.forward * shootForce, ForceMode.Impulse);
         Destroy(proiet.gameObject, 3);
+        
     }
 
 

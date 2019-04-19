@@ -27,6 +27,9 @@ public class bodyController : MonoBehaviour
     public Transform cam;
     public Transform ancoraggio;
 
+    private bool sparando;
+    private int _count = 0;
+    private Transform mirinoAttuale;
 
     class Coord
     {
@@ -92,6 +95,7 @@ public class bodyController : MonoBehaviour
         weaponsManager = GetComponent<weaponsManager>();
         animController = GetComponent<vanguardAnimController>();
         manoSinistra.Translate(0, -1, 1);
+        mirinoAttuale = Instantiate(mirinoTesta.gameObject).transform;
         //manoDestra.transform.SetParent(fucile.transform);
         //mettiFucileInPosizione();
 
@@ -142,33 +146,60 @@ public class bodyController : MonoBehaviour
 
     private void correggiPosBraccia()
     {
-        //mettiFucileInPosizione();
-        if (!animController.IsJumping)
+        if (sparando)
         {
-            if (!animController.IsRunning) //se non sta saltando o correndo sposto il fucile vicino alla testa
+            if (_count < 5)
             {
-                //fucile.transform.localRotation = new Quaternion(mouseX, mouseY, fucile.transform.rotation.z, fucile.transform.rotation.w);
-                //Debug.Log("CAMERA ROTATION: " + GetComponentInChildren<Camera>().transform.localRotation.ToString());
-                //Debug.Log("fucile ROTATION: " + fucile.transform.localRotation.ToString());
-                //Debug.Log("Right Arm: " + manoDestra.transform.localRotation.ToString());
-                if (!weaponsManager.Mirando)
-                    spostaFucile(mirinoTesta);
-                else
-                    spostaFucile(mirinoPosMirando);
+                mirinoAttuale.Translate(0.2f, 0.1f, 0);
+               // Debug.Log("TRASLO");
+            }
+            else if (_count < 10)
+            {
+                mirinoAttuale.Translate(-0.2f, -0.1f, 0);
+                //Debug.Log("-TRASLO");
             }
             else
             {
-                //Debug.Log(manoSinistra.position.ToString());
-                spostaFucile(mirinoPosCorsa);
-                //Debug.Log(manoSinistra.position.ToString());
+                sparando = false;
+                _count = 0;
+            }
+            _count++;
+            spostaFucile(mirinoAttuale);
+        }
+        else if (!animController.IsRunning) //se non sta saltando o correndo sposto il fucile vicino alla testa
+        {
+            //fucile.transform.localRotation = new Quaternion(mouseX, mouseY, fucile.transform.rotation.z, fucile.transform.rotation.w);
+            //Debug.Log("CAMERA ROTATION: " + GetComponentInChildren<Camera>().transform.localRotation.ToString());
+            //Debug.Log("fucile ROTATION: " + fucile.transform.localRotation.ToString());
+            //Debug.Log("Right Arm: " + manoDestra.transform.localRotation.ToString());
+
+            if (!weaponsManager.Mirando)
+            {
+                spostaFucile(mirinoTesta);
+                mirinoAttuale.position = mirinoTesta.position;
+                mirinoAttuale.rotation = mirinoTesta.rotation;
+            }
+            else
+            {
+                spostaFucile(mirinoPosMirando);
+                mirinoAttuale.position = mirinoPosMirando.position;
+                mirinoAttuale.rotation = mirinoPosMirando.rotation;
             }
 
-            //sistemo le altre parti del corpo
-            spallaDestra.Rotate(0, 15, 0);
-            spallaSinistra.Rotate(0, 15, 0);
-            collo.Rotate(0, 10, 0);
+        }
+        else //se sta correndo sposto il fucile nella posizione corsa
+        {
+            //Debug.Log(manoSinistra.position.ToString());
+            spostaFucile(mirinoPosCorsa);
+            mirinoAttuale.position = mirinoPosCorsa.position;
+            mirinoAttuale.rotation = mirinoPosCorsa.rotation;
+            //Debug.Log(manoSinistra.position.ToString());
         }
 
+        //sistemo le altre parti del corpo
+        spallaDestra.Rotate(0, 15, 0);
+        spallaSinistra.Rotate(0, 15, 0);
+        collo.Rotate(0, 10, 0);
     }
 
     //private void mettiFucileInPosizione()
@@ -226,6 +257,7 @@ public class bodyController : MonoBehaviour
 
     public void spara()
     {
-
+        sparando = true;
+        _count = 0;
     }
 }
