@@ -34,6 +34,14 @@ public class bodyController : MonoBehaviour
         public Vector3 forward { get; set; }
         public Vector3 up { get; set; }
 
+        public Vector3 right
+        {
+            get
+            {
+                return Vector3.Cross(forward.normalized, up.normalized);
+            }
+        }
+
         public Coord(Transform obj)
         {
             position = obj.position;
@@ -50,9 +58,22 @@ public class bodyController : MonoBehaviour
             up = point.InverseTransformDirection(up);
         }
 
+        public void toLocalUnscaled(Transform point)
+        {
+            position = TransformExtensions.InverseTransformPointUnscaled(point, position);
+            forward = point.InverseTransformDirection(forward);
+            up = point.InverseTransformDirection(up);
+        }
+
         public void toGlobal(Transform point)
         {
             position = point.TransformPoint(position);
+            forward = point.TransformDirection(forward);
+            up = point.TransformDirection(up);
+        }
+        public void toGlobalUnscaled(Transform point)
+        {
+            position = TransformExtensions.TransformPointUnscaled(point, position);
             forward = point.TransformDirection(forward);
             up = point.TransformDirection(up);
         }
@@ -161,16 +182,25 @@ public class bodyController : MonoBehaviour
     private void spostaFucile(Transform newPosition)
     {
         Transform mirinoFucile = weaponsManager.getMirino();
+        
         //posizioneStandard.transform.localRotation = new Quaternion(0.1f, 0.8f, 0.8f, -0.2f);
-
+        Debug.Log("PRIMA" + mirinoFucile.position);
+        //Debug.Log(mirinoFucile.parent.localScale);
+        //Vector3 posm = mirinoFucile.position;
+        //posm.Scale(mirinoFucile.parent.localScale);
+        //mirinoFucile.position = posm;
+        //Debug.Log("DOPO" + posm);
+        //Debug.Log("DOPO" + mirinoFucile.position);
         //manoSinistra.position = mio.position;
         Coord coordManoDestra = new Coord(manoDestra);
         Coord coordManoSinistra = new Coord(manoSinistra);
-        coordManoDestra.toLocal(mirinoFucile);
-        coordManoSinistra.toLocal(mirinoFucile);
+        coordManoDestra.toLocalUnscaled(mirinoFucile);
+        coordManoSinistra.toLocalUnscaled(mirinoFucile);
+        Debug.Log("LOCAL: " + coordManoDestra.position);
 
-        coordManoDestra.toGlobal(newPosition);
-        coordManoSinistra.toGlobal(newPosition);
+        coordManoDestra.toGlobalUnscaled(newPosition);
+        coordManoSinistra.toGlobalUnscaled(newPosition);
+        Debug.Log("GLOBAL: " + coordManoDestra.position);
 
 
         if (weaponsManager.GetWeaponType() == WeaponType.PISTOLA)
@@ -178,7 +208,8 @@ public class bodyController : MonoBehaviour
             coordManoSinistra = (Coord)coordManoDestra.Clone();
             coordManoSinistra.up = -coordManoDestra.up;
             Vector3 pos = coordManoSinistra.position;
-            pos.x -= 1f;
+            //Debug.Log(manoSinistra.rotation.x+";"+ manoSinistra.rotation.y);
+            pos.z -= 1f;
             coordManoSinistra.position = pos;
         }
         IK.ik(manoSinistra, coordManoSinistra.position, Quaternion.LookRotation(coordManoSinistra.forward, coordManoSinistra.up), 1, 1);

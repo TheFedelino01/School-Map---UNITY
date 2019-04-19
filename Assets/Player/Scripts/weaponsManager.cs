@@ -36,7 +36,6 @@ public class weaponsManager : MonoBehaviour
 
     public Transform getMirino()
     {
-        Debug.Log(activeWeapon.transform.Find("mirino").position.ToString());
         return activeWeapon.transform.Find("mirino");
     }
 

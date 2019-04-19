@@ -637,7 +637,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weapons:
   - {fileID: 3618006581677377298, guid: 731ebb4b8c7feac458ed8fce94c82e36, type: 3}
-  - {fileID: 1964597334495136075, guid: 787375c0e0466464a954d0ce7bc0f078, type: 3}
+  - {fileID: 5354087647610181616, guid: 787375c0e0466464a954d0ce7bc0f078, type: 3}
   weaponPosition: {fileID: 3418980837060885314}
 --- !u!114 &4090526966138553338
 MonoBehaviour:
