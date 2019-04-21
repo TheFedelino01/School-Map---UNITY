@@ -106,6 +106,8 @@ public class bodyController : MonoBehaviour
 
     void Update()
     {
+        Debug.Log(mouseSensitivity);
+        mouseSensitivity = GameManager.instance.gameSettings.sensibilità;
         if (!weaponsManager.Mirando)
             cam.position = ancoraggio.position;
         else
@@ -122,8 +124,8 @@ public class bodyController : MonoBehaviour
     //sposta la camera e le braccia in base alla rotazione del mouse
     private void checkMouseMovement()
     {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
-        float mouseY = -Input.GetAxis("Mouse Y") * mouseSensitivity;
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity / 100;
+        float mouseY = -Input.GetAxis("Mouse Y") * mouseSensitivity / 100;
         this.transform.Rotate(0, mouseX, 0);    //routo il GIOCATORE
         if (mousePosition.y + mouseY > -60 && mousePosition.y + mouseY < 60)
         {
@@ -151,7 +153,7 @@ public class bodyController : MonoBehaviour
             if (_count < 5)
             {
                 mirinoAttuale.Translate(0.2f, 0.1f, 0);
-               // Debug.Log("TRASLO");
+                // Debug.Log("TRASLO");
             }
             else if (_count < 10)
             {

@@ -8,9 +8,11 @@ public class GameSettings
     public float respawnTime=3f;
     public float saluteMax=100f;
 
+    public int sensibilità { get; set; }
+
     public GameSettings()
     {
-
+        sensibilità = 60;
     }
 
 }

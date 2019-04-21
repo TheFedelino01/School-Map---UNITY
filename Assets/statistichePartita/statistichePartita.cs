@@ -27,7 +27,6 @@ public class statistichePartita : MonoBehaviour
     {
         if (!GameManager.instance.partitaAvviata)
             return;
-
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             Debug.Log("TAB");
@@ -83,4 +82,6 @@ public class statistichePartita : MonoBehaviour
         menuWindowsCamera.SetActive(false);
         imgMirino.GetComponent<mirinoManager>().ForzaDisattivazione = false;
     }
+
+
 }
