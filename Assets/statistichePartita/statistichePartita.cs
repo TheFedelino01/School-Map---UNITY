@@ -40,21 +40,21 @@ public class statistichePartita : MonoBehaviour
         {
             var giocatori = GameManager.getAllPlayers();
 
-            //for (int i = 1; i < lista1.transform.childCount; i++)
-            //    Destroy(lista1.transform.GetChild(i).gameObject);
-            //for (int i = 2; i < lista2.transform.childCount; i++)
-            //    Destroy(lista2.transform.GetChild(i).gameObject);
-            for (int i = 2; i < lista.transform.childCount; i++)
-                Destroy(lista.transform.GetChild(i).gameObject);
+            for (int i = 0; i < lista1.transform.childCount; i++)
+                Destroy(lista1.transform.GetChild(i).gameObject);
+            for (int i = 0; i < lista2.transform.childCount; i++)
+                Destroy(lista2.transform.GetChild(i).gameObject);
+            //for (int i = 2; i < lista.transform.childCount; i++)
+            //   Destroy(lista.transform.GetChild(i).gameObject);
             foreach (var player in giocatori)
             {
                 Debug.Log("GIOCATORI: " + player.Value.ToString());
-                GameObject stat = Instantiate(prefabPlayer, lista.transform); ;
+                GameObject stat;
 
-                //if (player.Value.Squadra == 1)
-                //    stat = Instantiate(prefabPlayer, lista1.transform);
-                //else
-                //    stat = Instantiate(prefabPlayer, lista2.transform);
+                if (player.Value.Squadra == 1)
+                    stat = Instantiate(prefabPlayer, lista1.transform);
+                else
+                    stat = Instantiate(prefabPlayer, lista2.transform);
 
                 stat.transform.Find(CAMPI_STATISTICHE[0]).GetComponent<Text>().text = player.Key;
                 stat.transform.Find(CAMPI_STATISTICHE[1]).GetComponent<Text>().text = player.Value.Kill.ToString();
