@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
         {
             if (_instance == null)
             {
-                Debug.LogError("CREO NUOVO - SINGLETON TAROCCO:/");
+                //Debug.LogError("CREO NUOVO - SINGLETON TAROCCO:/");
                 _instance = new GameManager();
             }
             return _instance;
@@ -67,6 +67,13 @@ public class GameManager : MonoBehaviour
     public static Dictionary<string, Player> getAllPlayers()
     {
         return giocatori;
+    }
+    public void addUccisione(string nome)
+    {
+        Player tmp = giocatori[nome];
+
+        giocatori[nome].addUccisione();
+        Debug.Log("Nuova uccisione: " + tmp.name + " kills updated: " + tmp.Kill);
     }
 
 

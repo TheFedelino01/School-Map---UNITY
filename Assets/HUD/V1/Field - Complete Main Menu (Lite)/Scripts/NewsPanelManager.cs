@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class NewsPanelManager : MonoBehaviour {
+public class NewsPanelManager : MonoBehaviour{
 
     [Header("NEWS LIST")]
     public List<GameObject> panels = new List<GameObject>();
@@ -51,9 +52,16 @@ public class NewsPanelManager : MonoBehaviour {
 
     void ChangeNew()
     {
-        if (newPanel == sizeOfList)
+        Animator mio = null;
+        try
         {
-            nextPanelAnimator = nextPanel.GetComponent<Animator>();
+            mio = nextPanel.GetComponent<Animator>();
+        }
+        catch (NullReferenceException) { Debug.Log("Errore nel prendere l'animazione OBJ"); this.enabled = false; }
+
+        if (newPanel == sizeOfList && mio!=null)
+        {
+            nextPanelAnimator = mio;
             nextPanelAnimator.Play(panelFadeOut);
 
             newPanel = 0;

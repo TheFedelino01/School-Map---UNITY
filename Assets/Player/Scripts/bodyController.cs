@@ -106,7 +106,7 @@ public class bodyController : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(mouseSensitivity);
+        //Debug.Log(mouseSensitivity);
         mouseSensitivity = GameManager.instance.gameSettings.sensibilità;
         if (!weaponsManager.Mirando)
             cam.position = ancoraggio.position;

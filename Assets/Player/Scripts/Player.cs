@@ -34,7 +34,7 @@ public class Player : NetworkBehaviour
     [SyncVar]//Ogni volta che cambia, innoltra il valore a tutti i clients
     private int squadra;
 
-    public int Kill { get => kill; }
+    public int Kill { get => kill;}
     public int Morti { get => morti;}
     public int Bandiere { get => bandiere;}
     public int Punti { get => punti;}
@@ -56,14 +56,14 @@ public class Player : NetworkBehaviour
             return;
 
         if (Input.GetKeyDown(KeyCode.K)){
-            RpcPrendiDanno(999999);
+            RpcPrendiDanno(999999,"");
         }
     }
 
     
 
     [ClientRpc]
-    public void RpcPrendiDanno(float danno)
+    public void RpcPrendiDanno(float danno, string pistolero)
     {
         float futureSalute = currentSalute - danno;
 
@@ -78,16 +78,18 @@ public class Player : NetworkBehaviour
         else
         {
             //E' morto
-            muori();
+            muori(pistolero);
         }
         
     }
 
-    private void muori()
+    private void muori(string assassino)
     {
         //DISABILITIAMO ALCUNI COMPONENTI COSI' NON SI PUO' MUOVERE
         disabilitaElementiDaMorto();
-        morti++;
+
+        morti++;//Aumento il numero di morti
+        GameManager.instance.addUccisione(assassino);//Aumento il numero di uccisioni di chi mi ha ucciso
 
         Debug.Log(transform.name + " is now dead!");
 
@@ -150,5 +152,10 @@ public class Player : NetworkBehaviour
         Collider _col = GetComponent<Collider>();
         if (_col != null)
             _col.enabled = true;
+    }
+
+    public void addUccisione()
+    {
+        kill++;
     }
 }

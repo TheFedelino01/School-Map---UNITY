@@ -68,11 +68,11 @@ public class PlayerShoot : NetworkBehaviour
     {
         //Metodo fatto dal server
 
-        Debug.Log("COLPITO UN Giocatore: " + idDelPlayerColpito);
+        Debug.Log("COLPITO> "+this.name+" HA COLPITO IL Giocatore: " + idDelPlayerColpito);
 
         Player giocatoreColpito = GameManager.getPlayer(idDelPlayerColpito);
 
-        giocatoreColpito.RpcPrendiDanno(danno);
+        giocatoreColpito.RpcPrendiDanno(danno, this.name);
         
     }
     
