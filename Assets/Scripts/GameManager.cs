@@ -64,6 +64,11 @@ public class GameManager : MonoBehaviour
         return giocatori[nomePlayer];
     }
 
+    public static Dictionary<string, Player> getAllPlayers()
+    {
+        return giocatori;
+    }
+
     //void OnGUI()
     //{
     //    GUILayout.BeginArea(new Rect(200,200,200,500));

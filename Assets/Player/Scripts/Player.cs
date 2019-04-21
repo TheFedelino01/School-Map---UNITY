@@ -21,6 +21,25 @@ public class Player : NetworkBehaviour
     [SyncVar]//Ogni volta che cambia, innoltra il valore a tutti i clients
     private float currentSalute;
 
+    [SyncVar]//Ogni volta che cambia, innoltra il valore a tutti i clients
+    private int kill;
+    [SyncVar]//Ogni volta che cambia, innoltra il valore a tutti i clients
+    private int morti;
+    [SyncVar]//Ogni volta che cambia, innoltra il valore a tutti i clients
+    private int bandiere;
+    [SyncVar]//Ogni volta che cambia, innoltra il valore a tutti i clients
+    private int punti;
+    [SyncVar]//Ogni volta che cambia, innoltra il valore a tutti i clients
+    private string nome;
+    [SyncVar]//Ogni volta che cambia, innoltra il valore a tutti i clients
+    private int squadra;
+
+    public int Kill { get => kill; }
+    public int Morti { get => morti;}
+    public int Bandiere { get => bandiere;}
+    public int Punti { get => punti;}
+    public string Nome { get => nome;}
+    public int Squadra { get => squadra;}
 
     public void Setup()//All'inizio, parte quando la classe PlayerSetup e' partita completamente 
     {
@@ -68,6 +87,7 @@ public class Player : NetworkBehaviour
     {
         //DISABILITIAMO ALCUNI COMPONENTI COSI' NON SI PUO' MUOVERE
         disabilitaElementiDaMorto();
+        morti++;
 
         Debug.Log(transform.name + " is now dead!");
 

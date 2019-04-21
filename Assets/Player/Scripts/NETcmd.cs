@@ -17,6 +17,8 @@ public class NETcmd : MonoBehaviour
     public GameObject connect;
     public GameObject labelConnecting;
 
+    public GameObject menuWindows;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -75,6 +77,7 @@ public class NETcmd : MonoBehaviour
         ///TODO Impostarlo anche quando un client si connete ad un server
         GameManager.instance.partitaAvviata = true;
         Debug.Log("Partita avviata " + GameManager.instance.partitaAvviata + GameManager.instance.partitaAvviata);
+        menuWindows.SetActive(false);
     }
 
     public void connectTo()
@@ -99,6 +102,7 @@ public class NETcmd : MonoBehaviour
 
     private void connettitiAspettando(float sec) {
         StartCoroutine(cnt(sec));
+        menuWindows.SetActive(false);
     }
 
     private IEnumerator cnt(float sec)

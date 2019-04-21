@@ -19,6 +19,7 @@ public class weaponsManager : MonoBehaviour
 
     private Camera cam;
     private GameObject imgMirino;
+    public bool MirinoAttivo { get; set; }
 
 
     // Start is called before the first frame update
@@ -109,7 +110,7 @@ public class weaponsManager : MonoBehaviour
         var proiet = Instantiate(proiettile, shootPoint.position, shootPoint.rotation);
         proiet.GetComponent<Rigidbody>().AddForce(shootPoint.forward * shootForce, ForceMode.Impulse);
         Destroy(proiet.gameObject, 3);
-        
+
     }
 
 
@@ -124,16 +125,10 @@ public class weaponsManager : MonoBehaviour
     }
 
 
-
-
     private void chkMirino()
     {
         if (animController.IsJumping || animController.IsRunning)
             resetZoom();
-        if (!GameManager.instance.partitaAvviata && imgMirino.active)
-            imgMirino.SetActive(false);
-         if (GameManager.instance.partitaAvviata && !imgMirino.active)
-            imgMirino.SetActive(true);
     }
 }
 
