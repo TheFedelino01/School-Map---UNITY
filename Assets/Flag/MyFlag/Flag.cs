@@ -18,7 +18,7 @@ public class Flag : MonoBehaviour
 
     private Transform getPlayerTransform()
     {
-        return (GameManager.getPlayer(collisionPlayerName)).transform; 
+        return (GameManager.getPlayer(collisionPlayerName)).transform;
     }
 
 
@@ -96,7 +96,14 @@ public class Flag : MonoBehaviour
             chkPlayerPosition();
             followThePlayer();
         }
-            
+
     }
-    
+
+
+    public void dropTheFlag() //Da richiamare nel momento in cui il player viene ucciso
+    {
+        isFlagCaptured = false;
+        (GameObject.Find(flagId)).transform.position = getPlayerTransform().position;
+    }
+
 }
