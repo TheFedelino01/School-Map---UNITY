@@ -48,11 +48,13 @@ public class statistichePartita : MonoBehaviour
             //   Destroy(lista.transform.GetChild(i).gameObject);
             foreach (var player in giocatori)
             {
-                Debug.Log("GIOCATORI: " + player.Value.ToString());
+                Debug.Log(">>>>>>>>>>GIOCATORE: " + player.Value.ToString() +":" +player.Value.Squadra);
                 GameObject stat;
 
-                if (player.Value.Squadra == 1)
+                if (player.Value.Squadra == "RED")
+                {
                     stat = Instantiate(prefabPlayer, lista1.transform);
+                }
                 else
                     stat = Instantiate(prefabPlayer, lista2.transform);
 

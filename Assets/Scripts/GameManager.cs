@@ -76,6 +76,16 @@ public class GameManager : MonoBehaviour
         Debug.Log("Nuova uccisione: " + tmp.name + " kills updated: " + tmp.Kill);
     }
 
+    public string toStringAll()
+    {
+        string ris = "";
+        foreach (string _playerID in giocatori.Keys)
+        {
+            ris+=_playerID + " TEAM: " + giocatori[_playerID].Squadra+"\n";
+        }
+        return ris;
+    }
+
 
 
     //void OnGUI()

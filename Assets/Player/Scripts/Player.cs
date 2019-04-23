@@ -32,14 +32,14 @@ public class Player : NetworkBehaviour
     [SyncVar]//Ogni volta che cambia, innoltra il valore a tutti i clients
     private string nome;
     [SyncVar]//Ogni volta che cambia, innoltra il valore a tutti i clients
-    private int squadra;
+    private string squadra;
 
     public int Kill { get => kill;}
     public int Morti { get => morti;}
     public int Bandiere { get => bandiere;}
     public int Punti { get => punti;}
     public string Nome { get => nome;}
-    public int Squadra { get => squadra;}
+    public string Squadra { get => squadra;}
 
     public void Setup()//All'inizio, parte quando la classe PlayerSetup e' partita completamente 
     {
@@ -47,6 +47,8 @@ public class Player : NetworkBehaviour
         currentSalute = maxSalute;
 
         salvaSituaIniziale();//Mi salvo gli elementi che sono attivi e disattivati all'inizio del player
+
+        GetComponent<joinTeam>().Setup();//Faccio partire il setUp
     }
 
     void Update()
@@ -58,6 +60,11 @@ public class Player : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.K)){
             RpcPrendiDanno(999999,"");
         }
+    }
+
+    public void setTeam(string nome)
+    {
+        squadra = nome;
     }
 
     
