@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class joinTeam : MonoBehaviour
 {
@@ -12,12 +13,10 @@ public class joinTeam : MonoBehaviour
         Debug.Log("START JOIN");
     }
 
+    
     public void Setup()
     {
-        giocatore = this.GetComponent<Player>();
-        Debug.Log("Selezionato il player: " + giocatore.name);
-
-        ManagerTeam.instance.setUp(giocatore.name);//Faccio partire il setup del manager team
+        ManagerTeam.instance.setUp(this.GetComponent<Player>().name);//Faccio partire il setup del manager team
     }
 
     

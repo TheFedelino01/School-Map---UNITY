@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class ManagerTeam : MonoBehaviour
 {
     public GameObject camera;
     public GameObject teamWindow;
 
-    private Player playerCheStaScegliendo;
+    private string playerCheStaScegliendo;
 
     private static ManagerTeam _instance;
     public static ManagerTeam instance
@@ -42,11 +43,10 @@ public class ManagerTeam : MonoBehaviour
             Destroy(this.gameObject);
     }
 
-
     public void setUp(string sceglitore)//Avviato quando il player entra in partita
     {
-        Debug.Log("Start SETUP Team");
-        playerCheStaScegliendo = GameManager.getPlayer(sceglitore); //Prendo il player che e' entrato in partita e vuole scegliere il team
+        Debug.Log("Start SETUP Team per: "+  sceglitore);
+        playerCheStaScegliendo = sceglitore; //Prendo il player che e' entrato in partita e vuole scegliere il team
 
         mostraFinestraTeam();//gli mostro la finestra dei team
     }
@@ -66,21 +66,21 @@ public class ManagerTeam : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         //imgMirino.GetComponent<mirinoManager>().ForzaDisattivazione = false;
 
-        Debug.Log("LISTA RIASSUNTIVA PLAYERS:\n"+GameManager.instance.toStringAll());
+        //Debug.Log("LISTA RIASSUNTIVA PLAYERS:\n"+GameManager.instance.toStringAll());
     }
 
     public void setTeamBLUE()//richiamato quando clicca sul pulsante "BLUE" presente nel "joinTeamMio"
     {
-        playerCheStaScegliendo.setTeam("BLUE");
-        Debug.Log("Il giocatore: " + playerCheStaScegliendo.name + " ha scelto il team BLUE");
+        GameManager.getPlayer(playerCheStaScegliendo).SetTeam("BLUE");
+        Debug.Log("Il giocatore: " + playerCheStaScegliendo + " ha scelto il team BLUE");
 
         nascondiFinestraTeam();
     }
 
     public void setTeamRED()//richiamato quando clicca sul pulsante "RED" presente nel "joinTeamMio"
     {
-        playerCheStaScegliendo.setTeam("RED");
-        Debug.Log("Il giocatore: " + playerCheStaScegliendo.name + " ha scelto il team RED");
+        GameManager.getPlayer(playerCheStaScegliendo).SetTeam("RED");
+        Debug.Log("Il giocatore: " + playerCheStaScegliendo + " ha scelto il team RED");
 
         nascondiFinestraTeam();
     }

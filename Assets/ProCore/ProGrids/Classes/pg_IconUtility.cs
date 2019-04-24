@@ -44,7 +44,7 @@ namespace ProGrids
 				}
 			}
 #endif
-			Debug.LogError("Could not locate ProGrids/GUI/ProGridsToggles folder.  The ProGrids folder may be moved, but the contents of ProGrids must remain unmodified.");
+			//Debug.LogError("Could not locate ProGrids/GUI/ProGridsToggles folder.  The ProGrids folder may be moved, but the contents of ProGrids must remain unmodified.");
 
 			return "";
 		}

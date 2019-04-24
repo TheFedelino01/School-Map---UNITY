@@ -39,8 +39,7 @@ public class playerSetup : NetworkBehaviour
                 sceneCamera.gameObject.SetActive(false);
             }
         }
-
-        GetComponent<Player>().Setup();//Faccio partire il setUp
+        
 
     }
 
@@ -53,6 +52,8 @@ public class playerSetup : NetworkBehaviour
         Player _player = GetComponent<Player>();
 
         GameManager.RegisterPlayer(netId, _player);//Aggiungo il giocatore alla lista dei players
+
+        _player.Setup();//Faccio partire il setUp
     }
 
     void setAsRemotePlayer()

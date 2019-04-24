@@ -6,6 +6,7 @@ using System.Collections;
 
 public class Player : NetworkBehaviour
 {
+
     [SerializeField]
     private Behaviour[] disabilitareQuandoMorto;
     [SerializeField]
@@ -32,7 +33,7 @@ public class Player : NetworkBehaviour
     [SyncVar]//Ogni volta che cambia, innoltra il valore a tutti i clients
     private string nome;
     [SyncVar]//Ogni volta che cambia, innoltra il valore a tutti i clients
-    private string squadra;
+    private string squadra="";
 
     public int Kill { get => kill;}
     public int Morti { get => morti;}
@@ -48,7 +49,6 @@ public class Player : NetworkBehaviour
 
         salvaSituaIniziale();//Mi salvo gli elementi che sono attivi e disattivati all'inizio del player
 
-        GetComponent<joinTeam>().Setup();//Faccio partire il setUp
     }
 
     void Update()
@@ -60,9 +60,16 @@ public class Player : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.K)){
             RpcPrendiDanno(999999,"");
         }
+
+        if (squadra == "")
+        {
+            Debug.Log(nome + " non ha team quindi glilo faccio scegliere");
+            GetComponent<joinTeam>().Setup();
+        }
     }
 
-    public void setTeam(string nome)
+   
+    public void SetTeam(string nome)
     {
         squadra = nome;
     }
@@ -80,7 +87,7 @@ public class Player : NetworkBehaviour
         if (isDead == false)
         {
             currentSalute = futureSalute;
-            Debug.Log(transform.name + " salute aggiornata: " + currentSalute);
+            Debug.Log("TEAM: "+squadra+" - "+transform.name + " salute aggiornata: " + currentSalute);
         }
         else
         {
