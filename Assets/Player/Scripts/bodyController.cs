@@ -31,6 +31,8 @@ public class bodyController : MonoBehaviour
     private int _count = 0;
     private Transform mirinoAttuale;
 
+    private bool toUpdate;//booleana a caso per sistemare le braccia dopo ogni sparo. NON SO PERCHE' SE RICHIAMO DIRETTAMENTE correggiPosBraccia DAL METODO SPARA NON VA:/
+
     class Coord
     {
         public Vector3 position { get; set; }
@@ -117,7 +119,7 @@ public class bodyController : MonoBehaviour
 
     void LateUpdate()
     {
-        correggiPosBraccia();
+        correggi();
         checkMouseMovement();
     }
 
@@ -146,29 +148,48 @@ public class bodyController : MonoBehaviour
         //mouseLook.LookRotation(transform, cam.transform);
     }
 
+    public void movimentoFucile()
+    {
+        Debug.Log("movimentoFucile");
+        if (_count < 5)
+        {
+            mirinoAttuale.Translate(0.2f, 0.1f, 0);
+            Debug.Log("TRASLO");
+        }
+        else if (_count < 10)
+        {
+            mirinoAttuale.Translate(-0.2f, -0.1f, 0);
+            Debug.Log("-TRASLO");
+        }
+        else
+        {
+            sparando = false;
+            _count = 0;
+        }
+        _count++;
+        spostaFucile(mirinoAttuale);
+    }
+
+    private void correggi()
+    {
+        if (toUpdate)
+            correggiPosBraccia();
+        if (sparando)
+            movimentoFucile();
+        else
+            correggiPosBraccia();
+
+
+        //sistemo le altre parti del corpo
+        spallaDestra.Rotate(0, 15, 0);
+        spallaSinistra.Rotate(0, 15, 0);
+        collo.Rotate(0, 10, 0);
+    }
+
     private void correggiPosBraccia()
     {
-        if (sparando)
-        {
-            if (_count < 5)
-            {
-                mirinoAttuale.Translate(0.2f, 0.1f, 0);
-                // Debug.Log("TRASLO");
-            }
-            else if (_count < 10)
-            {
-                mirinoAttuale.Translate(-0.2f, -0.1f, 0);
-                //Debug.Log("-TRASLO");
-            }
-            else
-            {
-                sparando = false;
-                _count = 0;
-            }
-            _count++;
-            spostaFucile(mirinoAttuale);
-        }
-        else if (!animController.IsRunning) //se non sta saltando o correndo sposto il fucile vicino alla testa
+        Debug.Log("correggiPosBraccia");
+        if (!animController.IsRunning) //se non sta saltando o correndo sposto il fucile vicino alla testa
         {
             //fucile.transform.localRotation = new Quaternion(mouseX, mouseY, fucile.transform.rotation.z, fucile.transform.rotation.w);
             //Debug.Log("CAMERA ROTATION: " + GetComponentInChildren<Camera>().transform.localRotation.ToString());
@@ -177,12 +198,14 @@ public class bodyController : MonoBehaviour
 
             if (!weaponsManager.Mirando)
             {
+                Debug.Log("1");
                 spostaFucile(mirinoTesta);
                 mirinoAttuale.position = mirinoTesta.position;
                 mirinoAttuale.rotation = mirinoTesta.rotation;
             }
             else
             {
+                Debug.Log("2");
                 spostaFucile(mirinoPosMirando);
                 mirinoAttuale.position = mirinoPosMirando.position;
                 mirinoAttuale.rotation = mirinoPosMirando.rotation;
@@ -192,16 +215,13 @@ public class bodyController : MonoBehaviour
         else //se sta correndo sposto il fucile nella posizione corsa
         {
             //Debug.Log(manoSinistra.position.ToString());
+            Debug.Log("3");
             spostaFucile(mirinoPosCorsa);
             mirinoAttuale.position = mirinoPosCorsa.position;
             mirinoAttuale.rotation = mirinoPosCorsa.rotation;
             //Debug.Log(manoSinistra.position.ToString());
         }
-
-        //sistemo le altre parti del corpo
-        spallaDestra.Rotate(0, 15, 0);
-        spallaSinistra.Rotate(0, 15, 0);
-        collo.Rotate(0, 10, 0);
+        toUpdate = false;
     }
 
     //private void mettiFucileInPosizione()
@@ -266,7 +286,9 @@ public class bodyController : MonoBehaviour
 
     public void spara()
     {
-        sparando = true;
+        Debug.Log("SPARO");
+        toUpdate = true;
         _count = 0;
+        sparando = true;
     }
 }
