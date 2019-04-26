@@ -214,46 +214,53 @@ public class bodyController : MonoBehaviour
 
     private void spostaFucile(Transform newPosition)
     {
-        Transform mirinoFucile = weaponsManager.getMirino();
-
-        //posizioneStandard.transform.localRotation = new Quaternion(0.1f, 0.8f, 0.8f, -0.2f);
-        //Debug.Log("PRIMA" + mirinoFucile.position);
-        //Debug.Log(mirinoFucile.parent.localScale);
-        //Vector3 posm = mirinoFucile.position;
-        //posm.Scale(mirinoFucile.parent.localScale);
-        //mirinoFucile.position = posm;
-        //Debug.Log("DOPO" + posm);
-        //Debug.Log("DOPO" + mirinoFucile.position);
-        //manoSinistra.position = mio.position;
-        Coord coordManoDestra = new Coord(manoDestra);
-        Coord coordManoSinistra = new Coord(manoSinistra);
-        coordManoDestra.toLocalUnscaled(mirinoFucile);
-        coordManoSinistra.toLocalUnscaled(mirinoFucile);
-        //Debug.Log("LOCAL: " + coordManoDestra.position);
-
-        coordManoDestra.toGlobalUnscaled(newPosition);
-        coordManoSinistra.toGlobalUnscaled(newPosition);
-        //Debug.Log("GLOBAL: " + coordManoDestra.position);
-
-
-        if (weaponsManager.GetWeaponType() == WeaponType.PISTOLA)
+        try
         {
-            coordManoSinistra = (Coord)coordManoDestra.Clone();
-            coordManoSinistra.up = -coordManoDestra.up;
-            Vector3 pos = coordManoSinistra.position;
-            //Debug.Log(manoSinistra.rotation.x+";"+ manoSinistra.rotation.y);
-            pos.z -= 1f;
-            coordManoSinistra.position = pos;
-        }
-        IK.ik(manoSinistra, coordManoSinistra.position, Quaternion.LookRotation(coordManoSinistra.forward, coordManoSinistra.up), 1, 1);
-        IK.ik(manoDestra, coordManoDestra.position, Quaternion.LookRotation(coordManoDestra.forward, coordManoDestra.up), 1, 1);
-        //manoDestra.position = coordManoDestra.position;
-        //manoDestra.forward = coordManoDestra.forward;
-        //manoDestra.up = coordManoDestra.up;
-        //manoSinistra.position = coordManoSinistra.position;
-        //manoSinistra.forward = coordManoSinistra.forward;
-        //manoSinistra.up = coordManoSinistra.up;
+            Transform mirinoFucile = weaponsManager.getMirino();
 
+            //posizioneStandard.transform.localRotation = new Quaternion(0.1f, 0.8f, 0.8f, -0.2f);
+            //Debug.Log("PRIMA" + mirinoFucile.position);
+            //Debug.Log(mirinoFucile.parent.localScale);
+            //Vector3 posm = mirinoFucile.position;
+            //posm.Scale(mirinoFucile.parent.localScale);
+            //mirinoFucile.position = posm;
+            //Debug.Log("DOPO" + posm);
+            //Debug.Log("DOPO" + mirinoFucile.position);
+            //manoSinistra.position = mio.position;
+            Coord coordManoDestra = new Coord(manoDestra);
+            Coord coordManoSinistra = new Coord(manoSinistra);
+            coordManoDestra.toLocalUnscaled(mirinoFucile);
+            coordManoSinistra.toLocalUnscaled(mirinoFucile);
+            //Debug.Log("LOCAL: " + coordManoDestra.position);
+
+            coordManoDestra.toGlobalUnscaled(newPosition);
+            coordManoSinistra.toGlobalUnscaled(newPosition);
+            //Debug.Log("GLOBAL: " + coordManoDestra.position);
+
+
+            if (weaponsManager.GetWeaponType() == WeaponType.PISTOLA)
+            {
+                coordManoSinistra = (Coord)coordManoDestra.Clone();
+                coordManoSinistra.up = -coordManoDestra.up;
+                Vector3 pos = coordManoSinistra.position;
+                //Debug.Log(manoSinistra.rotation.x+";"+ manoSinistra.rotation.y);
+                pos.z -= 1f;
+                coordManoSinistra.position = pos;
+            }
+            IK.ik(manoSinistra, coordManoSinistra.position, Quaternion.LookRotation(coordManoSinistra.forward, coordManoSinistra.up), 1, 1);
+            IK.ik(manoDestra, coordManoDestra.position, Quaternion.LookRotation(coordManoDestra.forward, coordManoDestra.up), 1, 1);
+            //manoDestra.position = coordManoDestra.position;
+            //manoDestra.forward = coordManoDestra.forward;
+            //manoDestra.up = coordManoDestra.up;
+            //manoSinistra.position = coordManoSinistra.position;
+            //manoSinistra.forward = coordManoSinistra.forward;
+            //manoSinistra.up = coordManoSinistra.up;
+        }
+        catch (System.NullReferenceException e)
+        {
+            //ignored
+            //arma non ancora attivata
+        }
     }
 
 

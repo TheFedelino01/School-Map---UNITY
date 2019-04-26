@@ -10,7 +10,7 @@ public class Player : NetworkBehaviour
     [SerializeField]
     private Behaviour[] disabilitareQuandoMorto;
     [SerializeField]
-    private bool[] statusIniziale; 
+    private bool[] statusIniziale;
 
     [SyncVar]
     public bool isDead = false;
@@ -33,18 +33,18 @@ public class Player : NetworkBehaviour
     [SyncVar]//Ogni volta che cambia, innoltra il valore a tutti i clients
     private string nome;
     [SyncVar]//Ogni volta che cambia, innoltra il valore a tutti i clients
-    private string squadra="";
+    private string squadra = "";
 
-    public int Kill { get => kill;}
-    public int Morti { get => morti;}
-    public int Bandiere { get => bandiere;}
-    public int Punti { get => punti;}
-    public string Nome { get => nome;}
-    public string Squadra { get => squadra;}
+    public int Kill { get => kill; }
+    public int Morti { get => morti; }
+    public int Bandiere { get => bandiere; }
+    public int Punti { get => punti; }
+    public string Nome { get => nome; }
+    public string Squadra { get => squadra; }
 
     public void Setup()//All'inizio, parte quando la classe PlayerSetup e' partita completamente 
     {
-        
+
         currentSalute = maxSalute;
 
         salvaSituaIniziale();//Mi salvo gli elementi che sono attivi e disattivati all'inizio del player
@@ -57,8 +57,9 @@ public class Player : NetworkBehaviour
         if (!isLocalPlayer)
             return;
 
-        if (Input.GetKeyDown(KeyCode.K)){
-            RpcPrendiDanno(999999,"");
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            RpcPrendiDanno(999999, "");
         }
 
         if (squadra == "")
@@ -68,13 +69,17 @@ public class Player : NetworkBehaviour
         }
     }
 
-   
+
     public void SetTeam(string nome)
     {
         squadra = nome;
+
+        //imposto che sta giocando
+        GameManager.instance.partitaAvviata = true;
+        Debug.Log("Partita avviata: " + GameManager.instance.partitaAvviata + "Player: " + nome);
     }
 
-    
+
 
     [ClientRpc]
     public void RpcPrendiDanno(float danno, string pistolero)
@@ -87,14 +92,14 @@ public class Player : NetworkBehaviour
         if (isDead == false)
         {
             currentSalute = futureSalute;
-            Debug.Log("TEAM: "+squadra+" - "+transform.name + " salute aggiornata: " + currentSalute);
+            Debug.Log("TEAM: " + squadra + " - " + transform.name + " salute aggiornata: " + currentSalute);
         }
         else
         {
             //E' morto
             muori(pistolero);
         }
-        
+
     }
 
     private void muori(string assassino)
@@ -138,7 +143,7 @@ public class Player : NetworkBehaviour
     {
         for (int i = 0; i < disabilitareQuandoMorto.Length; i++)
         {
-            disabilitareQuandoMorto[i].enabled =false;
+            disabilitareQuandoMorto[i].enabled = false;
         }
 
         //Se il player ha un collider, disabilitalo

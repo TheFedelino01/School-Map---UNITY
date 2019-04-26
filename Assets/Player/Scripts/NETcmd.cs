@@ -73,10 +73,6 @@ public class NETcmd : MonoBehaviour
         NetworkManager.singleton.networkPort = port;
         NetworkManager.singleton.StartHost();
 
-        //imposto che sta giocando
-        ///TODO Impostarlo anche quando un client si connete ad un server
-        GameManager.instance.partitaAvviata = true;
-        Debug.Log("Partita avviata " + GameManager.instance.partitaAvviata + GameManager.instance.partitaAvviata);
         menuWindows.SetActive(false);
     }
 
