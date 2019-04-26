@@ -30,6 +30,23 @@ Transform:
   m_Father: {fileID: 3618006581676890930}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6014720423678699098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3618006581677377298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ff70b618e194b64082e2b9b65b8a865, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  danno: 30
+  tempoRicarica: 5
+  colpiMax: 30
+  tempo: 0.1
+  mitraglietta: 1
 --- !u!1 &5024228040048950716
 GameObject:
   m_ObjectHideFlags: 0
@@ -133,6 +150,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2871c243e394f9d4fbc887a077a821b6, type: 3}
+--- !u!1 &3618006581677377298 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 2871c243e394f9d4fbc887a077a821b6,
+    type: 3}
+  m_PrefabInstance: {fileID: 3618006581677277618}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3618006581676890930 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 2871c243e394f9d4fbc887a077a821b6,

@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 [System.Serializable]
 public class PlayerShoot : NetworkBehaviour
 {
-    public float danno = 10f;
+    //public float danno = 10f;
 
     public string tagNemico = "PlayerREMOTE";
 
@@ -17,7 +17,7 @@ public class PlayerShoot : NetworkBehaviour
 
     void Start()
     {
-        if(cam != null)
+        if (cam != null)
         {
 
         }
@@ -30,11 +30,15 @@ public class PlayerShoot : NetworkBehaviour
 
     void Update()
     {
-        
-        if (Input.GetButtonDown("Fire1"))
+        if (GetComponentInChildren<arma>().mitraglietta)
         {
-            
-            spara();
+            if (Input.GetButton("Fire1"))
+                spara();
+        }
+        else
+        {
+            if (Input.GetButtonDown("Fire1"))
+                spara();
         }
     }
     //In questo modo questo metodo puo' essere richiamato solo dal 
@@ -42,24 +46,26 @@ public class PlayerShoot : NetworkBehaviour
     [Client]
     void spara()
     {
-        RaycastHit _hit;
-
-        //Prendo la linea in mezzo allo schermo
-        Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-        GetComponent<bodyController>().spara();
-        GetComponent<weaponsManager>().spara();
-
-        //Controllo se colpisco qualcosa
-        if (Physics.Raycast(ray, out _hit))
+        if (GetComponentInChildren<arma>().spara())
         {
-            //Controllo se e' un nemico
-            if (_hit.collider.tag == tagNemico)
-            {
-                //Dico che ho colpito il player e gli passo il nome
-                //del player colpito
-                CmdPlayerAsBeenShoot(_hit.collider.name, danno);
-            }
+            RaycastHit _hit;
 
+            //Prendo la linea in mezzo allo schermo
+            Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+            GetComponent<bodyController>().spara();
+            GetComponent<weaponsManager>().spara();
+
+            //Controllo se colpisco qualcosa
+            if (Physics.Raycast(ray, out _hit))
+            {
+                //Controllo se e' un nemico
+                if (_hit.collider.tag == tagNemico)
+                {
+                    //Dico che ho colpito il player e gli passo il nome
+                    //del player colpito
+                    CmdPlayerAsBeenShoot(_hit.collider.name, GetComponentInChildren<arma>().danno);
+                }
+            }
         }
     }
 
@@ -68,12 +74,12 @@ public class PlayerShoot : NetworkBehaviour
     {
         //Metodo fatto dal server
 
-        Debug.Log("COLPITO> "+this.name+" HA COLPITO IL Giocatore: " + idDelPlayerColpito);
+        Debug.Log("COLPITO> " + this.name + " HA COLPITO IL Giocatore: " + idDelPlayerColpito);
 
         Player giocatoreColpito = GameManager.getPlayer(idDelPlayerColpito);
 
         giocatoreColpito.RpcPrendiDanno(danno, this.name);
-        
+
     }
-    
+
 }

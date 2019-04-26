@@ -41,6 +41,7 @@ GameObject:
   - component: {fileID: 5354087647610181621}
   - component: {fileID: 5354087647610181622}
   - component: {fileID: 5354087647610181623}
+  - component: {fileID: 7554907873588183509}
   m_Layer: 0
   m_Name: Pistol Variant
   m_TagString: Untagged
@@ -109,6 +110,22 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &7554907873588183509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5354087647610181616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ff70b618e194b64082e2b9b65b8a865, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  danno: 10
+  tempoRicarica: 2
+  colpiMax: 10
+  tempo: 0.5
 --- !u!1 &8359617315796106786
 GameObject:
   m_ObjectHideFlags: 0
