@@ -5,7 +5,7 @@ using UnityStandardAssets.Characters.FirstPerson;
 
 public class vanguardAnimController : MonoBehaviour
 {
-    static Animator anim;
+    private Animator anim;
     public float speed = 2.0f;
     public float jumpSpeed = 500;
     public float rotationSpeed = 75.0f; //velocità movimenti destra/sinistra
