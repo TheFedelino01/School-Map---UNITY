@@ -105,6 +105,7 @@ public class Player : NetworkBehaviour
     private void muori(string assassino)
     {
         //DISABILITIAMO ALCUNI COMPONENTI COSI' NON SI PUO' MUOVERE
+        GetComponent<vanguardAnimController>().muori();
         disabilitaElementiDaMorto();
 
         morti++;//Aumento il numero di morti

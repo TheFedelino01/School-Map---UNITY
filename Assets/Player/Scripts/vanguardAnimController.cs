@@ -263,4 +263,9 @@ public class vanguardAnimController : MonoBehaviour
         }
     }
 
+    public void muori()
+    {
+        anim.SetTrigger("isDead");
+    }
+
 }
