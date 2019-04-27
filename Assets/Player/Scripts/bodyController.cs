@@ -150,16 +150,16 @@ public class bodyController : MonoBehaviour
 
     public void movimentoFucile()
     {
-        Debug.Log("movimentoFucile");
+        //Debug.Log("movimentoFucile");
         if (_count < 5)
         {
             mirinoAttuale.Translate(0.2f, 0.1f, 0);
-            Debug.Log("TRASLO");
+            //Debug.Log("TRASLO");
         }
         else if (_count < 10)
         {
             mirinoAttuale.Translate(-0.2f, -0.1f, 0);
-            Debug.Log("-TRASLO");
+            //Debug.Log("-TRASLO");
         }
         else
         {
@@ -188,7 +188,7 @@ public class bodyController : MonoBehaviour
 
     private void correggiPosBraccia()
     {
-        Debug.Log("correggiPosBraccia");
+        //Debug.Log("correggiPosBraccia");
         if (!animController.IsRunning) //se non sta saltando o correndo sposto il fucile vicino alla testa
         {
             //fucile.transform.localRotation = new Quaternion(mouseX, mouseY, fucile.transform.rotation.z, fucile.transform.rotation.w);
@@ -198,14 +198,14 @@ public class bodyController : MonoBehaviour
 
             if (!weaponsManager.Mirando)
             {
-                Debug.Log("1");
+                //Debug.Log("1");
                 spostaFucile(mirinoTesta);
                 mirinoAttuale.position = mirinoTesta.position;
                 mirinoAttuale.rotation = mirinoTesta.rotation;
             }
             else
             {
-                Debug.Log("2");
+                //Debug.Log("2");
                 spostaFucile(mirinoPosMirando);
                 mirinoAttuale.position = mirinoPosMirando.position;
                 mirinoAttuale.rotation = mirinoPosMirando.rotation;
@@ -215,7 +215,7 @@ public class bodyController : MonoBehaviour
         else //se sta correndo sposto il fucile nella posizione corsa
         {
             //Debug.Log(manoSinistra.position.ToString());
-            Debug.Log("3");
+            //Debug.Log("3");
             spostaFucile(mirinoPosCorsa);
             mirinoAttuale.position = mirinoPosCorsa.position;
             mirinoAttuale.rotation = mirinoPosCorsa.rotation;

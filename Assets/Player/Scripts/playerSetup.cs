@@ -24,7 +24,7 @@ public class playerSetup : NetworkBehaviour
 
             //Proibisco che il giocatore possa essere comandato da me
             //in quanto non sono io il "proprietario"
-            for (int i=0; i < componentiDaDisabilitare.Length; i++)
+            for (int i = 0; i < componentiDaDisabilitare.Length; i++)
             {
                 componentiDaDisabilitare[i].enabled = false;
             }
@@ -39,19 +39,19 @@ public class playerSetup : NetworkBehaviour
                 sceneCamera.gameObject.SetActive(false);
             }
         }
-        
+
 
     }
 
     //Quando entra il player
-    public override void OnStartClient()
+    public override void OnStartLocalPlayer()
     {
+        Debug.LogError("OnStartLocalPlayer");
         //Imposto l'identia' del player
         //ogni player ha un ID unico
         string netId = GetComponent<NetworkIdentity>().netId.ToString();
         Player _player = GetComponent<Player>();
-
-        GameManager.RegisterPlayer(netId, _player);//Aggiungo il giocatore alla lista dei players
+        GameManager.instance.RegisterPlayer(netId, _player);//Aggiungo il giocatore alla lista dei players
 
         _player.Setup();//Faccio partire il setUp
     }
@@ -76,6 +76,6 @@ public class playerSetup : NetworkBehaviour
             sceneCamera.gameObject.SetActive(true);
         }
 
-        GameManager.unRegisterPlayer(transform.name);//Lo tolgo dalla lista dei players
+        GameManager.instance.unRegisterPlayer(transform.name);//Lo tolgo dalla lista dei players
     }
 }

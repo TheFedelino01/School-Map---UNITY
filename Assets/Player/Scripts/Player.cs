@@ -11,43 +11,29 @@ public class Player : NetworkBehaviour
     private Behaviour[] disabilitareQuandoMorto;
     [SerializeField]
     private bool[] statusIniziale;
+    private PlayerInfo playerInfo;
 
-    [SyncVar]
-    public bool isDead = false;
+    public PlayerInfo PlayerInfo { get => playerInfo; set => playerInfo = value; }
+    
 
-    //Imposto la salute massima in base a quella presente nel game settings
-    [SerializeField]
-    private float maxSalute = GameManager.instance.gameSettings.saluteMax;
+    public int Kill { get => playerInfo.kill; }
+    public int Morti { get => playerInfo.morti; }
+    public int Bandiere { get => playerInfo.bandiere; }
+    public int Punti { get => playerInfo.punti; }
+    public string Nome { get => playerInfo.nome; }
+    public string Squadra { get => playerInfo.squadra; }
 
-    [SyncVar]//Ogni volta che cambia, innoltra il valore a tutti i clients
-    private float currentSalute;
 
-    [SyncVar]//Ogni volta che cambia, innoltra il valore a tutti i clients
-    private int kill;
-    [SyncVar]//Ogni volta che cambia, innoltra il valore a tutti i clients
-    private int morti;
-    [SyncVar]//Ogni volta che cambia, innoltra il valore a tutti i clients
-    private int bandiere;
-    [SyncVar]//Ogni volta che cambia, innoltra il valore a tutti i clients
-    private int punti;
-    [SyncVar]//Ogni volta che cambia, innoltra il valore a tutti i clients
-    private string nome;
-    [SyncVar]//Ogni volta che cambia, innoltra il valore a tutti i clients
-    private string squadra = "";
-
-    public int Kill { get => kill; }
-    public int Morti { get => morti; }
-    public int Bandiere { get => bandiere; }
-    public int Punti { get => punti; }
-    public string Nome { get => nome; }
-    public string Squadra { get => squadra; }
-
+    public Player() { playerInfo = new PlayerInfo(); }
+    public Player(PlayerInfo info) { this.PlayerInfo = playerInfo; }
     public void Setup()//All'inizio, parte quando la classe PlayerSetup e' partita completamente 
     {
-
-        currentSalute = maxSalute;
+        //Imposto la salute massima in base a quella presente nel game settings
+        playerInfo.maxSalute = GameManager.instance.gameSettings.saluteMax;
+        playerInfo.currentSalute = playerInfo.maxSalute;
 
         salvaSituaIniziale();//Mi salvo gli elementi che sono attivi e disattivati all'inizio del player
+        
 
     }
 
@@ -61,10 +47,10 @@ public class Player : NetworkBehaviour
         {
             RpcPrendiDanno(999999, "");
         }
-
-        if (squadra == "")
+        Debug.Log(playerInfo.squadra);
+        if (playerInfo.squadra == null)
         {
-            Debug.Log(nome + " non ha team quindi glilo faccio scegliere");
+            Debug.Log(playerInfo.nome + " non ha team quindi glilo faccio scegliere");
             GetComponent<joinTeam>().Setup();
         }
     }
@@ -72,7 +58,7 @@ public class Player : NetworkBehaviour
 
     public void SetTeam(string nome)
     {
-        squadra = nome;
+        playerInfo.squadra = nome;
 
         //imposto che sta giocando
         GameManager.instance.partitaAvviata = true;
@@ -84,15 +70,15 @@ public class Player : NetworkBehaviour
     [ClientRpc]
     public void RpcPrendiDanno(float danno, string pistolero)
     {
-        float futureSalute = currentSalute - danno;
+        float futureSalute = playerInfo.currentSalute - danno;
 
         if (futureSalute <= 0)
-            isDead = true;
+            playerInfo.isDead = true;
 
-        if (isDead == false)
+        if (playerInfo.isDead == false)
         {
-            currentSalute = futureSalute;
-            Debug.Log("TEAM: " + squadra + " - " + transform.name + " salute aggiornata: " + currentSalute);
+            playerInfo.currentSalute = futureSalute;
+            Debug.Log("TEAM: " + playerInfo.squadra + " - " + transform.name + " salute aggiornata: " + playerInfo.currentSalute);
         }
         else
         {
@@ -108,7 +94,7 @@ public class Player : NetworkBehaviour
         GetComponent<vanguardAnimController>().muori();
         disabilitaElementiDaMorto();
 
-        morti++;//Aumento il numero di morti
+        playerInfo.morti++;//Aumento il numero di morti
         GameManager.instance.addUccisione(assassino);//Aumento il numero di uccisioni di chi mi ha ucciso
 
         Debug.Log(transform.name + " is now dead!");
@@ -125,7 +111,7 @@ public class Player : NetworkBehaviour
         riportaSituaIniziale();//Riabilito i componenti
 
         //Reimposto la vita
-        currentSalute = maxSalute;
+        playerInfo.currentSalute = playerInfo.maxSalute;
 
         //Riporto il player allo spawn
         //Prendo la pos dello spawnPoint
@@ -137,7 +123,7 @@ public class Player : NetworkBehaviour
 
         Debug.Log(transform.name + " has just respawned!");
 
-        isDead = false;
+        playerInfo.isDead = false;
     }
 
     private void disabilitaElementiDaMorto()
@@ -176,6 +162,29 @@ public class Player : NetworkBehaviour
 
     public void addUccisione()
     {
-        kill++;
+        playerInfo.kill++;
+    }
+}
+
+
+public struct PlayerInfo
+{
+    public string id;
+
+    public bool isDead;
+    public float maxSalute;
+
+    public float currentSalute;
+
+    public int kill;
+    public int morti;
+    public int bandiere;
+    public int punti;
+    public string nome;
+    public string squadra;
+
+    public override string ToString()
+    {
+        return id + "- Squadra: " + squadra;
     }
 }

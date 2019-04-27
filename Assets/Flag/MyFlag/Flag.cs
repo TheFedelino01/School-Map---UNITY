@@ -18,7 +18,7 @@ public class Flag : MonoBehaviour
 
     private Transform getPlayerTransform()
     {
-        return (GameManager.getPlayer(collisionPlayerName)).transform;
+        return (GameManager.instance.getPlayer(collisionPlayerName)).transform;
     }
 
 

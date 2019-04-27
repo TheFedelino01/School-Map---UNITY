@@ -38,7 +38,7 @@ public class statistichePartita : MonoBehaviour
 
         if (toUpdate)
         {
-            var giocatori = GameManager.getAllPlayers();
+            var giocatori = GameManager.instance.getAllPlayers();
 
             for (int i = 0; i < lista1.transform.childCount; i++)
                 Destroy(lista1.transform.GetChild(i).gameObject);
