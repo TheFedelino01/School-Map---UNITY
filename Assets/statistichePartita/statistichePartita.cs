@@ -58,7 +58,7 @@ public class statistichePartita : MonoBehaviour
                 else
                     stat = Instantiate(prefabPlayer, lista2.transform);
 
-                stat.transform.Find(CAMPI_STATISTICHE[0]).GetComponent<Text>().text = player.Key;
+                stat.transform.Find(CAMPI_STATISTICHE[0]).GetComponent<Text>().text = player.Key+"-"+player.Value.Squadra.ToString();
                 stat.transform.Find(CAMPI_STATISTICHE[1]).GetComponent<Text>().text = player.Value.Kill.ToString();
                 stat.transform.Find(CAMPI_STATISTICHE[2]).GetComponent<Text>().text = player.Value.Morti.ToString();
                 stat.transform.Find(CAMPI_STATISTICHE[3]).GetComponent<Text>().text = player.Value.Bandiere.ToString();
