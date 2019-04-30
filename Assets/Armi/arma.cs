@@ -10,11 +10,13 @@ public class arma : MonoBehaviour
     public int colpiMax;
     public float tempo;//tra uno sparo e l'altro
     public bool mitraglietta;
+    public WeaponType type;
     private int colpiRimanenti;
     private GameObject colpiRimanentiLabel;
     private GameObject colpiMaxLabel;
     private System.DateTime ultimoSparo;
     private bool ricaricando;
+    public int ColpiRimanenti { get => colpiRimanenti; }
 
     // Start is called before the first frame update
     void Start()
@@ -26,13 +28,9 @@ public class arma : MonoBehaviour
     void Update()
     {
         if (colpiMaxLabel == null || colpiMaxLabel == null)
-            getLabelReference();
-
-        if (colpiRimanentiLabel.GetComponent<Text>().text != colpiRimanenti.ToString())
+            getLabelsReference();
+        else if (colpiRimanentiLabel.GetComponent<Text>().text != colpiRimanenti.ToString())
             colpiRimanentiLabel.GetComponent<Text>().text = colpiRimanenti.ToString();
-
-        if (Input.GetKeyDown(KeyCode.R))
-            ricarica();
     }
 
     public bool spara()
@@ -43,8 +41,6 @@ public class arma : MonoBehaviour
             ultimoSparo = System.DateTime.Now;
             return true;
         }
-        if (colpiRimanenti <= 0 && GameManager.instance.gameSettings.ricaricaAuto)
-            ricarica();
         return false;
     }
 
@@ -67,10 +63,11 @@ public class arma : MonoBehaviour
     }
 
     //non lo faccio nello start perchè all'inizio sono disattivati
-    private void getLabelReference()
+    private void getLabelsReference()
     {
         colpiRimanentiLabel = GameObject.Find("colpiLabel");
         colpiMaxLabel = GameObject.Find("maxColpiLabel");
-        colpiMaxLabel.GetComponent<Text>().text = colpiMax.ToString();
+        if (colpiMaxLabel != null)
+            colpiMaxLabel.GetComponent<Text>().text = colpiMax.ToString();
     }
 }

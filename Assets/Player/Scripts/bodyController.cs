@@ -192,7 +192,7 @@ public class bodyController : MonoBehaviour
     private void correggiPosBraccia()
     {
         //Debug.Log("correggiPosBraccia");
-        if (!animController.IsRunning) //se non sta saltando o correndo sposto il fucile vicino alla testa
+        if (!animController.IsRunning && !animController.Ricaricando) //se non sta ricaricando o correndo sposto il fucile vicino alla testa
         {
             //fucile.transform.localRotation = new Quaternion(mouseX, mouseY, fucile.transform.rotation.z, fucile.transform.rotation.w);
             //Debug.Log("CAMERA ROTATION: " + GetComponentInChildren<Camera>().transform.localRotation.ToString());
@@ -261,7 +261,7 @@ public class bodyController : MonoBehaviour
             //Debug.Log("GLOBAL: " + coordManoDestra.position);
 
 
-            if (weaponsManager.GetWeaponType() == WeaponType.PISTOLA)
+            if (weaponsManager.activeWeapon.GetComponent<arma>().type == WeaponType.PISTOLA)
             {
                 coordManoSinistra = (Coord)coordManoDestra.Clone();
                 coordManoSinistra.up = -coordManoDestra.up;

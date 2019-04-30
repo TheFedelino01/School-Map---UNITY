@@ -126,6 +126,8 @@ MonoBehaviour:
   tempoRicarica: 2
   colpiMax: 10
   tempo: 0.5
+  mitraglietta: 0
+  type: 1
 --- !u!1 &8359617315796106786
 GameObject:
   m_ObjectHideFlags: 0

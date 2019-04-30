@@ -46,14 +46,12 @@ public class PlayerShoot : NetworkBehaviour
     [Client]
     void spara()
     {
-        if (GetComponentInChildren<arma>().spara())
+        if (GetComponent<weaponsManager>().spara())
         {
             RaycastHit _hit;
 
             //Prendo la linea in mezzo allo schermo
             Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-            GetComponent<bodyController>().spara();
-            GetComponent<weaponsManager>().spara();
 
             //Controllo se colpisco qualcosa
             if (Physics.Raycast(ray, out _hit))

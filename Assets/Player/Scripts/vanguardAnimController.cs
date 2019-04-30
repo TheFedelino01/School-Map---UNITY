@@ -1,7 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityStandardAssets.Characters.FirstPerson;
 
 public class vanguardAnimController : MonoBehaviour
 {
@@ -11,11 +9,12 @@ public class vanguardAnimController : MonoBehaviour
     public float rotationSpeed = 75.0f; //velocità movimenti destra/sinistra
     public bool IsRunning { get; set; }
     public bool IsJumping { get; set; }
+    public bool Ricaricando { get; set; }
     private float _speed;
 
     private int _actualCollision;
     private audio sound;
-         
+
     //private Transform head;
     //private Transform chest;
     //private Transform spine;
@@ -268,4 +267,20 @@ public class vanguardAnimController : MonoBehaviour
         anim.SetTrigger("isDead");
     }
 
+    public void ricarica(float tempo)
+    {
+        float velocita = 3.3f / tempo;
+        anim.speed = velocita;
+        Ricaricando = true;
+        anim.SetTrigger("reload");
+
+        StartCoroutine(resetVelocitaAnimazione(tempo));
+    }
+
+    private IEnumerator resetVelocitaAnimazione(float ritardo)
+    {
+        yield return new WaitForSeconds(ritardo);
+        Ricaricando = false;
+        anim.speed = 1;
+    }
 }
