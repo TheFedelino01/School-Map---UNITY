@@ -1,8 +1,7 @@
-# School-Map---UNITY
+# UNITY PROJECT - CATTURA LA BANDIERA
 
-UNITY PROJECT
 Componenti: Saccani, Orsenigo e Peduzzi
-                                                                                                                                                                
+
 
 L'applicazione che vorremmo realizzare é basata su un sistema distribuito.
 Il gioco si sviluppa completamente online con la presenza di altri giocatori all'interno della rete.
