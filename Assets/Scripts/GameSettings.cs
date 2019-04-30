@@ -10,7 +10,7 @@ public class GameSettings
     public bool ricaricaAuto { get; set; }
 
     public int sensibilità { get; set; }
-
+     
     public GameSettings()
     {
         sensibilità = 60;
