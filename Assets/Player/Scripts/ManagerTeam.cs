@@ -8,7 +8,7 @@ public class ManagerTeam : MonoBehaviour
     public GameObject camera;
     public GameObject teamWindow;
 
-    private string playerCheStaScegliendo;
+    private NetworkInstanceId playerCheStaScegliendo;
 
     private static ManagerTeam _instance;
     public static ManagerTeam instance
@@ -43,7 +43,7 @@ public class ManagerTeam : MonoBehaviour
             Destroy(this.gameObject);
     }
 
-    public void setUp(string sceglitore)//Avviato quando il player entra in partita
+    public void setUp(NetworkInstanceId sceglitore)//Avviato quando il player entra in partita
     {
         Debug.Log("Start SETUP Team per: "+  sceglitore);
         playerCheStaScegliendo = sceglitore; //Prendo il player che e' entrato in partita e vuole scegliere il team
