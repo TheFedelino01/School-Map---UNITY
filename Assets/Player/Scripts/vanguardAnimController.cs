@@ -277,7 +277,7 @@ public class vanguardAnimController : MonoBehaviour
         float velocita = 3.3f / tempo;
         anim.speed = velocita;
         Ricaricando = true;
-        anim.SetTrigger("reload");
+        anim.SetBool("reload", true);
 
         StartCoroutine(resetVelocitaAnimazione(tempo));
     }
@@ -285,6 +285,7 @@ public class vanguardAnimController : MonoBehaviour
     private IEnumerator resetVelocitaAnimazione(float ritardo)
     {
         yield return new WaitForSeconds(ritardo);
+        anim.SetBool("reload", false);
         Ricaricando = false;
         anim.speed = 1;
     }
