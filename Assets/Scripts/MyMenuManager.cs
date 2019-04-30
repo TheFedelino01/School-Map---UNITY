@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 public class MyMenuManager : MonoBehaviour
 {
-    public GameObject imgMirino;
+    public GameObject canvas;
     public GameObject settingsWindow;
     public GameObject exitWindow;
     public GameObject finestraStatistiche;
@@ -77,7 +77,7 @@ public class MyMenuManager : MonoBehaviour
     {
         inGameSettings.SetActive(true);
         inGameSettings.GetComponent<Animator>().Play("Settings Out");
-        imgMirino.GetComponent<mirinoManager>().ForzaDisattivazione = false;
+        canvas.GetComponent<screenOverlayManager>().ForzaDisattivazione = false;
         inGameSettingsOpened = false;
         if (GameManager.instance.partitaAvviata)
         {
@@ -93,7 +93,7 @@ public class MyMenuManager : MonoBehaviour
     }
     public void apriInGameSettings()
     {
-        imgMirino.GetComponent<mirinoManager>().ForzaDisattivazione = true;
+        canvas.GetComponent<screenOverlayManager>().ForzaDisattivazione = true;
         camera.SetActive(true);
         inGameSettings.GetComponent<Animator>().Play("Settings In");
         Cursor.lockState = CursorLockMode.None;
@@ -104,6 +104,6 @@ public class MyMenuManager : MonoBehaviour
         inGameSettings.GetComponent<Animator>().Play("Settings Out");
         camera.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
-        imgMirino.GetComponent<mirinoManager>().ForzaDisattivazione = false;
+        canvas.GetComponent<screenOverlayManager>().ForzaDisattivazione = false;
     }
 }

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class settingsManager : MonoBehaviour
 {
     public GameObject sliderSensibility;
+    public GameObject autoRicarica;
     // Start is called before the first frame update
     void Start()
     {

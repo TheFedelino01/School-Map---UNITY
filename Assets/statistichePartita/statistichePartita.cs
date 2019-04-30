@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class statistichePartita : MonoBehaviour
 {
-    public GameObject imgMirino;
+    public GameObject canvas;
     public GameObject menuWindowsCamera;
     public GameObject finestraStatistiche;
     public GameObject lista;
@@ -70,7 +70,7 @@ public class statistichePartita : MonoBehaviour
 
     private void mostraFinestra()
     {
-        imgMirino.GetComponent<mirinoManager>().ForzaDisattivazione = true;
+        canvas.GetComponent<screenOverlayManager>().ForzaDisattivazione = true;
         menuWindowsCamera.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         finestraStatistiche.GetComponent<Animator>().Play("Settings In");
@@ -82,7 +82,7 @@ public class statistichePartita : MonoBehaviour
         finestraStatistiche.GetComponent<Animator>().Play("Settings Out");
         Cursor.lockState = CursorLockMode.Locked;
         menuWindowsCamera.SetActive(false);
-        imgMirino.GetComponent<mirinoManager>().ForzaDisattivazione = false;
+        canvas.GetComponent<screenOverlayManager>().ForzaDisattivazione = false;
     }
 
 

@@ -7,6 +7,7 @@ public class GameSettings
 {
     public float respawnTime = 4f;
     public float saluteMax = 100f;
+    public bool ricaricaAuto { get; set; }
 
     public int sensibilità { get; set; }
 
