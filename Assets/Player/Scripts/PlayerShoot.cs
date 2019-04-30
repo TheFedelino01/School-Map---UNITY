@@ -46,7 +46,7 @@ public class PlayerShoot : NetworkBehaviour
     [Client]
     void spara()
     {
-        if (GetComponent<weaponsManager>().spara())
+        if (GameManager.instance.partitaAvviata && GetComponent<weaponsManager>().spara())
         {
             RaycastHit _hit;
 

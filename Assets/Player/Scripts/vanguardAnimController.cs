@@ -262,9 +262,14 @@ public class vanguardAnimController : MonoBehaviour
         }
     }
 
-    public void muori()
+    public void muori(float respawTime)
     {
+        respawTime -= 0.1f;
+        float velocita = 4.4f / respawTime;
+        anim.speed = velocita;
         anim.SetTrigger("isDead");
+
+        StartCoroutine(resetVelocitaAnimazione(respawTime));
     }
 
     public void ricarica(float tempo)

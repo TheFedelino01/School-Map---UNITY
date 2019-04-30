@@ -192,39 +192,42 @@ public class bodyController : MonoBehaviour
     private void correggiPosBraccia()
     {
         //Debug.Log("correggiPosBraccia");
-        if (!animController.IsRunning && !animController.Ricaricando) //se non sta ricaricando o correndo sposto il fucile vicino alla testa
+        if (!animController.Ricaricando) //se non sta ricaricando sposto il fucile
         {
-            //fucile.transform.localRotation = new Quaternion(mouseX, mouseY, fucile.transform.rotation.z, fucile.transform.rotation.w);
-            //Debug.Log("CAMERA ROTATION: " + GetComponentInChildren<Camera>().transform.localRotation.ToString());
-            //Debug.Log("fucile ROTATION: " + fucile.transform.localRotation.ToString());
-            //Debug.Log("Right Arm: " + manoDestra.transform.localRotation.ToString());
-
-            if (!weaponsManager.Mirando)
+            if (!animController.IsRunning) //se non sta correndo sposto il fucile vicino alla testa
             {
-                //Debug.Log("1");
-                spostaFucile(mirinoTesta);
-                mirinoAttuale.position = mirinoTesta.position;
-                mirinoAttuale.rotation = mirinoTesta.rotation;
-            }
-            else
-            {
-                //Debug.Log("2");
-                spostaFucile(mirinoPosMirando);
-                mirinoAttuale.position = mirinoPosMirando.position;
-                mirinoAttuale.rotation = mirinoPosMirando.rotation;
-            }
+                //fucile.transform.localRotation = new Quaternion(mouseX, mouseY, fucile.transform.rotation.z, fucile.transform.rotation.w);
+                //Debug.Log("CAMERA ROTATION: " + GetComponentInChildren<Camera>().transform.localRotation.ToString());
+                //Debug.Log("fucile ROTATION: " + fucile.transform.localRotation.ToString());
+                //Debug.Log("Right Arm: " + manoDestra.transform.localRotation.ToString());
 
+                if (!weaponsManager.Mirando)
+                {
+                    //Debug.Log("1");
+                    spostaFucile(mirinoTesta);
+                    mirinoAttuale.position = mirinoTesta.position;
+                    mirinoAttuale.rotation = mirinoTesta.rotation;
+                }
+                else
+                {
+                    //Debug.Log("2");
+                    spostaFucile(mirinoPosMirando);
+                    mirinoAttuale.position = mirinoPosMirando.position;
+                    mirinoAttuale.rotation = mirinoPosMirando.rotation;
+                }
+
+            }
+            else //se sta correndo sposto il fucile nella posizione corsa
+            {
+                //Debug.Log(manoSinistra.position.ToString());
+                //Debug.Log("3");
+                spostaFucile(mirinoPosCorsa);
+                mirinoAttuale.position = mirinoPosCorsa.position;
+                mirinoAttuale.rotation = mirinoPosCorsa.rotation;
+                //Debug.Log(manoSinistra.position.ToString());
+            }
+            toUpdate = false;
         }
-        else //se sta correndo sposto il fucile nella posizione corsa
-        {
-            //Debug.Log(manoSinistra.position.ToString());
-            //Debug.Log("3");
-            spostaFucile(mirinoPosCorsa);
-            mirinoAttuale.position = mirinoPosCorsa.position;
-            mirinoAttuale.rotation = mirinoPosCorsa.rotation;
-            //Debug.Log(manoSinistra.position.ToString());
-        }
-        toUpdate = false;
     }
 
     //private void mettiFucileInPosizione()

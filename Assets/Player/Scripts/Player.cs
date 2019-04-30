@@ -105,7 +105,7 @@ public class Player : NetworkBehaviour
     private void muori(string assassino)
     {
         //DISABILITIAMO ALCUNI COMPONENTI COSI' NON SI PUO' MUOVERE
-        GetComponent<vanguardAnimController>().muori();
+        GetComponent<vanguardAnimController>().muori(GameManager.instance.gameSettings.respawnTime);
         disabilitaElementiDaMorto();
 
         morti++;//Aumento il numero di morti
