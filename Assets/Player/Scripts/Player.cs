@@ -59,7 +59,7 @@ public class Player : NetworkBehaviour
     public void SetTeam(string nome)
     {
         playerInfo.squadra = nome;
-
+        GameManager.instance.CmdEditInList(playerInfo);
         //imposto che sta giocando
         GameManager.instance.partitaAvviata = true;
         Debug.Log("Partita avviata: " + GameManager.instance.partitaAvviata + "Player: " + nome);
@@ -86,6 +86,7 @@ public class Player : NetworkBehaviour
             muori(pistolero);
         }
 
+        GameManager.instance.CmdEditInList(playerInfo);
     }
 
     private void muori(string assassino)
@@ -95,6 +96,7 @@ public class Player : NetworkBehaviour
         disabilitaElementiDaMorto();
 
         playerInfo.morti++;//Aumento il numero di morti
+        GameManager.instance.CmdEditInList(playerInfo);
         GameManager.instance.addUccisione(assassino);//Aumento il numero di uccisioni di chi mi ha ucciso
 
         Debug.Log(transform.name + " is now dead!");
@@ -124,6 +126,7 @@ public class Player : NetworkBehaviour
         Debug.Log(transform.name + " has just respawned!");
 
         playerInfo.isDead = false;
+        GameManager.instance.CmdEditInList(playerInfo);
     }
 
     private void disabilitaElementiDaMorto()
@@ -163,6 +166,7 @@ public class Player : NetworkBehaviour
     public void addUccisione()
     {
         playerInfo.kill++;
+        GameManager.instance.CmdEditInList(playerInfo);
     }
 }
 

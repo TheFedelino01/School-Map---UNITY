@@ -37,7 +37,6 @@ public class GameManager : NetworkBehaviour
         else if (_instance != this)
             //Then destroy this. This enforces our singleton pattern, meaning there can only ever be one instance of a GameManager.
             Destroy(this.gameObject);
-        syncPlayerInfo = new NetworkPlayerInfoList();
     }
 
 
@@ -68,41 +67,38 @@ public class GameManager : NetworkBehaviour
         foreach (PlayerInfo PI in syncPlayerInfo)
             Debug.Log(PI.ToString());
         Debug.Log("N giocatori: " + syncPlayerInfo.Count + " - " + giocatori.Count);
-        //Sync();
+        Sync();
         foreach (PlayerInfo PI in test)
             Debug.Log(PI.ToString());
         Debug.Log(base.isServer);
     }
 
-    //private void Sync()
-    //{
-    //    for (int i = 0; i < syncPlayerInfo.Count; i++)
-    //    {
-    //        try
-    //        {
-    //            if (giocatori.ContainsKey(syncPlayerInfo[i].id))
-    //                if (giocatori[syncPlayerInfo[i].id].isLocalPlayer)
-    //                    syncPlayerInfo[i] = giocatori[syncPlayerInfo[i].id].PlayerInfo;
-    //                else
-    //                    giocatori[syncPlayerInfo[i].id].PlayerInfo = syncPlayerInfo[i];
-    //            else
-    //                giocatori.Add(syncPlayerInfo[i].id, new Player(syncPlayerInfo[i]));
-    //        }
-    //        catch (System.NullReferenceException e)
-    //        {
-    //            Debug.LogError("PORCO PORCO: " + e.Message + "\n____________\n" + e.Source);
-    //        }
-    //    }
+    private void Sync()
+    {
+        for (int i = 0; i < syncPlayerInfo.Count; i++)
+        {
+            try
+            {
+                if (giocatori.ContainsKey(syncPlayerInfo[i].id))
+                    giocatori[syncPlayerInfo[i].id].PlayerInfo = syncPlayerInfo[i];
+                else
+                    giocatori.Add(syncPlayerInfo[i].id, new Player(syncPlayerInfo[i]));
+            }
+            catch (System.NullReferenceException e)
+            {
+                Debug.LogError("PORCO PORCO: " + e.Message + "\n____________\n" + e.Source);
+            }
+        }
 
-    //}
+    }
 
     public GameSettings gameSettings = new GameSettings();
     public bool partitaAvviata { get; set; }
 
     public class NetworkPlayerInfoList : SyncListStruct<PlayerInfo> { } //classe che rappresenta una lista di playerInfo sincronizzata in rete
 
-    private NetworkPlayerInfoList syncPlayerInfo;   //lista di playerInfo sincronizzata in rete
-    [SyncVar]
+    private NetworkPlayerInfoList syncPlayerInfo = new NetworkPlayerInfoList();   //lista di playerInfo sincronizzata in rete
+
     NetworkPlayerInfoList test = new NetworkPlayerInfoList();
 
     private const string PrefixPlayer = "Player.";
@@ -120,6 +116,7 @@ public class GameManager : NetworkBehaviour
 
     public void RegisterPlayer(string netId, Player player)
     {
+        Debug.LogError("REGISTRAZIONE");
         string plId = PrefixPlayer + netId;
 
         PlayerInfo playerInfo = player.PlayerInfo;
@@ -127,8 +124,8 @@ public class GameManager : NetworkBehaviour
         player.PlayerInfo = playerInfo;
 
         giocatori.Add(plId, player);//Lo aggiungo alla lista
-        syncPlayerInfo.Add(player.PlayerInfo);
-        //CmdAddToList(player.PlayerInfo);//lo aggiungo alla lista sincronizzata
+
+        CmdAddToList(player.PlayerInfo);//lo aggiungo alla lista sincronizzata
         Debug.Log(giocatori[plId] + "---" + syncPlayerInfo[0]);
 
         player.transform.name = plId;//Gli imposto il nome
@@ -137,20 +134,43 @@ public class GameManager : NetworkBehaviour
     [Command]
     private void CmdAddToList(PlayerInfo i)
     {
-        Debug.LogError("AGGIUNGO ALLA LISTA");
-        syncPlayerInfo.Add(i);//lo aggiungo alla lista sincronizzata
+        Debug.LogError("CMD AGGIUNGO ALLA LISTA");
+        if (isServer)
+        {
+            Debug.LogError("AGGIUNGO");
+            syncPlayerInfo.Add(i);  //lo aggiungo alla lista sincronizzata       
+        }
+        else Debug.LogError("Non va una sega");
+    }
+
+    [Command]
+    private void CmdRemoveFromList(string id)
+    {
+        for (int i = 0; i < syncPlayerInfo.Count; i++)
+            if (syncPlayerInfo[i].id == id)
+            {
+                syncPlayerInfo.RemoveAt(i);
+                return;
+            }
+        Debug.LogError("Giocatore Non trovato nella lista sincronizzata: " + id);
+    }
+
+    [Command]
+    public void CmdEditInList(PlayerInfo nuove)
+    {
+        for(int i = 0; i < syncPlayerInfo.Count; i++)
+            if (syncPlayerInfo[i].id == nuove.id)
+            {
+                syncPlayerInfo[i] = nuove;
+                return;
+            }
+        Debug.LogError("Giocatore Non trovato nella lista sincronizzata: " + nuove.id + "\n" + nuove.ToString());
     }
 
     public void unRegisterPlayer(string nome)
     {
+        CmdRemoveFromList(nome);
         giocatori.Remove(nome);
-
-        foreach (PlayerInfo p in syncPlayerInfo)
-            if (p.nome == nome)
-            {
-                syncPlayerInfo.Remove(p);
-                break;
-            }
     }
 
     public Player getPlayer(string nomePlayer)
