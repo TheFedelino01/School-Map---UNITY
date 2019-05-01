@@ -63,14 +63,14 @@ public class PlayerShoot : NetworkBehaviour
                 {
                     //Dico che ho colpito il player e gli passo il nome
                     //del player colpito
-                    CmdPlayerAsBeenShoot(new NetworkInstanceId(uint.Parse(_hit.collider.name.Split('.')[1])), GetComponentInChildren<arma>().danno);
+                    CmdPlayerAsBeenShoot(_hit.collider.name, GetComponentInChildren<arma>().danno);
                 }
             }
         }
     }
 
     [Command]
-    void CmdPlayerAsBeenShoot(NetworkInstanceId idDelPlayerColpito, float danno)
+    void CmdPlayerAsBeenShoot(string idDelPlayerColpito, float danno)
     {
         //Metodo fatto dal server
 
@@ -78,7 +78,7 @@ public class PlayerShoot : NetworkBehaviour
 
         Player giocatoreColpito = GameManager.instance.getPlayer(idDelPlayerColpito);
 
-        giocatoreColpito.RpcPrendiDanno(danno, GetComponent<Player>().PlayerInfo.id);
+        giocatoreColpito.RpcPrendiDanno(danno, this.name);
 
     }
 

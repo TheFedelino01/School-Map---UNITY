@@ -14,7 +14,7 @@ public class Player : NetworkBehaviour
     private PlayerInfo playerInfo;
 
     public PlayerInfo PlayerInfo { get => playerInfo; set => playerInfo = value; }
-
+    
 
     public int Kill { get => playerInfo.kill; }
     public int Morti { get => playerInfo.morti; }
@@ -33,7 +33,7 @@ public class Player : NetworkBehaviour
         playerInfo.currentSalute = playerInfo.maxSalute;
 
         salvaSituaIniziale();//Mi salvo gli elementi che sono attivi e disattivati all'inizio del player
-
+        
 
     }
 
@@ -45,7 +45,7 @@ public class Player : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.K))
         {
-            RpcPrendiDanno(999999, playerInfo.id);
+            RpcPrendiDanno(999999, "");
         }
         Debug.Log(playerInfo.squadra);
         if (playerInfo.squadra == null)
@@ -54,10 +54,12 @@ public class Player : NetworkBehaviour
             GetComponent<joinTeam>().Setup();
         }
     }
+
+
     public void SetTeam(string nome)
     {
         playerInfo.squadra = nome;
-        syncManager.instance.CmdEditPlayerInfo(playerInfo.id, nome);
+
         //imposto che sta giocando
         GameManager.instance.partitaAvviata = true;
         Debug.Log("Partita avviata: " + GameManager.instance.partitaAvviata + "Player: " + nome);
@@ -66,7 +68,7 @@ public class Player : NetworkBehaviour
 
 
     [ClientRpc]
-    public void RpcPrendiDanno(float danno, NetworkInstanceId pistolero)
+    public void RpcPrendiDanno(float danno, string pistolero)
     {
         float futureSalute = playerInfo.currentSalute - danno;
 
@@ -86,7 +88,7 @@ public class Player : NetworkBehaviour
 
     }
 
-    private void muori(NetworkInstanceId assassino)
+    private void muori(string assassino)
     {
         //DISABILITIAMO ALCUNI COMPONENTI COSI' NON SI PUO' MUOVERE
         GetComponent<vanguardAnimController>().muori();
@@ -167,7 +169,7 @@ public class Player : NetworkBehaviour
 
 public struct PlayerInfo
 {
-    public NetworkInstanceId id;
+    public string id;
 
     public bool isDead;
     public float maxSalute;

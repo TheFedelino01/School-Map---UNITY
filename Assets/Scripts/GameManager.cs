@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine.Networking;
 
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {
     private static GameManager _instance;
     public static GameManager instance
@@ -37,72 +37,106 @@ public class GameManager : MonoBehaviour
         else if (_instance != this)
             //Then destroy this. This enforces our singleton pattern, meaning there can only ever be one instance of a GameManager.
             Destroy(this.gameObject);
+        syncPlayerInfo = new NetworkPlayerInfoList();
     }
-
+    
     void Update()
     {
+        foreach (PlayerInfo PI in syncPlayerInfo)
+            Debug.Log(PI.ToString());
+        Debug.Log("N giocatori: " + syncPlayerInfo.Count + " - " + giocatori.Count);
+        Sync();
     }
+    
+    private void Sync()
+    {
+        for (int i = 0; i < syncPlayerInfo.Count; i++)
+        {
+            try
+            {
+            if (giocatori.ContainsKey(syncPlayerInfo[i].id))
+                if (giocatori[syncPlayerInfo[i].id].isLocalPlayer)
+                    syncPlayerInfo[i] = giocatori[syncPlayerInfo[i].id].PlayerInfo;
+                else
+                    giocatori[syncPlayerInfo[i].id].PlayerInfo = syncPlayerInfo[i];
+            else
+                giocatori.Add(syncPlayerInfo[i].id, new Player(syncPlayerInfo[i]));
+            }
+            catch(System.NullReferenceException e)
+            {
+                Debug.LogError("PORCO PORCO: " + e.Message +"\n____________\n"+ e.Source);
+            }
+        }
 
+    }
 
     public GameSettings gameSettings = new GameSettings();
     public bool partitaAvviata { get; set; }
 
+    public class NetworkPlayerInfoList : SyncListStruct<PlayerInfo> { } //classe che rappresenta una lista di playerInfo sincronizzata in rete
     
+    private NetworkPlayerInfoList syncPlayerInfo;   //lista di playerInfo sincronizzata in rete
+
     private const string PrefixPlayer = "Player.";
-    public Dictionary<NetworkInstanceId, Player> giocatori = new Dictionary<NetworkInstanceId, Player>();
+    private Dictionary<string, Player> giocatori = new Dictionary<string, Player>();
 
-    //public override void OnStartClient()
-    //{
-    //    syncPlayerInfo.Callback = list_changed;
-    //}
-
-    //public void list_changed(NetworkPlayerInfoList.Operation op, int index)
-    //{
-    //    Debug.Log("Something has changed in list");
-    //}
-
-    public void RegisterPlayer(NetworkInstanceId netId, Player player)
+    public override void OnStartClient()
     {
-        //NetworkServer.Spawn(player.gameObject);
-        //string plId = PrefixPlayer + netId;
-
-        PlayerInfo playerInfo = player.PlayerInfo;
-        playerInfo.id = netId;
-        playerInfo.nome = PrefixPlayer + netId.ToString();
-        player.PlayerInfo = playerInfo;
-
-        giocatori.Add(netId, player);//Lo aggiungo alla lista
-        //syncPlayerInfo.Add(player.PlayerInfo);
-        syncManager.instance.CmdAddToList(player.PlayerInfo);//lo aggiungo alla lista sincronizzata
-        //Debug.Log(giocatori[netId] + "---" + syncPlayerInfo[0]);
-        player.transform.name = PrefixPlayer + netId.ToString();//Gli imposto il nome
+        syncPlayerInfo.Callback = list_changed;
     }
 
+    public void list_changed(NetworkPlayerInfoList.Operation op, int index)
+    {
+        Debug.Log("Something has changed in list");
+    }
+    
+    public void RegisterPlayer(string netId, Player player)
+    {
+        NetworkServer.Spawn(player.gameObject);
+        string plId = PrefixPlayer + netId;
 
+        PlayerInfo playerInfo = player.PlayerInfo;
+        playerInfo.id = plId;
+        player.PlayerInfo = playerInfo;
 
-    public void unRegisterPlayer(NetworkInstanceId nome)
+        giocatori.Add(plId, player);//Lo aggiungo alla lista
+        syncPlayerInfo.Add(player.PlayerInfo);
+        //CmdAddToList(player.PlayerInfo);//lo aggiungo alla lista sincronizzata
+        Debug.Log(giocatori[plId] + "---" + syncPlayerInfo[0]);
+
+        player.transform.name = plId;//Gli imposto il nome
+    }
+
+    [Command]
+    private void CmdAddToList(PlayerInfo i)
+    {
+        Debug.LogError("AGGIUNGO ALLA LISTA");
+        syncPlayerInfo.Add(i);//lo aggiungo alla lista sincronizzata
+    }
+    
+    public void unRegisterPlayer(string nome)
     {
         giocatori.Remove(nome);
 
-        //foreach (PlayerInfo p in syncPlayerInfo)
-        //    if (p.id == nome)
-        //    {
-        //        syncPlayerInfo.Remove(p);
-        //        break;
-        //    }
+        foreach (PlayerInfo p in syncPlayerInfo)
+            if (p.nome == nome)
+            {
+                syncPlayerInfo.Remove(p);
+                break;
+            }
     }
 
-    public Player getPlayer(NetworkInstanceId nomePlayer)
+    public Player getPlayer(string nomePlayer)
     {
         Debug.Log(giocatori[nomePlayer].PlayerInfo.ToString());
         return giocatori[nomePlayer];
     }
 
-    public Dictionary<NetworkInstanceId, Player> getAllPlayers()
+    public Dictionary<string, Player> getAllPlayers()
     {
         return giocatori;
     }
-    public void addUccisione(NetworkInstanceId nome)
+    public void addUccisione(string nome)
     {
         Player tmp = giocatori[nome];
 
@@ -113,7 +147,7 @@ public class GameManager : MonoBehaviour
     public string toStringAll()
     {
         string ris = "";
-        foreach (NetworkInstanceId _playerID in giocatori.Keys)
+        foreach (string _playerID in giocatori.Keys)
         {
             ris += _playerID + " TEAM: " + giocatori[_playerID].Squadra + "\n";
         }

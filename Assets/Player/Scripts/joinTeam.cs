@@ -16,7 +16,7 @@ public class joinTeam : MonoBehaviour
     
     public void Setup()
     {
-        ManagerTeam.instance.setUp(this.GetComponent<Player>().PlayerInfo.id);//Faccio partire il setup del manager team
+        ManagerTeam.instance.setUp(this.GetComponent<Player>().name);//Faccio partire il setup del manager team
     }
 
     

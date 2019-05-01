@@ -49,7 +49,7 @@ public class playerSetup : NetworkBehaviour
         Debug.LogError("OnStartLocalPlayer");
         //Imposto l'identia' del player
         //ogni player ha un ID unico
-        NetworkInstanceId netId = GetComponent<NetworkIdentity>().netId;
+        string netId = GetComponent<NetworkIdentity>().netId.ToString();
         Player _player = GetComponent<Player>();
         GameManager.instance.RegisterPlayer(netId, _player);//Aggiungo il giocatore alla lista dei players
 
@@ -76,6 +76,6 @@ public class playerSetup : NetworkBehaviour
             sceneCamera.gameObject.SetActive(true);
         }
 
-        GameManager.instance.unRegisterPlayer(GetComponent<Player>().PlayerInfo.id);//Lo tolgo dalla lista dei players
+        GameManager.instance.unRegisterPlayer(transform.name);//Lo tolgo dalla lista dei players
     }
 }

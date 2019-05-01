@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 
 
 //@author Peduzzi Samuele
@@ -19,7 +18,7 @@ public class Flag : MonoBehaviour
 
     private Transform getPlayerTransform()
     {
-        return GameManager.instance.getPlayer(new NetworkInstanceId(uint.Parse(collisionPlayerName.Split('.')[1]))).transform;
+        return (GameManager.instance.getPlayer(collisionPlayerName)).transform;
     }
 
 
