@@ -40,12 +40,26 @@ public class playerSetup : NetworkBehaviour
             }
         }
 
+    }
 
+    [Command]
+    private void CmdAssegnaAutorita(NetworkIdentity toAssign, NetworkIdentity playerID)
+    {
+        //Debug.LogError(toAssign.hasAuthority);
+        //Debug.LogError(toAssign);
+        try
+        {
+            toAssign.RemoveClientAuthority(toAssign.clientAuthorityOwner);
+        }
+        catch (System.NullReferenceException e) { }
+        Debug.LogError("Autorità GameManager assegnata: " + toAssign.AssignClientAuthority(playerID.connectionToClient));    //assegno al gameManager l'autorità del 
+        //Debug.LogError(toAssign.hasAuthority);
     }
 
     //Quando entra il player
     public override void OnStartLocalPlayer()
     {
+        CmdAssegnaAutorita(GameManager.instance.gameObject.GetComponent<NetworkIdentity>(), this.GetComponent<NetworkIdentity>());
         Debug.LogError("OnStartLocalPlayer");
         //Imposto l'identia' del player
         //ogni player ha un ID unico

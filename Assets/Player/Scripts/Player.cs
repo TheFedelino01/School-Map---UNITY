@@ -185,6 +185,6 @@ public struct PlayerInfo
 
     public override string ToString()
     {
-        return id + "- Squadra: " + squadra;
+        return id + " nome: "+nome+"- Squadra: " + squadra;
     }
 }
