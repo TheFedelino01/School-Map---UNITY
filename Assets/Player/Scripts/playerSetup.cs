@@ -41,7 +41,10 @@ public class playerSetup : NetworkBehaviour
         }
 
     }
-
+    //void Update()
+    //{
+    //    Debug.LogError(GameManager.instance.gameObject.GetComponent<NetworkIdentity>().hasAuthority);
+    //}
     [Command]
     private void CmdAssegnaAutorita(NetworkIdentity toAssign, NetworkIdentity playerID)
     {
@@ -59,17 +62,29 @@ public class playerSetup : NetworkBehaviour
     //Quando entra il player
     public override void OnStartLocalPlayer()
     {
-        CmdAssegnaAutorita(GameManager.instance.gameObject.GetComponent<NetworkIdentity>(), this.GetComponent<NetworkIdentity>());
         Debug.LogError("OnStartLocalPlayer");
+        CmdAssegnaAutorita(GameManager.instance.gameObject.GetComponent<NetworkIdentity>(), this.GetComponent<NetworkIdentity>());
         //Imposto l'identia' del player
         //ogni player ha un ID unico
         string netId = GetComponent<NetworkIdentity>().netId.ToString();
         Player _player = GetComponent<Player>();
-        GameManager.instance.RegisterPlayer(netId, _player);//Aggiungo il giocatore alla lista dei players
+
+        StartCoroutine(add(netId, _player));
+
 
         _player.Setup();//Faccio partire il setUp
     }
 
+    private IEnumerator add(string id,Player p)
+    {
+        yield return new WaitForSeconds(1);
+        for (int i = 0; i < 10; i++)
+        {
+            Debug.LogError(GameManager.instance.gameObject.GetComponent<NetworkIdentity>().hasAuthority);
+        }
+        GameManager.instance.RegisterPlayer(id, p);//Aggiungo il giocatore alla lista dei players
+
+    }
     void setAsRemotePlayer()
     {
         //Dico che questo player ha questo tag (remoteLayerName)

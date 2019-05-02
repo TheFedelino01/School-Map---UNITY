@@ -14,8 +14,8 @@ public class GameManager : NetworkBehaviour
         {
             if (_instance == null)
             {
-                //Debug.LogError("CREO NUOVO - SINGLETON TAROCCO:/");
-                _instance = new GameManager();
+                Debug.LogError("ERRORE: GAME MANAGER NULLO");
+                //_instance = new GameManager();
             }
             return _instance;
         }
@@ -37,6 +37,7 @@ public class GameManager : NetworkBehaviour
         else if (_instance != this)
             //Then destroy this. This enforces our singleton pattern, meaning there can only ever be one instance of a GameManager.
             Destroy(this.gameObject);
+        syncPlayerInfo = new NetworkPlayerInfoList();
     }
 
 
@@ -97,7 +98,7 @@ public class GameManager : NetworkBehaviour
 
     public class NetworkPlayerInfoList : SyncListStruct<PlayerInfo> { } //classe che rappresenta una lista di playerInfo sincronizzata in rete
 
-    private NetworkPlayerInfoList syncPlayerInfo = new NetworkPlayerInfoList();   //lista di playerInfo sincronizzata in rete
+    private NetworkPlayerInfoList syncPlayerInfo;   //lista di playerInfo sincronizzata in rete
 
     NetworkPlayerInfoList test = new NetworkPlayerInfoList();
 
@@ -135,12 +136,12 @@ public class GameManager : NetworkBehaviour
     private void CmdAddToList(PlayerInfo i)
     {
         Debug.LogError("CMD AGGIUNGO ALLA LISTA");
-        if (isServer)
-        {
+        //if (isServer)
+        //{
             Debug.LogError("AGGIUNGO");
             syncPlayerInfo.Add(i);  //lo aggiungo alla lista sincronizzata       
-        }
-        else Debug.LogError("Non va una sega");
+        //}
+        //else Debug.LogError("Non va una sega");
     }
 
     [Command]
@@ -158,6 +159,7 @@ public class GameManager : NetworkBehaviour
     [Command]
     public void CmdEditInList(PlayerInfo nuove)
     {
+        Debug.LogError("EDIT");
         for(int i = 0; i < syncPlayerInfo.Count; i++)
             if (syncPlayerInfo[i].id == nuove.id)
             {
