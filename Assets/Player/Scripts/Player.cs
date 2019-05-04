@@ -13,8 +13,8 @@ public class Player : NetworkBehaviour
     private bool[] statusIniziale;
     private PlayerInfo playerInfo;
 
-    public PlayerInfo PlayerInfo { get => playerInfo; set => playerInfo = value; }
-    
+    public PlayerInfo PlayerInfo { get => playerInfo; }
+
 
     public int Kill { get => playerInfo.kill; }
     public int Morti { get => playerInfo.morti; }
@@ -24,8 +24,15 @@ public class Player : NetworkBehaviour
     public string Squadra { get => playerInfo.squadra; }
 
 
-    public Player() { playerInfo = new PlayerInfo(); }
-    public Player(PlayerInfo info) { this.PlayerInfo = playerInfo; }
+    public Player() { }
+    public Player(PlayerInfo info) { playerInfo = info; }
+
+    public void createPlayerInfo(string id)
+    {
+        Debug.Log("CREO INFO: " + id);
+        playerInfo = new PlayerInfo(id);
+    }
+
     public void Setup()//All'inizio, parte quando la classe PlayerSetup e' partita completamente 
     {
         //Imposto la salute massima in base a quella presente nel game settings
@@ -33,24 +40,27 @@ public class Player : NetworkBehaviour
         playerInfo.currentSalute = playerInfo.maxSalute;
 
         salvaSituaIniziale();//Mi salvo gli elementi che sono attivi e disattivati all'inizio del player
-        
 
     }
 
     void Update()
     {
-        //Se il giocatore preme K, questo si suicida
+        Debug.Log(playerInfo.id + ":::::" + gameObject.name);
+        if (gameObject.name != playerInfo.id)
+            gameObject.name = playerInfo.id;
+
         if (!isLocalPlayer)
             return;
 
+        //Se il giocatore preme K, questo si suicida
         if (Input.GetKeyDown(KeyCode.K))
         {
             RpcPrendiDanno(999999, "");
         }
-        Debug.Log(playerInfo.squadra);
+        //Debug.Log(playerInfo.squadra);
         if (playerInfo.squadra == null)
         {
-            Debug.Log(playerInfo.nome + " non ha team quindi glilo faccio scegliere");
+            //Debug.Log(playerInfo.nome + " non ha team quindi glilo faccio scegliere");
             GetComponent<joinTeam>().Setup();
         }
     }
@@ -59,7 +69,7 @@ public class Player : NetworkBehaviour
     public void SetTeam(string nome)
     {
         playerInfo.squadra = nome;
-        GameManager.instance.CmdEditInList(playerInfo);
+        GameManager.instance.SyncManager.Instance.CmdEditInList(playerInfo);
         //imposto che sta giocando
         GameManager.instance.partitaAvviata = true;
         Debug.Log("Partita avviata: " + GameManager.instance.partitaAvviata + "Player: " + nome);
@@ -86,7 +96,7 @@ public class Player : NetworkBehaviour
             muori(pistolero);
         }
 
-        GameManager.instance.CmdEditInList(playerInfo);
+        GameManager.instance.SyncManager.Instance.CmdEditInList(playerInfo);
     }
 
     private void muori(string assassino)
@@ -96,7 +106,7 @@ public class Player : NetworkBehaviour
         disabilitaElementiDaMorto();
 
         playerInfo.morti++;//Aumento il numero di morti
-        GameManager.instance.CmdEditInList(playerInfo);
+        GameManager.instance.SyncManager.Instance.CmdEditInList(playerInfo);
         GameManager.instance.addUccisione(assassino);//Aumento il numero di uccisioni di chi mi ha ucciso
 
         Debug.Log(transform.name + " is now dead!");
@@ -126,7 +136,7 @@ public class Player : NetworkBehaviour
         Debug.Log(transform.name + " has just respawned!");
 
         playerInfo.isDead = false;
-        GameManager.instance.CmdEditInList(playerInfo);
+        GameManager.instance.SyncManager.Instance.CmdEditInList(playerInfo);
     }
 
     private void disabilitaElementiDaMorto()
@@ -166,14 +176,14 @@ public class Player : NetworkBehaviour
     public void addUccisione()
     {
         playerInfo.kill++;
-        GameManager.instance.CmdEditInList(playerInfo);
+        GameManager.instance.SyncManager.Instance.CmdEditInList(playerInfo);
     }
 }
 
 
 public struct PlayerInfo
 {
-    public string id;
+    public readonly string id;
 
     public bool isDead;
     public float maxSalute;
@@ -187,8 +197,30 @@ public struct PlayerInfo
     public string nome;
     public string squadra;
 
+    public PlayerInfo(string id) : this()
+    {
+        this.id = id;
+    }
+
+    public void copiaDa(PlayerInfo p)
+    {
+        if (id == p.id)
+        {
+            isDead = p.isDead;
+            maxSalute = p.maxSalute;
+            currentSalute = p.currentSalute;
+            kill = p.kill;
+            morti = p.morti;
+            bandiere = p.bandiere;
+            punti = p.punti;
+            nome = p.nome;
+            squadra = p.squadra;
+        }
+        else
+            Debug.LogError("ERRORE AGGIORNAMENTO PLAYER REMOTO: " + id);
+    }
     public override string ToString()
     {
-        return id + " nome: "+nome+"- Squadra: " + squadra;
+        return id + " nome: " + nome + "- Squadra: " + squadra;
     }
 }

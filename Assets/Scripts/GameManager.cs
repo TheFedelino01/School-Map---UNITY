@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine.Networking;
 
-public class GameManager : NetworkBehaviour
+public class GameManager : MonoBehaviour
 {
+    private syncManager syncManager;
+    public syncManager SyncManager { get => syncManager; }
     private static GameManager _instance;
     public static GameManager instance
     {
@@ -37,141 +39,94 @@ public class GameManager : NetworkBehaviour
         else if (_instance != this)
             //Then destroy this. This enforces our singleton pattern, meaning there can only ever be one instance of a GameManager.
             Destroy(this.gameObject);
-        syncPlayerInfo = new NetworkPlayerInfoList();
     }
 
-
-    [Command]
-    private void CmdAdd()
+    void Start()
     {
-        Debug.LogError("CMD");
-        if (isServer)
-        {
-            Debug.LogError("AGGIUNGO");
-            PlayerInfo p = new PlayerInfo();
-            p.nome = "ciao";
-            test.Add(p);
-        }
-        else Debug.LogError("Non va una sega");
     }
+
+
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
-            CmdAdd();
-        if (Input.GetKeyDown(KeyCode.B))
+        if (syncManager != null)
         {
-            PlayerInfo p = test[0];
-            p.nome = "pippo";
-            test[0] = p;
+            Debug.Log("N giocatori: " + syncManager.Instance.SyncPlayerInfo.Count + " - " + giocatori.Count);
+            Sync();
         }
-        foreach (PlayerInfo PI in syncPlayerInfo)
-            Debug.Log(PI.ToString());
-        Debug.Log("N giocatori: " + syncPlayerInfo.Count + " - " + giocatori.Count);
-        Sync();
-        foreach (PlayerInfo PI in test)
-            Debug.Log(PI.ToString());
-        Debug.Log(base.isServer);
     }
 
     private void Sync()
     {
-        for (int i = 0; i < syncPlayerInfo.Count; i++)
+        for (int i = 0; i < syncManager.Instance.SyncPlayerInfo.Count; i++)
         {
+            string id = syncManager.Instance.SyncPlayerInfo[i].id;
+            Debug.Log(id);
             try
             {
-                if (giocatori.ContainsKey(syncPlayerInfo[i].id))
-                    giocatori[syncPlayerInfo[i].id].PlayerInfo = syncPlayerInfo[i];
+                if (giocatori.ContainsKey(id))
+                    giocatori[id].PlayerInfo.copiaDa(syncManager.Instance.SyncPlayerInfo[i]);
                 else
-                    giocatori.Add(syncPlayerInfo[i].id, new Player(syncPlayerInfo[i]));
+                {
+                    Debug.LogError("CERCO NUOVO PLAYER");
+                    Player nuovo = GameObject.Find(id).GetComponent<Player>();
+                    nuovo.createPlayerInfo(id);
+                    giocatori.Add(id, nuovo);
+                }
             }
             catch (System.NullReferenceException e)
             {
                 Debug.LogError("PORCO PORCO: " + e.Message + "\n____________\n" + e.Source);
             }
+            catch (System.ArgumentException e)
+            {
+                Debug.LogError(e.Message);
+            }
         }
-
     }
+
+    //private Player findPlayer(string id)
+    //{
+    //    Player[] players = FindObjectsOfType<Player>();
+    //    Debug.Log(players.ToString());
+    //    foreach (Player p in players)
+    //        if (p.PlayerInfo.id == id)
+    //            return p;
+    //    throw new System.ArgumentException("Player inesistente");
+    //}
 
     public GameSettings gameSettings = new GameSettings();
     public bool partitaAvviata { get; set; }
 
-    public class NetworkPlayerInfoList : SyncListStruct<PlayerInfo> { } //classe che rappresenta una lista di playerInfo sincronizzata in rete
 
-    private NetworkPlayerInfoList syncPlayerInfo;   //lista di playerInfo sincronizzata in rete
-
-    NetworkPlayerInfoList test = new NetworkPlayerInfoList();
 
     private const string PrefixPlayer = "Player.";
     private Dictionary<string, Player> giocatori = new Dictionary<string, Player>();
 
-    //public override void OnStartClient()
-    //{
-    //    syncPlayerInfo.Callback = list_changed;
-    //}
-
-    //public void list_changed(NetworkPlayerInfoList.Operation op, int index)
-    //{
-    //    Debug.Log("Something has changed in list");
-    //}
 
     public void RegisterPlayer(string netId, Player player)
     {
-        Debug.LogError("REGISTRAZIONE");
+        syncManager = GetComponentInChildren<syncManager>();
+        Debug.Log("REGISTRAZIONE");
         string plId = PrefixPlayer + netId;
 
-        PlayerInfo playerInfo = player.PlayerInfo;
-        playerInfo.id = plId;
-        player.PlayerInfo = playerInfo;
+        //PlayerInfo playerInfo = player.PlayerInfo;
+        //playerInfo.id = plId;
+        //player.PlayerInfo = playerInfo;
+        player.createPlayerInfo(plId);
 
         giocatori.Add(plId, player);//Lo aggiungo alla lista
 
-        CmdAddToList(player.PlayerInfo);//lo aggiungo alla lista sincronizzata
-        Debug.Log(giocatori[plId] + "---" + syncPlayerInfo[0]);
+        syncManager.Instance.CmdAddToList(player.PlayerInfo);//lo aggiungo alla lista sincronizzata
+        Debug.Log(giocatori[plId] + "---" + syncManager.Instance.SyncPlayerInfo[0]);
 
         player.transform.name = plId;//Gli imposto il nome
     }
 
-    [Command]
-    private void CmdAddToList(PlayerInfo i)
-    {
-        Debug.LogError("CMD AGGIUNGO ALLA LISTA");
-        //if (isServer)
-        //{
-            Debug.LogError("AGGIUNGO");
-            syncPlayerInfo.Add(i);  //lo aggiungo alla lista sincronizzata       
-        //}
-        //else Debug.LogError("Non va una sega");
-    }
-
-    [Command]
-    private void CmdRemoveFromList(string id)
-    {
-        for (int i = 0; i < syncPlayerInfo.Count; i++)
-            if (syncPlayerInfo[i].id == id)
-            {
-                syncPlayerInfo.RemoveAt(i);
-                return;
-            }
-        Debug.LogError("Giocatore Non trovato nella lista sincronizzata: " + id);
-    }
-
-    [Command]
-    public void CmdEditInList(PlayerInfo nuove)
-    {
-        Debug.LogError("EDIT");
-        for(int i = 0; i < syncPlayerInfo.Count; i++)
-            if (syncPlayerInfo[i].id == nuove.id)
-            {
-                syncPlayerInfo[i] = nuove;
-                return;
-            }
-        Debug.LogError("Giocatore Non trovato nella lista sincronizzata: " + nuove.id + "\n" + nuove.ToString());
-    }
 
     public void unRegisterPlayer(string nome)
     {
-        CmdRemoveFromList(nome);
+        syncManager.Instance.CmdRemoveFromList(nome);
         giocatori.Remove(nome);
     }
 

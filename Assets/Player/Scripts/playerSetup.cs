@@ -55,15 +55,15 @@ public class playerSetup : NetworkBehaviour
             toAssign.RemoveClientAuthority(toAssign.clientAuthorityOwner);
         }
         catch (System.NullReferenceException e) { }
-        Debug.LogError("Autorità GameManager assegnata: " + toAssign.AssignClientAuthority(playerID.connectionToClient));    //assegno al gameManager l'autorità del 
+        Debug.Log("Autorità GameManager assegnata: " + toAssign.AssignClientAuthority(playerID.connectionToClient));    //assegno al gameManager l'autorità del 
         //Debug.LogError(toAssign.hasAuthority);
     }
 
     //Quando entra il player
     public override void OnStartLocalPlayer()
     {
-        Debug.LogError("OnStartLocalPlayer");
-        CmdAssegnaAutorita(GameManager.instance.gameObject.GetComponent<NetworkIdentity>(), this.GetComponent<NetworkIdentity>());
+        Debug.Log("OnStartLocalPlayer");
+        CmdAssegnaAutorita(GameManager.instance.gameObject.GetComponentInChildren<NetworkIdentity>(), this.GetComponent<NetworkIdentity>());
         //Imposto l'identia' del player
         //ogni player ha un ID unico
         string netId = GetComponent<NetworkIdentity>().netId.ToString();
@@ -75,15 +75,14 @@ public class playerSetup : NetworkBehaviour
         _player.Setup();//Faccio partire il setUp
     }
 
-    private IEnumerator add(string id,Player p)
+    //aspetto finche il server assegna l'autorità al gameManager per registrare il player
+    private IEnumerator add(string id, Player p)
     {
-        yield return new WaitForSeconds(1);
-        for (int i = 0; i < 10; i++)
-        {
-            Debug.LogError(GameManager.instance.gameObject.GetComponent<NetworkIdentity>().hasAuthority);
-        }
-        GameManager.instance.RegisterPlayer(id, p);//Aggiungo il giocatore alla lista dei players
-
+        yield return new WaitForSeconds(0.1f);
+        if (GameManager.instance.gameObject.GetComponentInChildren<NetworkIdentity>().hasAuthority)
+            GameManager.instance.RegisterPlayer(id, p);//Aggiungo il giocatore alla lista dei players
+        else
+            StartCoroutine(add(id, p));
     }
     void setAsRemotePlayer()
     {
