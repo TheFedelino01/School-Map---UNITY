@@ -105,6 +105,7 @@ public class syncManager : NetworkBehaviour
         for (int i = 0; i < syncPlayerInfo.Count; i++)
             if (syncPlayerInfo[i].id == nuove.id)
             {
+                //syncPlayerInfo[i].copiaDa(nuove);
                 syncPlayerInfo[i] = nuove;
                 return;
             }

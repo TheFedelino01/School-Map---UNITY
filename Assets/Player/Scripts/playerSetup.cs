@@ -75,12 +75,13 @@ public class playerSetup : NetworkBehaviour
         _player.Setup();//Faccio partire il setUp
     }
 
+
     //aspetto finche il server assegna l'autorità al gameManager per registrare il player
     private IEnumerator add(string id, Player p)
     {
         yield return new WaitForSeconds(0.1f);
         if (GameManager.instance.gameObject.GetComponentInChildren<NetworkIdentity>().hasAuthority)
-            GameManager.instance.RegisterPlayer(id, p);//Aggiungo il giocatore alla lista dei players
+            GameManager.instance.RegisterLocalPlayer(id, p);//Aggiungo il giocatore alla lista dei players
         else
             StartCoroutine(add(id, p));
     }
@@ -88,6 +89,11 @@ public class playerSetup : NetworkBehaviour
     {
         //Dico che questo player ha questo tag (remoteLayerName)
         gameObject.tag = TAGremote;
+
+        Debug.Log("Start altro client");
+        string netId = GetComponent<NetworkIdentity>().netId.ToString();
+        Player _player = GetComponent<Player>();
+        GameManager.instance.RegisterRemotePlayer(netId, _player);
     }
 
     void setAsLocalPlayer()

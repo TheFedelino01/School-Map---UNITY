@@ -13,7 +13,17 @@ public class Player : NetworkBehaviour
     private bool[] statusIniziale;
     private PlayerInfo playerInfo;
 
-    public PlayerInfo PlayerInfo { get => playerInfo; }
+    public PlayerInfo PlayerInfo
+    {
+        get => playerInfo;
+        set
+        {
+            if (playerInfo.id == value.id)
+                playerInfo = value;
+            else
+                Debug.LogError("ERRORE!! STAI CERCANDO DI ASSEGNARE A UN GIOCATORE INFORMAZIONI NON SUE!!!!");
+        }
+    }
 
 
     public int Kill { get => playerInfo.kill; }

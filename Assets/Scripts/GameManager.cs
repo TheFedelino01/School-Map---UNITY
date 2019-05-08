@@ -65,14 +65,10 @@ public class GameManager : MonoBehaviour
             try
             {
                 if (giocatori.ContainsKey(id))
-                    giocatori[id].PlayerInfo.copiaDa(syncManager.Instance.SyncPlayerInfo[i]);
+                    //giocatori[id].PlayerInfo.copiaDa(syncManager.Instance.SyncPlayerInfo[i]);
+                    giocatori[id].PlayerInfo = syncManager.Instance.SyncPlayerInfo[i];
                 else
-                {
-                    Debug.LogError("CERCO NUOVO PLAYER");
-                    Player nuovo = GameObject.Find(id).GetComponent<Player>();
-                    nuovo.createPlayerInfo(id);
-                    giocatori.Add(id, nuovo);
-                }
+                    Debug.LogError("PLAYER NON TROVATO: " + id);
             }
             catch (System.NullReferenceException e)
             {
@@ -104,10 +100,11 @@ public class GameManager : MonoBehaviour
     private Dictionary<string, Player> giocatori = new Dictionary<string, Player>();
 
 
-    public void RegisterPlayer(string netId, Player player)
+    public void RegisterLocalPlayer(string netId, Player player)
     {
-        syncManager = GetComponentInChildren<syncManager>();
-        Debug.Log("REGISTRAZIONE");
+        if (syncManager == null)
+            syncManager = GetComponentInChildren<syncManager>();
+        Debug.Log("REGISTRAZIONE PLAYER LOCALE");
         string plId = PrefixPlayer + netId;
 
         //PlayerInfo playerInfo = player.PlayerInfo;
@@ -117,7 +114,26 @@ public class GameManager : MonoBehaviour
 
         giocatori.Add(plId, player);//Lo aggiungo alla lista
 
-        syncManager.Instance.CmdAddToList(player.PlayerInfo);//lo aggiungo alla lista sincronizzata
+        syncManager.Instance.CmdAddToList(player.PlayerInfo);   //lo aggiungo anche alla lista sincronizzata
+        Debug.Log(giocatori[plId] + "---" + syncManager.Instance.SyncPlayerInfo[0]);
+
+        player.transform.name = plId;//Gli imposto il nome
+    }
+
+    public void RegisterRemotePlayer(string netId, Player player)
+    {
+        if (syncManager == null)
+            syncManager = GetComponentInChildren<syncManager>();
+        Debug.Log("REGISTRAZIONE PLAYER REMOTO");
+        string plId = PrefixPlayer + netId;
+
+        //PlayerInfo playerInfo = player.PlayerInfo;
+        //playerInfo.id = plId;
+        //player.PlayerInfo = playerInfo;
+        player.createPlayerInfo(plId);
+
+        giocatori.Add(plId, player);//Lo aggiungo alla lista
+
         Debug.Log(giocatori[plId] + "---" + syncManager.Instance.SyncPlayerInfo[0]);
 
         player.transform.name = plId;//Gli imposto il nome
