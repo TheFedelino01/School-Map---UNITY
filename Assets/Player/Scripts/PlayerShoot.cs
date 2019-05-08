@@ -74,7 +74,7 @@ public class PlayerShoot : NetworkBehaviour
 
         Debug.Log("COLPITO> " + this.name + " HA COLPITO IL Giocatore: " + idDelPlayerColpito);
 
-        Player giocatoreColpito = GameManager.getPlayer(idDelPlayerColpito);
+        Player giocatoreColpito = GameManager.instance.getPlayer(idDelPlayerColpito);
 
         giocatoreColpito.RpcPrendiDanno(danno, this.name);
 

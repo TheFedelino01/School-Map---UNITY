@@ -71,7 +71,7 @@ public class ManagerTeam : MonoBehaviour
 
     public void setTeamBLUE()//richiamato quando clicca sul pulsante "BLUE" presente nel "joinTeamMio"
     {
-        GameManager.getPlayer(playerCheStaScegliendo).SetTeam("BLUE");
+        GameManager.instance.getPlayer(playerCheStaScegliendo).SetTeam("BLUE");
         Debug.Log("Il giocatore: " + playerCheStaScegliendo + " ha scelto il team BLUE");
 
         nascondiFinestraTeam();
@@ -79,7 +79,7 @@ public class ManagerTeam : MonoBehaviour
 
     public void setTeamRED()//richiamato quando clicca sul pulsante "RED" presente nel "joinTeamMio"
     {
-        GameManager.getPlayer(playerCheStaScegliendo).SetTeam("RED");
+        GameManager.instance.getPlayer(playerCheStaScegliendo).SetTeam("RED");
         Debug.Log("Il giocatore: " + playerCheStaScegliendo + " ha scelto il team RED");
 
         nascondiFinestraTeam();

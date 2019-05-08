@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using UnityEngine.Networking;
 
 public class GameManager : MonoBehaviour
 {
+    private syncManager syncManager;
+    public syncManager SyncManager { get => syncManager; }
     private static GameManager _instance;
     public static GameManager instance
     {
@@ -13,8 +16,8 @@ public class GameManager : MonoBehaviour
         {
             if (_instance == null)
             {
-                //Debug.LogError("CREO NUOVO - SINGLETON TAROCCO:/");
-                _instance = new GameManager();
+                Debug.LogError("ERRORE: GAME MANAGER NULLO");
+                //_instance = new GameManager();
             }
             return _instance;
         }
@@ -38,33 +41,118 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
     }
 
+    void Start()
+    {
+    }
 
+
+
+    void Update()
+    {
+        if (syncManager != null)
+        {
+            Debug.Log("N giocatori: " + syncManager.Instance.SyncPlayerInfo.Count + " - " + giocatori.Count);
+            Sync();
+        }
+    }
+
+    private void Sync()
+    {
+        for (int i = 0; i < syncManager.Instance.SyncPlayerInfo.Count; i++)
+        {
+            string id = syncManager.Instance.SyncPlayerInfo[i].id;
+            Debug.Log(id);
+            try
+            {
+                if (giocatori.ContainsKey(id))
+                    //giocatori[id].PlayerInfo.copiaDa(syncManager.Instance.SyncPlayerInfo[i]);
+                    giocatori[id].PlayerInfo = syncManager.Instance.SyncPlayerInfo[i];
+                else
+                    Debug.LogError("PLAYER NON TROVATO: " + id);
+            }
+            catch (System.NullReferenceException e)
+            {
+                Debug.LogError("PORCO PORCO: " + e.Message + "\n____________\n" + e.Source);
+            }
+            catch (System.ArgumentException e)
+            {
+                Debug.LogError(e.Message);
+            }
+        }
+    }
+
+    //private Player findPlayer(string id)
+    //{
+    //    Player[] players = FindObjectsOfType<Player>();
+    //    Debug.Log(players.ToString());
+    //    foreach (Player p in players)
+    //        if (p.PlayerInfo.id == id)
+    //            return p;
+    //    throw new System.ArgumentException("Player inesistente");
+    //}
 
     public GameSettings gameSettings = new GameSettings();
     public bool partitaAvviata { get; set; }
 
-    private static string PrefixPlayer = "Player.";
-    private static Dictionary<string, Player> giocatori = new Dictionary<string, Player>();
 
-    public static void RegisterPlayer(string netId, Player player)
+
+    private const string PrefixPlayer = "Player.";
+    private Dictionary<string, Player> giocatori = new Dictionary<string, Player>();
+
+
+    public void RegisterLocalPlayer(string netId, Player player)
     {
+        if (syncManager == null)
+            syncManager = GetComponentInChildren<syncManager>();
+        Debug.Log("REGISTRAZIONE PLAYER LOCALE");
         string plId = PrefixPlayer + netId;
+
+        //PlayerInfo playerInfo = player.PlayerInfo;
+        //playerInfo.id = plId;
+        //player.PlayerInfo = playerInfo;
+        player.createPlayerInfo(plId);
+
         giocatori.Add(plId, player);//Lo aggiungo alla lista
+
+        syncManager.Instance.CmdAddToList(player.PlayerInfo);   //lo aggiungo anche alla lista sincronizzata
+        Debug.Log(giocatori[plId] + "---" + syncManager.Instance.SyncPlayerInfo[0]);
 
         player.transform.name = plId;//Gli imposto il nome
     }
 
-    public static void unRegisterPlayer(string nome)
+    public void RegisterRemotePlayer(string netId, Player player)
     {
+        if (syncManager == null)
+            syncManager = GetComponentInChildren<syncManager>();
+        Debug.Log("REGISTRAZIONE PLAYER REMOTO");
+        string plId = PrefixPlayer + netId;
+
+        //PlayerInfo playerInfo = player.PlayerInfo;
+        //playerInfo.id = plId;
+        //player.PlayerInfo = playerInfo;
+        player.createPlayerInfo(plId);
+
+        giocatori.Add(plId, player);//Lo aggiungo alla lista
+
+        Debug.Log(giocatori[plId] + "---" + syncManager.Instance.SyncPlayerInfo[0]);
+
+        player.transform.name = plId;//Gli imposto il nome
+    }
+
+
+    public void unRegisterPlayer(string nome)
+    {
+        syncManager.Instance.CmdRemoveFromList(nome);
         giocatori.Remove(nome);
     }
 
-    public static Player getPlayer(string nomePlayer)
+    public Player getPlayer(string nomePlayer)
     {
+        Debug.Log(giocatori[nomePlayer].PlayerInfo.ToString());
         return giocatori[nomePlayer];
     }
 
-    public static Dictionary<string, Player> getAllPlayers()
+    public Dictionary<string, Player> getAllPlayers()
     {
         return giocatori;
     }
@@ -81,7 +169,7 @@ public class GameManager : MonoBehaviour
         string ris = "";
         foreach (string _playerID in giocatori.Keys)
         {
-            ris+=_playerID + " TEAM: " + giocatori[_playerID].Squadra+"\n";
+            ris += _playerID + " TEAM: " + giocatori[_playerID].Squadra + "\n";
         }
         return ris;
     }

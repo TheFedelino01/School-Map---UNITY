@@ -24,7 +24,7 @@ public class playerSetup : NetworkBehaviour
 
             //Proibisco che il giocatore possa essere comandato da me
             //in quanto non sono io il "proprietario"
-            for (int i=0; i < componentiDaDisabilitare.Length; i++)
+            for (int i = 0; i < componentiDaDisabilitare.Length; i++)
             {
                 componentiDaDisabilitare[i].enabled = false;
             }
@@ -39,27 +39,61 @@ public class playerSetup : NetworkBehaviour
                 sceneCamera.gameObject.SetActive(false);
             }
         }
-        
 
+    }
+    //void Update()
+    //{
+    //    Debug.LogError(GameManager.instance.gameObject.GetComponent<NetworkIdentity>().hasAuthority);
+    //}
+    [Command]
+    private void CmdAssegnaAutorita(NetworkIdentity toAssign, NetworkIdentity playerID)
+    {
+        //Debug.LogError(toAssign.hasAuthority);
+        //Debug.LogError(toAssign);
+        try
+        {
+            toAssign.RemoveClientAuthority(toAssign.clientAuthorityOwner);
+        }
+        catch (System.NullReferenceException e) { }
+        Debug.Log("Autorità GameManager assegnata: " + toAssign.AssignClientAuthority(playerID.connectionToClient));    //assegno al gameManager l'autorità del 
+        //Debug.LogError(toAssign.hasAuthority);
     }
 
     //Quando entra il player
-    public override void OnStartClient()
+    public override void OnStartLocalPlayer()
     {
+        Debug.Log("OnStartLocalPlayer");
+        CmdAssegnaAutorita(GameManager.instance.gameObject.GetComponentInChildren<NetworkIdentity>(), this.GetComponent<NetworkIdentity>());
         //Imposto l'identia' del player
         //ogni player ha un ID unico
         string netId = GetComponent<NetworkIdentity>().netId.ToString();
         Player _player = GetComponent<Player>();
 
-        GameManager.RegisterPlayer(netId, _player);//Aggiungo il giocatore alla lista dei players
+        StartCoroutine(add(netId, _player));
+
 
         _player.Setup();//Faccio partire il setUp
     }
 
+
+    //aspetto finche il server assegna l'autorità al gameManager per registrare il player
+    private IEnumerator add(string id, Player p)
+    {
+        yield return new WaitForSeconds(0.1f);
+        if (GameManager.instance.gameObject.GetComponentInChildren<NetworkIdentity>().hasAuthority)
+            GameManager.instance.RegisterLocalPlayer(id, p);//Aggiungo il giocatore alla lista dei players
+        else
+            StartCoroutine(add(id, p));
+    }
     void setAsRemotePlayer()
     {
         //Dico che questo player ha questo tag (remoteLayerName)
         gameObject.tag = TAGremote;
+
+        Debug.Log("Start altro client");
+        string netId = GetComponent<NetworkIdentity>().netId.ToString();
+        Player _player = GetComponent<Player>();
+        GameManager.instance.RegisterRemotePlayer(netId, _player);
     }
 
     void setAsLocalPlayer()
@@ -76,6 +110,6 @@ public class playerSetup : NetworkBehaviour
             sceneCamera.gameObject.SetActive(true);
         }
 
-        GameManager.unRegisterPlayer(transform.name);//Lo tolgo dalla lista dei players
+        GameManager.instance.unRegisterPlayer(transform.name);//Lo tolgo dalla lista dei players
     }
 }
