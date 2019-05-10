@@ -45,12 +45,16 @@ public class weaponsManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-            cambiaArma(0);
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-            cambiaArma(1);
-        //weapon.transform.rotation = new Quaternion(-76.40601f, -340.81f, 540.438f,-3);
-
+        if (!ChatManager.Instance.ChatAperta)
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+                ricarica();
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+                cambiaArma(0);
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+                cambiaArma(1);
+            //weapon.transform.rotation = new Quaternion(-76.40601f, -340.81f, 540.438f,-3);
+        }
 
         //se preme il pulsante destro e non sta correndo sposta la camera sul mirino
         if (Input.GetButtonDown("Fire2") && !animController.IsRunning && !animController.IsJumping)
@@ -63,8 +67,6 @@ public class weaponsManager : MonoBehaviour
         }
         chkMirino();
 
-        if (Input.GetKeyDown(KeyCode.R))
-            ricarica();
     }
 
     //public void setWeaponToWalk()
@@ -121,7 +123,7 @@ public class weaponsManager : MonoBehaviour
 
         if (activeArma.ColpiRimanenti <= 0 && GameManager.instance.gameSettings.ricaricaAuto)
             ricarica();
-        return false;        
+        return false;
     }
 
 

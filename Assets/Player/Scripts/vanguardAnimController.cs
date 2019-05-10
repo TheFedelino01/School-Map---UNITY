@@ -54,30 +54,33 @@ public class vanguardAnimController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float translation = Input.GetAxis("Vertical") * _speed;
-        float rotation = Input.GetAxis("Horizontal") * rotationSpeed;
-
-        translation *= Time.deltaTime;//?
-        rotation *= Time.deltaTime;//?
-
-        if (translation > 0)//Solo se vuole andare in avanti
+        if (!ChatManager.Instance.ChatAperta)
         {
-            transform.Translate(0, 0, translation);
-        }
-        //transform.Rotate(0, rotation, 0);
+            float translation = Input.GetAxis("Vertical") * _speed;
+            float rotation = Input.GetAxis("Horizontal") * rotationSpeed;
+
+            translation *= Time.deltaTime;//?
+            rotation *= Time.deltaTime;//?
+
+            if (translation > 0)//Solo se vuole andare in avanti
+            {
+                transform.Translate(0, 0, translation);
+            }
+            //transform.Rotate(0, rotation, 0);
 
 
 
-        checkJump();
-        IsJumping = checkIsJumping();   //salvo se sta saltando o no per non doverlo richiamare per ogni direzione
+            checkJump();
+            IsJumping = checkIsJumping();   //salvo se sta saltando o no per non doverlo richiamare per ogni direzione
 
-        if (!anim.GetBool("wantJump"))  //controllo i movimenti solo se non vuole saltare
-        {
-            //Vedo se ha premuto il tasto "W"
-            checkMoveForward();
-            checkMoveRight(rotation);
-            checkMoveLeft(rotation);
-            checkMoveBack(translation);
+            if (!anim.GetBool("wantJump"))  //controllo i movimenti solo se non vuole saltare
+            {
+                //Vedo se ha premuto il tasto "W"
+                checkMoveForward();
+                checkMoveRight(rotation);
+                checkMoveLeft(rotation);
+                checkMoveBack(translation);
+            }
         }
     }
 
