@@ -51,6 +51,13 @@ public class Player : NetworkBehaviour
 
         salvaSituaIniziale();//Mi salvo gli elementi che sono attivi e disattivati all'inizio del player
 
+
+        //ASSEGNO L'ID AL NOME MOMENTANEAMENTE
+        //TODO SCELTA NOME
+        playerInfo.nome = playerInfo.id;
+
+        //imposto il nome con cui manderà i messaggi
+        ChatManager.Instance.playerName = playerInfo.nome;
     }
 
     void Update()

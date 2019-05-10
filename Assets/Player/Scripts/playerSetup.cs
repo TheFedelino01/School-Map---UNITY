@@ -72,16 +72,18 @@ public class playerSetup : NetworkBehaviour
         StartCoroutine(add(netId, _player));
 
 
-        _player.Setup();//Faccio partire il setUp
     }
 
 
     //aspetto finche il server assegna l'autorità al gameManager per registrare il player
     private IEnumerator add(string id, Player p)
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForEndOfFrame();
         if (GameManager.instance.gameObject.GetComponentInChildren<NetworkIdentity>().hasAuthority)
+        {
             GameManager.instance.RegisterLocalPlayer(id, p);//Aggiungo il giocatore alla lista dei players
+            p.Setup();//Faccio partire il setUp
+        }
         else
             StartCoroutine(add(id, p));
     }
