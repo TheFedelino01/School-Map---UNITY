@@ -40,6 +40,10 @@ public class TopPanelManager : MonoBehaviour
 
     void Start ()
     {
+        //NON FACCIO VISUALIZZARE IL MENU INFORMAZIONI
+        GameObject INFORMATIONPANELDONTSHOW = panels[1];
+        INFORMATIONPANELDONTSHOW.SetActive(false);
+
         currentButton = buttons[currentPanelIndex];
         currentButtonAnimator = currentButton.GetComponent<Animator>();
         currentButtonAnimator.Play(buttonFadeIn);
@@ -63,15 +67,17 @@ public class TopPanelManager : MonoBehaviour
         if (newPanel != currentPanelIndex)
         {
             currentPanel = panels[currentPanelIndex];
-
-            currentPanelIndex = newPanel;
-            nextPanel = panels[currentPanelIndex];
+            nextPanel = panels[newPanel];
 
             currentPanelAnimator = currentPanel.GetComponent<Animator>();
             nextPanelAnimator = nextPanel.GetComponent<Animator>();
 
+            
             currentPanelAnimator.Play(panelFadeOut);
+            currentPanel.SetActive(false);
+            nextPanel.SetActive(true);
             nextPanelAnimator.Play(panelFadeIn);
+            
 
             currentButton = buttons[currentButtonlIndex];
 
@@ -83,6 +89,8 @@ public class TopPanelManager : MonoBehaviour
 
             currentButtonAnimator.Play(buttonFadeOut);
             nextButtonAnimator.Play(buttonFadeIn);
+
+            currentPanelIndex = newPanel;
         }
     }
 }

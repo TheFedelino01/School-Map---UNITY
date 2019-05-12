@@ -98,7 +98,7 @@ public class NETcmd : MonoBehaviour
 
     private void connettitiAspettando(float sec) {
         StartCoroutine(cnt(sec));
-        menuWindows.SetActive(false);
+        //menuWindows.SetActive(false);
     }
 
     private IEnumerator cnt(float sec)
