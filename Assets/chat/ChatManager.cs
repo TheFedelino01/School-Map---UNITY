@@ -20,6 +20,8 @@ public class ChatManager : NetworkBehaviour
     public class MessageList : SyncListStruct<Message> { }
     private MessageList messages;
 
+    private Coroutine coroutineChiusuraPopup;
+
     void Awake()
     {
         if (instance == null)
@@ -75,8 +77,11 @@ public class ChatManager : NetworkBehaviour
 
     public void mostraChat()
     {
+        if (coroutineChiusuraPopup != null)
+            StopCoroutine(coroutineChiusuraPopup);
         Cursor.lockState = CursorLockMode.None;
         chatPanel.SetActive(true);
+        inputField.gameObject.SetActive(true);
         animInputField.Play("In");
         animChatRoom.Play("Chat Panel In");
         ChatAperta = true;
@@ -87,15 +92,12 @@ public class ChatManager : NetworkBehaviour
     {
         animInputField.Play("Out");
         animChatRoom.Play("Chat Panel Out");
-        StartCoroutine(disattivaFinastraChat());
+        this.EseguiAspettando(0.25f, () =>
+        {
+            chatPanel.SetActive(false);
+        });
         ChatAperta = false;
         Cursor.lockState = CursorLockMode.Locked;
-    }
-
-    private IEnumerator disattivaFinastraChat()
-    {
-        yield return new WaitForSeconds(0.25f);
-        chatPanel.SetActive(false);
     }
 
     [Command]
@@ -136,8 +138,40 @@ public class ChatManager : NetworkBehaviour
         m.transform.name = mess.idMessaggio.ToString();
         m.transform.Find("Message").GetComponent<Text>().text = mess.text;
         m.transform.Find("Player Name").GetComponent<Text>().text = mess.nomePlayer;
+        if (coroutineChiusuraPopup != null)
+            StopCoroutine(coroutineChiusuraPopup);
+        //sui client che non hanno inviato il messaggio apro un popup che si chiude dopo 5 secondi
+        if (playerName != mess.nomePlayer && !ChatAperta)
+        {
+            mostraMessaggi();
+            Debug.Log("Nascondo i messaggi tra 5 secondi... ");
+            coroutineChiusuraPopup = this.EseguiAspettando(5, () =>
+              {
+                  nascondiMessaggi();
+                  Debug.Log("Messaggi nascosti");
+              });
+        }
     }
 
+    private void mostraMessaggi()
+    {
+        chatPanel.SetActive(true);
+        animChatRoom.Play("Chat Panel In");
+        inputField.gameObject.SetActive(false);
+    }
+
+    private void nascondiMessaggi()
+    {
+        if (!ChatAperta)
+        {
+            animChatRoom.Play("Chat Panel Out");
+            this.EseguiAspettando(0.25f, () =>
+            {
+                inputField.gameObject.SetActive(true);
+                chatPanel.SetActive(false);
+            });
+        }
+    }
 }
 
 
