@@ -12,6 +12,7 @@ public class Flag : MonoBehaviour
 
     private string collisionPlayerName;
     private string flagId; // <-- Da implementare a breve !!
+    public GameObject[] effetti;
 
     private GameObject spawnPoint1, spawnPoint2;
 
@@ -70,8 +71,16 @@ public class Flag : MonoBehaviour
         collisionPlayerName = other.collider.name;
 
         Debug.Log(flagId + ": Flag captured !!");
+        attivaEffetti();
     }
 
+    private void attivaEffetti()
+    {
+        for(int i=0; i< effetti.Length; i++)
+        {
+            effetti[i].SetActive(true);
+        }
+    }
 
     void OnCollisionEnter(Collision other)
     {
@@ -81,7 +90,7 @@ public class Flag : MonoBehaviour
     void Start()
     {
         isFlagCaptured = false;
-        flagId = "Flag";
+        flagId = "FlagMIA";
         spawnPoint1 = GameObject.Find("spawn1");
         spawnPoint2 = GameObject.Find("spawn2");
         Debug.Log(flagId + ": Start");
