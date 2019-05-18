@@ -14,6 +14,7 @@ public class ChatManager : NetworkBehaviour
     public InputField inputField;
     public GameObject MessagePrefab;
     public Transform MessagesList;
+    public ScrollRect ScrollRect;
     public bool ChatAperta { get; set; }
     public string playerName { get; set; }
 
@@ -46,19 +47,32 @@ public class ChatManager : NetworkBehaviour
     {
         if (GameManager.instance.partitaAvviata)
         {
+            if (Input.GetKeyDown(KeyCode.T) && !ChatAperta)
+            {
+                if (coroutineChiusuraPopup != null)
+                    StopCoroutine(coroutineChiusuraPopup);
+                mostraChat();
+            }
             if (Input.GetKeyDown(KeyCode.Return))
             {
                 if (ChatAperta)
-                    if (inputField.text == "")
-                        nascondiChat();
-                    else
+                {
+                    if (inputField.text != "")
                     {
-                        Debug.LogError("DEVO INVIARE IL MESSAGGIO: " + inputField.text);
+                        Debug.Log("DEVO INVIARE IL MESSAGGIO: " + inputField.text);
                         Message m = new Message(playerName, inputField.text);
                         CmdSendMessage(m);
                         inputField.text = "";
-                        ImpostaFocus(inputField);
                     }
+                    //ImpostaFocus(inputField);
+                    ChatAperta = false;
+                    Cursor.lockState = CursorLockMode.Locked;
+                    mostraMessaggi();   //mostro solo i messaggi togliendo l'inputText
+                    coroutineChiusuraPopup = this.EseguiAspettando(5, () =>
+                      {
+                          nascondiMessaggi();
+                      });
+                }
                 else
                     mostraChat();
             }
@@ -138,6 +152,15 @@ public class ChatManager : NetworkBehaviour
         m.transform.name = mess.idMessaggio.ToString();
         m.transform.Find("Message").GetComponent<Text>().text = mess.text;
         m.transform.Find("Player Name").GetComponent<Text>().text = mess.nomePlayer;
+
+        this.EseguiAspettando(1, () =>
+        {
+            if (mess.idMessaggio <= 5)
+                ScrollRect.verticalNormalizedPosition = 1;
+            else
+                ScrollRect.verticalNormalizedPosition = 0;
+        });
+
         if (coroutineChiusuraPopup != null)
             StopCoroutine(coroutineChiusuraPopup);
         //sui client che non hanno inviato il messaggio apro un popup che si chiude dopo 5 secondi
