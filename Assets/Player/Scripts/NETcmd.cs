@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class NETcmd : MonoBehaviour
+public class NETcmd : NetworkBehaviour
 {
     private int port = 7777;
     private string ip = "";
@@ -19,6 +19,8 @@ public class NETcmd : MonoBehaviour
 
     public GameObject menuWindows;
 
+   
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +28,8 @@ public class NETcmd : MonoBehaviour
         connect.SetActive(true);
 
         labelConnecting.SetActive(false);
+
+
     }
 
     // Update is called once per frame
@@ -74,6 +78,8 @@ public class NETcmd : MonoBehaviour
         NetworkManager.singleton.StartHost();
 
         menuWindows.SetActive(false);
+
+        //soleDaAttivareQuandoSpawno.SetActive(true);
     }
 
     public void connectTo()
@@ -116,6 +122,7 @@ public class NETcmd : MonoBehaviour
         NetworkManager.singleton.StartClient();
         connecting = true;
     }
+
 
 }
 

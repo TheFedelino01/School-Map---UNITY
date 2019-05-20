@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 
 //@author Peduzzi Samuele
 
@@ -11,10 +11,13 @@ public class Flag : MonoBehaviour
     public bool isFlagConquered { get; set; }
 
     private string collisionPlayerName;
-    private string flagId; // <-- Da implementare a breve !!
+    public string flagId; // <-- Da implementare a breve !!
     public GameObject[] effetti;
 
     private GameObject spawnPoint1, spawnPoint2;
+
+    public AudioSource cassa;
+    public AudioClip suonoCattura;
 
 
     private Transform getPlayerTransform()
@@ -67,11 +70,13 @@ public class Flag : MonoBehaviour
     private void flagCaptured(Collision other)
     {
         isFlagCaptured = true;
-        (GameObject.Find(flagId)).SetActive(false); //La bandiera viene nascosta
+        this.gameObject.SetActive(false); //La bandiera viene nascosta
         collisionPlayerName = other.collider.name;
 
         Debug.Log(flagId + ": Flag captured !!");
         attivaEffetti();
+
+        cassa.Play();
     }
 
     private void attivaEffetti()
@@ -90,12 +95,15 @@ public class Flag : MonoBehaviour
     void Start()
     {
         isFlagCaptured = false;
-        flagId = "FlagMIA";
+        //System.Random rn = new System.Random();
+       // flagId = "FlagID"+ rn.Next(0,9)+ rn.Next(0, 9)+ rn.Next(0, 9);
         spawnPoint1 = GameObject.Find("spawn1");
         spawnPoint2 = GameObject.Find("spawn2");
         Debug.Log(flagId + ": Start");
         Debug.Log(flagId + ": spawn1 : " + spawnPoint1.transform.position);
         Debug.Log(flagId + ": spawn2 : " + spawnPoint2.transform.position);
+
+        cassa.clip = suonoCattura;//Inizializzo
     }
 
     void Update()
