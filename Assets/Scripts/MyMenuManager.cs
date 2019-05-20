@@ -13,6 +13,9 @@ public class MyMenuManager : MonoBehaviour
     public GameObject camera;
     public GameObject inGameSettings;
     private bool inGameSettingsOpened;
+
+    private bool hightexture = false;
+    public GameObject[] hightextureComponents;
     // Start is called before the first frame update
     void Start()
     {
@@ -105,5 +108,20 @@ public class MyMenuManager : MonoBehaviour
         camera.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         canvas.GetComponent<screenOverlayManager>().ForzaDisattivazione = false;
+    }
+
+
+    public void changeHighTextures()
+    {
+        hightexture = !hightexture;
+        for(int i=0; i< hightextureComponents.Length; i++)
+        {
+            //Se vuole attivare le high textures, abilito i componenti, altrimenti li disabilito
+            if (hightexture == true)
+            {
+                hightextureComponents[i].SetActive(true);
+            }else hightextureComponents[i].SetActive(false);
+        }
+        
     }
 }
