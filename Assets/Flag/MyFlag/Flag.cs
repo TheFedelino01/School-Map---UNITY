@@ -31,6 +31,8 @@ public class Flag : MonoBehaviour
 
     private void conqueredFlag()
     {
+        GameObject.Find(collisionPlayerName).transform.GetChild(6).gameObject.SetActive(false); //L'icona della bandiera sopra al player viene disattivata
+
         isFlagCaptured = false; //La bandiera non è più nelle mani del player attaccante
         isFlagConquered = true; //La bandiera è stata conquistata
         //GetComponent<matchManager>().flagConquered++; //Viene incrementato il numero di bandiere conquistato dalla squadra d'attacco <--match manager da istanziare
@@ -66,6 +68,8 @@ public class Flag : MonoBehaviour
 
     private void flagCaptured(Collision other)
     {
+        other.collider.transform.GetChild(6).gameObject.SetActive(true); //L'icona della bandiera sopra al player viene attivata
+
         isFlagCaptured = true;
         (GameObject.Find(flagId)).SetActive(false); //La bandiera viene nascosta
         collisionPlayerName = other.collider.name;
@@ -111,6 +115,7 @@ public class Flag : MonoBehaviour
 
     public void dropTheFlag() //Da richiamare nel momento in cui il player viene ucciso
     {
+        GameObject.Find(collisionPlayerName).transform.GetChild(6).gameObject.SetActive(false); //L'icona della bandiera sopra al player viene disattivata
         isFlagCaptured = false;
         (GameObject.Find(flagId)).transform.position = getPlayerTransform().position;
     }
