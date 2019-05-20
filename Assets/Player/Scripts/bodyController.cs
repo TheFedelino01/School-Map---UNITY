@@ -99,6 +99,7 @@ public class bodyController : MonoBehaviour
         animController = GetComponent<vanguardAnimController>();
         manoSinistra.Translate(0, -1, 1);
         mirinoAttuale = Instantiate(mirinoTesta.gameObject).transform;
+
         //manoDestra.transform.SetParent(fucile.transform);
         //mettiFucileInPosizione();
 
@@ -115,6 +116,8 @@ public class bodyController : MonoBehaviour
             cam.position = ancoraggio.position;
         else
             cam.position = mirinoTesta.position;
+
+        
     }
 
 

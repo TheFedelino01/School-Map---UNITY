@@ -71,7 +71,6 @@ public class playerSetup : NetworkBehaviour
 
         StartCoroutine(add(netId, _player));
 
-
     }
 
 
@@ -113,5 +112,7 @@ public class playerSetup : NetworkBehaviour
         }
 
         GameManager.instance.unRegisterPlayer(transform.name);//Lo tolgo dalla lista dei players
+
+
     }
 }
