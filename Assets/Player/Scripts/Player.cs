@@ -73,7 +73,7 @@ public class Player : NetworkBehaviour
         //Se il giocatore preme K, questo si suicida
         if (Input.GetKeyDown(KeyCode.K) && !ChatManager.Instance.ChatAperta)
         {
-            RpcPrendiDanno(int.MaxValue, "");
+            RpcPrendiDanno(int.MaxValue, playerInfo.id);
         }
         //Debug.Log(playerInfo.squadra);
         if (playerInfo.squadra == null)
