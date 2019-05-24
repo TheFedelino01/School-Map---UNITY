@@ -4,9 +4,9 @@ using UnityEngine;
 public class vanguardAnimController : MonoBehaviour
 {
     private Animator anim;
-    public float speed = 2.0f;
-    public float jumpSpeed = 500;
-    public float rotationSpeed = 75.0f; //velocità movimenti destra/sinistra
+    public float speed;
+    public float jumpSpeed;
+    public float rotationSpeed; //velocità movimenti destra/sinistra
     public bool IsRunning { get; set; }
     public bool IsJumping { get; set; }
     public bool Ricaricando { get; set; }
@@ -14,6 +14,9 @@ public class vanguardAnimController : MonoBehaviour
 
     private int _actualCollision;
     private audio sound;
+
+    private static readonly Vector3 ForwardDirection = new Vector3(0.3f, 0, 0.7f);
+    private static readonly Vector3 RightDirection = new Vector3(0.7f, 0, -0.3f);
 
     //private Transform head;
     //private Transform chest;
@@ -64,7 +67,8 @@ public class vanguardAnimController : MonoBehaviour
 
             if (translation > 0)//Solo se vuole andare in avanti
             {
-                transform.Translate(0, 0, translation);
+                //transform.Translate(0, 0, translation);
+                transform.Translate(ForwardDirection * translation);
             }
             //transform.Rotate(0, rotation, 0);
 
@@ -99,7 +103,7 @@ public class vanguardAnimController : MonoBehaviour
 
                 }
                 //_speed = speed*5;
-                _speed = speed * 5;
+                _speed = speed * 3;
                 anim.SetBool("isRunning", true);
                 //Debug.Log("Corre! ");
                 IsRunning = true;
@@ -171,7 +175,8 @@ public class vanguardAnimController : MonoBehaviour
         {
             if (!IsJumping)
                 anim.SetBool("walkRight", true);
-            transform.Translate(orizzontale, 0, 0);
+            Debug.Log(RightDirection.ToString());
+            transform.Translate(RightDirection * orizzontale);
             //Debug.Log("Vado a Destra!");
 
             emettiSuonoWalk(true);
@@ -188,7 +193,7 @@ public class vanguardAnimController : MonoBehaviour
         {
             if (!IsJumping)
                 anim.SetBool("walkLeft", true);
-            transform.Translate(orizzontale, 0, 0);
+            transform.Translate(RightDirection * orizzontale);
             //Debug.Log("Vado a Sinistra");
 
             emettiSuonoWalk(true);
@@ -206,7 +211,7 @@ public class vanguardAnimController : MonoBehaviour
             if (!IsJumping)
                 anim.SetBool("walkBack", true);
 
-            transform.Translate(0, 0, translation);
+            transform.Translate(ForwardDirection * translation);
             //Debug.Log("Indietro");
             //Debug.Log(translation);
 

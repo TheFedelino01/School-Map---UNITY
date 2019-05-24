@@ -9,6 +9,7 @@ public class bodyController : MonoBehaviour
     public Transform mirinoPosCorsa;
     public Transform mirinoPosMirando;
 
+    public Transform corpo;
     public Transform chest;
     public Transform spine;
 
@@ -66,7 +67,7 @@ public class bodyController : MonoBehaviour
 
         public void toLocalUnscaled(Transform point)
         {
-            position = TransformExtensions.InverseTransformPointUnscaled(point, position);
+            position = point.InverseTransformPointUnscaled(position);
             forward = point.InverseTransformDirection(forward);
             up = point.InverseTransformDirection(up);
         }
@@ -79,7 +80,7 @@ public class bodyController : MonoBehaviour
         }
         public void toGlobalUnscaled(Transform point)
         {
-            position = TransformExtensions.TransformPointUnscaled(point, position);
+            position = point.TransformPointUnscaled(position);
             forward = point.TransformDirection(forward);
             up = point.TransformDirection(up);
         }
@@ -190,6 +191,7 @@ public class bodyController : MonoBehaviour
         spallaDestra.Rotate(0, 15, 0);
         spallaSinistra.Rotate(0, 15, 0);
         collo.Rotate(0, 10, 0);
+        //corpo.rotation = new Quaternion(0, 0, 0, 0);
     }
 
     private void correggiPosBraccia()
