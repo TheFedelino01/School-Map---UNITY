@@ -32,6 +32,7 @@ public class Player : NetworkBehaviour
     public int Punti { get => playerInfo.punti; }
     public string Nome { get => playerInfo.nome; }
     public string Squadra { get => playerInfo.squadra; }
+    public GameObject capturedFlag { get; set; } //Puntatore alla bandiera catturata
 
 
     public Player() { }
@@ -132,6 +133,7 @@ public class Player : NetworkBehaviour
 
         //Respawn
         StartCoroutine(respawn());
+        capturedFlag.GetComponent<Flag>().dropTheFlag();
     }
 
     private IEnumerator respawn()

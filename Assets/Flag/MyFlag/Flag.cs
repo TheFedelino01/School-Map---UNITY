@@ -41,6 +41,7 @@ public class Flag : MonoBehaviour
 
     private void conqueredFlag()
     {
+        GameObject.Find(collisionPlayerName).GetComponent<Player>().capturedFlag = null;
         hideFlagId();
 
         isFlagCaptured = false; //La bandiera non è più nelle mani del player attaccante
@@ -78,8 +79,8 @@ public class Flag : MonoBehaviour
 
     private void flagCaptured(Collision other)
     {
-        
 
+        other.collider.GetComponent<Player>().capturedFlag = this.gameObject;
         isFlagCaptured = true;
         (GameObject.Find(flagId)).SetActive(false); //La bandiera viene nascosta
         collisionPlayerName = other.collider.name;
@@ -127,6 +128,7 @@ public class Flag : MonoBehaviour
 
     public void dropTheFlag() //Da richiamare nel momento in cui il player viene ucciso
     {
+        GameObject.Find(collisionPlayerName).GetComponent<Player>().capturedFlag = null;
         hideFlagId();
         isFlagCaptured = false;
         (GameObject.Find(flagId)).transform.position = getPlayerTransform().position;
