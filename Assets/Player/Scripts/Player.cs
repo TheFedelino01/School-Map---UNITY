@@ -49,6 +49,7 @@ public class Player : NetworkBehaviour
         playerInfo.maxSalute = GameManager.instance.gameSettings.saluteMax;
         playerInfo.currentSalute = playerInfo.maxSalute;
 
+        GameManager.instance.SyncManager.Instance.CmdEditInList(playerInfo);
         salvaSituaIniziale();//Mi salvo gli elementi che sono attivi e disattivati all'inizio del player
 
 
@@ -98,7 +99,8 @@ public class Player : NetworkBehaviour
     public void RpcPrendiDanno(float danno, string pistolero)
     {
         float futureSalute = playerInfo.currentSalute - danno;
-
+        Debug.LogError(danno);
+        Debug.LogError(futureSalute);
         if (futureSalute <= 0)
             playerInfo.isDead = true;
 

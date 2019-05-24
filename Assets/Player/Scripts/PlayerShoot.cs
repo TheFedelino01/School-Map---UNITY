@@ -7,7 +7,8 @@ using UnityEngine.Networking;
 public class PlayerShoot : NetworkBehaviour
 {
     //public float danno = 10f;
-
+    private GameObject redScreen;
+    private Coroutine c;
     public string tagNemico = "PlayerREMOTE";
 
     [SerializeField]
@@ -17,6 +18,7 @@ public class PlayerShoot : NetworkBehaviour
 
     void Start()
     {
+        redScreen = GameObject.Find("Canvas").transform.Find("rosso").gameObject;
         if (cam != null)
         {
 
@@ -77,6 +79,15 @@ public class PlayerShoot : NetworkBehaviour
         Player giocatoreColpito = GameManager.instance.getPlayer(idDelPlayerColpito);
 
         giocatoreColpito.RpcPrendiDanno(danno, this.name);
+
+        if (c != null)
+            StopCoroutine(c);
+        redScreen.SetActive(true);
+
+        c = this.EseguiAspettando(5, () =>
+          {
+              redScreen.SetActive(false);
+          });
 
     }
 

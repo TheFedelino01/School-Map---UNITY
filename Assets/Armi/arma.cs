@@ -67,7 +67,18 @@ public class arma : MonoBehaviour
     {
         colpiRimanentiLabel = GameObject.Find("colpiLabel");
         colpiMaxLabel = GameObject.Find("maxColpiLabel");
+    }
+
+    void OnEnable()
+    {
         if (colpiMaxLabel != null)
             colpiMaxLabel.GetComponent<Text>().text = colpiMax.ToString();
+        else
+            this.EseguiAspettando(new WaitForEndOfFrame(), () =>
+            {
+                OnEnable();
+            });
     }
+
+
 }
