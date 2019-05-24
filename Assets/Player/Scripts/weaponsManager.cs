@@ -126,7 +126,6 @@ public class weaponsManager : MonoBehaviour
         return false;
     }
 
-
     public void resetZoom()
     {
         if (Mirando)
