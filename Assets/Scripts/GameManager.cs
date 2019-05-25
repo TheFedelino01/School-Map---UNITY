@@ -159,7 +159,7 @@ public class GameManager : MonoBehaviour
     public void addUccisione(string nome)
     {
         Player tmp = giocatori[nome];
-
+        tmp.RpcHoKillato();
         giocatori[nome].addUccisione();
         Debug.Log("Nuova uccisione: " + tmp.name + " kills updated: " + tmp.Kill);
     }

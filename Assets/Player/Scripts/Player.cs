@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Player : NetworkBehaviour
 {
-
     [SerializeField]
     private Behaviour[] disabilitareQuandoMorto;
     [SerializeField]
     private bool[] statusIniziale;
     private PlayerInfo playerInfo;
+
+
+    private GameObject redScreen;
+    private Coroutine c;
 
     public PlayerInfo PlayerInfo
     {
@@ -43,14 +47,16 @@ public class Player : NetworkBehaviour
         Debug.Log("CREO INFO: " + id);
         playerInfo = new PlayerInfo(id);
     }
-
+    void Start()
+    {
+        redScreen = GameObject.Find("Canvas").transform.Find("rosso").gameObject;
+    }
     public void Setup()//All'inizio, parte quando la classe PlayerSetup e' partita completamente 
     {
         //Imposto la salute massima in base a quella presente nel game settings
         playerInfo.maxSalute = GameManager.instance.gameSettings.saluteMax;
         playerInfo.currentSalute = playerInfo.maxSalute;
 
-        GameManager.instance.SyncManager.Instance.CmdEditInList(playerInfo);
         salvaSituaIniziale();//Mi salvo gli elementi che sono attivi e disattivati all'inizio del player
 
 
@@ -58,6 +64,7 @@ public class Player : NetworkBehaviour
         //TODO SCELTA NOME
         playerInfo.nome = playerInfo.id;
 
+        GameManager.instance.SyncManager.Instance.CmdEditInList(playerInfo);
         //imposto il nome con cui manderà i messaggi
         ChatManager.Instance.playerName = playerInfo.nome;
     }
@@ -94,8 +101,6 @@ public class Player : NetworkBehaviour
         Debug.Log("Partita avviata: " + GameManager.instance.partitaAvviata + "Player: " + nome);
     }
 
-
-
     [ClientRpc]
     public void RpcPrendiDanno(float danno, string pistolero)
     {
@@ -104,6 +109,19 @@ public class Player : NetworkBehaviour
         Debug.LogError(futureSalute);
         if (futureSalute <= 0)
             playerInfo.isDead = true;
+
+        if (isLocalPlayer)
+        {
+            if (c != null)
+                StopCoroutine(c);
+            redScreen.SetActive(true);
+
+            c = this.EseguiAspettando(5, () =>
+            {
+                redScreen.SetActive(false);
+            });
+        }
+
 
         if (playerInfo.isDead == false)
         {
@@ -119,8 +137,27 @@ public class Player : NetworkBehaviour
         GameManager.instance.SyncManager.Instance.CmdEditInList(playerInfo);
     }
 
+    [ClientRpc]
+    public void RpcHoKillato()
+    {
+        if (isLocalPlayer)
+        {
+            GameObject.Find("GameMessage").GetComponent<Text>().text = "KILL";
+            this.EseguiAspettando(3, () =>
+            {
+                if (GameObject.Find("GameMessage").GetComponent<Text>().text == "KILL")
+                    GameObject.Find("GameMessage").GetComponent<Text>().text = "";
+            });
+        }
+    }
+
     private void muori(string assassino)
     {
+        if (isLocalPlayer)
+        {
+            GameObject.Find("GameMessage").GetComponent<Text>().text = "Sei stato ucciso da: " + assassino;
+            KillWindow.Instance.CmdSetKill(assassino, PlayerInfo.nome);
+        }
         //DISABILITIAMO ALCUNI COMPONENTI COSI' NON SI PUO' MUOVERE
         GetComponent<vanguardAnimController>().muori(GameManager.instance.gameSettings.respawnTime);
         disabilitaElementiDaMorto();
@@ -133,7 +170,9 @@ public class Player : NetworkBehaviour
 
         //Respawn
         StartCoroutine(respawn());
-        capturedFlag.GetComponent<Flag>().dropTheFlag();
+
+        if (capturedFlag != null)
+            capturedFlag.GetComponent<Flag>().dropTheFlag();
     }
 
     private IEnumerator respawn()
@@ -142,7 +181,8 @@ public class Player : NetworkBehaviour
         yield return new WaitForSeconds(GameManager.instance.gameSettings.respawnTime);
 
         riportaSituaIniziale();//Riabilito i componenti
-
+        if (isLocalPlayer)
+            GameObject.Find("GameMessage").GetComponent<Text>().text = "";
         //Reimposto la vita
         playerInfo.currentSalute = playerInfo.maxSalute;
 
