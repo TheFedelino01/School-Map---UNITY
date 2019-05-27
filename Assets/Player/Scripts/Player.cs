@@ -17,6 +17,8 @@ public class Player : NetworkBehaviour
     private GameObject redScreen;
     private Coroutine c;
 
+    public GameObject debugGui;
+
     public PlayerInfo PlayerInfo
     {
         get => playerInfo;
@@ -50,6 +52,7 @@ public class Player : NetworkBehaviour
     void Start()
     {
         redScreen = GameObject.Find("Canvas").transform.Find("rosso").gameObject;
+        capturedFlag = null;
     }
     public void Setup()//All'inizio, parte quando la classe PlayerSetup e' partita completamente 
     {
@@ -67,6 +70,9 @@ public class Player : NetworkBehaviour
         GameManager.instance.SyncManager.Instance.CmdEditInList(playerInfo);
         //imposto il nome con cui manderà i messaggi
         ChatManager.Instance.playerName = playerInfo.nome;
+
+        debugGui = GameObject.Find("Menu Manager").GetComponent<MyMenuManager>().getDebugGUI();
+
     }
 
     void Update()
@@ -88,6 +94,12 @@ public class Player : NetworkBehaviour
         {
             //Debug.Log(playerInfo.nome + " non ha team quindi glilo faccio scegliere");
             GetComponent<joinTeam>().Setup();
+        }
+
+        //Se clicca 0 visualizzo o nascondo il debug visivo
+        if (Input.GetKeyDown(KeyCode.Alpha0) == true)
+        {
+            debugGui.SetActive(!debugGui.active);
         }
     }
 
@@ -207,10 +219,10 @@ public class Player : NetworkBehaviour
             disabilitareQuandoMorto[i].enabled = false;
         }
 
-        //Se il player ha un collider, disabilitalo
-        Collider _col = GetComponent<Collider>();
-        if (_col != null)
-            _col.enabled = false;
+        ////Se il player ha un collider, disabilitalo
+        //Collider _col = GetComponent<Collider>();
+        //if (_col != null)
+        //    _col.enabled = false;
     }
 
     private void salvaSituaIniziale()
@@ -228,10 +240,10 @@ public class Player : NetworkBehaviour
             disabilitareQuandoMorto[i].enabled = statusIniziale[i];
         }
 
-        //Se il player ha un collider, riabilitalo
-        Collider _col = GetComponent<Collider>();
-        if (_col != null)
-            _col.enabled = true;
+        ////Se il player ha un collider, riabilitalo
+        //Collider _col = GetComponent<Collider>();
+        //if (_col != null)
+        //    _col.enabled = true;
     }
 
     public void addUccisione()

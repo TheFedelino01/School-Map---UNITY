@@ -123,6 +123,8 @@ public class NETcmd : NetworkBehaviour
         connecting = true;
     }
 
+    
+
 
 }
 

@@ -16,6 +16,13 @@ public class Flag : MonoBehaviour
 
     private GameObject spawnPoint1, spawnPoint2;
 
+    public AudioSource cassa;
+    public AudioClip suonoCattura;
+
+    private bool aspettaPlayerVaVia=false;
+
+    
+
     private void showFlagId()
     {
         GameObject.Find(collisionPlayerName).transform.GetChild(6).gameObject.SetActive(true); //L'icona della bandiera sopra al player viene attivata
@@ -82,14 +89,21 @@ public class Flag : MonoBehaviour
 
         other.collider.GetComponent<Player>().capturedFlag = this.gameObject;
         isFlagCaptured = true;
-        (GameObject.Find(flagId)).SetActive(false); //La bandiera viene nascosta
+
+        GameObject.Find("FlagsManager").GetComponent<messageFlag>().showMessagePresa();//Visualizzo il messaggio
+
+        this.gameObject.SetActive(false); //La bandiera viene nascosta
         collisionPlayerName = other.collider.name;
 
         showFlagId();
 
         Debug.Log(flagId + ": Flag captured !!");
         attivaEffetti();
+
+        cassa.Play();
+        
     }
+    
 
     private void attivaEffetti()
     {
@@ -101,7 +115,11 @@ public class Flag : MonoBehaviour
 
     void OnCollisionEnter(Collision other)
     {
-        flagCaptured(other);
+        //Se non sta morendo e non ha gia preso una bandiera
+        if (aspettaPlayerVaVia == false && GameObject.Find(other.collider.name).GetComponent<Player>().capturedFlag == null)
+        {
+            flagCaptured(other);
+        }
     }
 
     void Start()
@@ -113,6 +131,8 @@ public class Flag : MonoBehaviour
         Debug.Log(flagId + ": Start");
         Debug.Log(flagId + ": spawn1 : " + spawnPoint1.transform.position);
         Debug.Log(flagId + ": spawn2 : " + spawnPoint2.transform.position);
+
+        cassa.clip = suonoCattura;//Inizializzo
     }
 
     void Update()
@@ -128,11 +148,32 @@ public class Flag : MonoBehaviour
 
     public void dropTheFlag() //Da richiamare nel momento in cui il player viene ucciso
     {
+        
         GameObject.Find(collisionPlayerName).GetComponent<Player>().capturedFlag = null;
         hideFlagId();
         isFlagCaptured = false;
-        (GameObject.Find(flagId)).transform.position = getPlayerTransform().position;
+        this.gameObject.transform.position = getPlayerTransform().position;
+        this.gameObject.SetActive(true);
+        aspettaPlayerVaVia = true;
+        GameObject.Find("FlagsManager").GetComponent<messageFlag>().showMessagePersa();//Visualizzo il messaggio
+
+        StartCoroutine(respawnBandiera());
+        
     }
+
+    private IEnumerator respawnBandiera()
+    {
+        //Aspetto il tempo di respawn
+        yield return new WaitForSeconds(5);
+
+        aspettaPlayerVaVia = false;
+
+        Debug.Log("Bandiera rilasciata!");
+    }
+
+    
+
+
 
 
 }

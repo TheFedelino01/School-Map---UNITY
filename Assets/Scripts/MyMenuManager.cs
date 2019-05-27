@@ -16,10 +16,12 @@ public class MyMenuManager : MonoBehaviour
 
     private bool hightexture = false;
     public GameObject[] hightextureComponents;
+
+    public GameObject debugGui;
     // Start is called before the first frame update
     void Start()
     {
-
+        debugGui.SetActive(false);
     }
 
     // Update is called once per frame
@@ -124,4 +126,6 @@ public class MyMenuManager : MonoBehaviour
         }
         
     }
+
+    public GameObject getDebugGUI() { return debugGui; }
 }

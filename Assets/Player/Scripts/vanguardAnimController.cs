@@ -275,9 +275,9 @@ public class vanguardAnimController : MonoBehaviour
         respawTime -= 0.1f;
         float velocita = 4.4f / respawTime;
         anim.speed = velocita;
-        anim.SetTrigger("isDead");
+        anim.SetBool("isDead", true);
 
-        StartCoroutine(resetVelocitaAnimazione(respawTime));
+        StartCoroutine(muoriFerma(respawTime));
     }
 
     public void ricarica(float tempo)
@@ -296,5 +296,11 @@ public class vanguardAnimController : MonoBehaviour
         anim.SetBool("reload", false);
         Ricaricando = false;
         anim.speed = 1;
+    }
+
+    private IEnumerator muoriFerma(float ritardo)
+    {
+        yield return new WaitForSeconds(ritardo);
+        anim.SetBool("isDead", false);
     }
 }
