@@ -128,9 +128,10 @@ public class Player : NetworkBehaviour
                 StopCoroutine(c);
             redScreen.SetActive(true);
 
-            c = this.EseguiAspettando(5, () =>
+            c = this.EseguiAspettando(3, () =>
             {
                 redScreen.SetActive(false);
+                
             });
         }
 
@@ -150,14 +151,14 @@ public class Player : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RpcHoKillato()
+    public void RpcHoKillato(string chiHoUcciso)
     {
         if (isLocalPlayer)
         {
-            GameObject.Find("GameMessage").GetComponent<Text>().text = "KILL";
+            GameObject.Find("GameMessage").GetComponent<Text>().text = "KILL "+ chiHoUcciso;
             this.EseguiAspettando(3, () =>
             {
-                if (GameObject.Find("GameMessage").GetComponent<Text>().text == "KILL")
+                if (GameObject.Find("GameMessage").GetComponent<Text>().text == "KILL " + chiHoUcciso)
                     GameObject.Find("GameMessage").GetComponent<Text>().text = "";
             });
         }
@@ -176,7 +177,7 @@ public class Player : NetworkBehaviour
 
         playerInfo.morti++;//Aumento il numero di morti
         GameManager.instance.SyncManager.Instance.CmdEditInList(playerInfo);
-        GameManager.instance.addUccisione(assassino);//Aumento il numero di uccisioni di chi mi ha ucciso
+        GameManager.instance.addUccisione(assassino, PlayerInfo.nome);//Aumento il numero di uccisioni di chi mi ha ucciso
 
         Debug.Log(transform.name + " is now dead!");
 

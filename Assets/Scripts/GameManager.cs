@@ -156,10 +156,10 @@ public class GameManager : MonoBehaviour
     {
         return giocatori;
     }
-    public void addUccisione(string nome)
+    public void addUccisione(string nome, string morto)
     {
         Player tmp = giocatori[nome];
-        tmp.RpcHoKillato();
+        tmp.RpcHoKillato(morto);
         giocatori[nome].addUccisione();
         Debug.Log("Nuova uccisione: " + tmp.name + " kills updated: " + tmp.Kill);
     }
