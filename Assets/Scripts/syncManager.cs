@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 
 public class syncManager : NetworkBehaviour
@@ -11,7 +9,7 @@ public class syncManager : NetworkBehaviour
         get
         {
             if (instance == null)
-                Debug.LogError("ERRORE: SYNC MANAGER NULLO");
+                Debug.LogError("[Server] ERRORE: SYNC MANAGER NULLO");
             return instance;
         }
     }
@@ -78,7 +76,7 @@ public class syncManager : NetworkBehaviour
     [Command]
     public void CmdAddToList(PlayerInfo p)
     {
-        Debug.Log("CMD AGGIUNGO ALLA LISTA: " + p.id);
+        Debug.Log("[Server] CMD AGGIUNGO ALLA LISTA: " + p.id);
         //if (isServer)
         //{
         syncPlayerInfo.Add(p);  //lo aggiungo alla lista sincronizzata    
@@ -94,14 +92,23 @@ public class syncManager : NetworkBehaviour
             if (syncPlayerInfo[i].id == id)
             {
                 syncPlayerInfo.RemoveAt(i);
+                Debug.LogError("[Server] Player: " + id + " disconnesso!");
+                RpcUnRegisterRemotePlayer(id); //tolgo il player da tutti i client
                 return;
             }
-        Debug.LogError("Giocatore Non trovato nella lista sincronizzata: " + id);
+        Debug.LogError("[Server] Giocatore Non trovato nella lista sincronizzata: " + id);
     }
+
+    [ClientRpc]
+    private void RpcUnRegisterRemotePlayer(string id)
+    {
+        GameManager.instance.unRegisterRemotePlayer(id);
+    }
+
     [Command]
     public void CmdEditInList(PlayerInfo nuove)
     {
-        Debug.Log("EDIT LISTA");
+        Debug.Log("[Server] EDIT LISTA");
         for (int i = 0; i < syncPlayerInfo.Count; i++)
             if (syncPlayerInfo[i].id == nuove.id)
             {
@@ -109,6 +116,6 @@ public class syncManager : NetworkBehaviour
                 syncPlayerInfo[i] = nuove;
                 return;
             }
-        Debug.LogError("Giocatore Non trovato nella lista sincronizzata: " + nuove.id + "\n" + nuove.ToString());
+        Debug.LogError("[Server] Giocatore Non trovato nella lista sincronizzata: " + nuove.id + "\n" + nuove.ToString());
     }
 }

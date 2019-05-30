@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 public class MyMenuManager : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public class MyMenuManager : MonoBehaviour
     public GameObject[] hightextureComponents;
 
     public GameObject debugGui;
+
+    public NETcmd NETcmd;
     // Start is called before the first frame update
     void Start()
     {
@@ -87,11 +90,21 @@ public class MyMenuManager : MonoBehaviour
         if (GameManager.instance.partitaAvviata)
         {
             GameManager.instance.partitaAvviata = false;
-            NetworkManager.singleton.StopHost();
-            NetworkManager.singleton.StopClient();
-            exitWindow.GetComponent<Animator>().Play("Exit Panel Out");
-            finestraStatistiche.GetComponent<Animator>().Play("Settings Out");
-            menuWindow.SetActive(true);
+            GameManager.instance.unRegisterLocalPlayer();
+
+            //aspetto che effettivamente il server mi scancelli prima di uscire
+            this.EseguiAspettando(1, () =>
+            {
+                //SE TOLGO I DEBUG.LOG NON VA PIU' QUINDI LI LASCIO QUI XD
+                NETcmd.disconnetti();
+                Debug.Log("DISCONNESSO");
+                exitWindow.GetComponent<Animator>().Play("Exit Panel Out");
+                finestraStatistiche.GetComponent<Animator>().Play("Settings Out");
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);         //ricarico la scena da capo per evitare errori
+
+                //menuWindow.SetActive(true);
+                //menuWindow.GetComponent<Animator>().Play("Main Panel Opening Start");
+            });
         }
         else
             GetComponent<ExitToSystem>().ExitGame();
@@ -116,15 +129,16 @@ public class MyMenuManager : MonoBehaviour
     public void changeHighTextures()
     {
         hightexture = !hightexture;
-        for(int i=0; i< hightextureComponents.Length; i++)
+        for (int i = 0; i < hightextureComponents.Length; i++)
         {
             //Se vuole attivare le high textures, abilito i componenti, altrimenti li disabilito
             if (hightexture == true)
             {
                 hightextureComponents[i].SetActive(true);
-            }else hightextureComponents[i].SetActive(false);
+            }
+            else hightextureComponents[i].SetActive(false);
         }
-        
+
     }
 
     public GameObject getDebugGUI() { return debugGui; }

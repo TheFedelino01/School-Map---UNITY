@@ -16,29 +16,34 @@ public class playerSetup : NetworkBehaviour
 
     void Start()
     {
-        //Controllo se questo player non e' comandato da me
-        //(Non sono io questo player)
-        if (isLocalPlayer == false)
-        {
-            setAsRemotePlayer();
 
-            //Proibisco che il giocatore possa essere comandato da me
-            //in quanto non sono io il "proprietario"
-            for (int i = 0; i < componentiDaDisabilitare.Length; i++)
+        //per qualche strano motivo devo aspettare il secondo frame
+        this.EseguiAspettando(new WaitForEndOfFrame(), () =>
+        {        
+            //Controllo se questo player non e' comandato da me
+            //(Non sono io questo player)
+            if (isLocalPlayer == false)
             {
-                componentiDaDisabilitare[i].enabled = false;
+                setAsRemotePlayer();
+
+                //Proibisco che il giocatore possa essere comandato da me
+                //in quanto non sono io il "proprietario"
+                for (int i = 0; i < componentiDaDisabilitare.Length; i++)
+                {
+                    componentiDaDisabilitare[i].enabled = false;
+                }
             }
-        }
-        else
-        {
-            //Sono io questo player
-            setAsLocalPlayer();
-            sceneCamera = Camera.main;
-            if (sceneCamera != null)
+            else
             {
-                sceneCamera.gameObject.SetActive(false);
+                //Sono io questo player
+                setAsLocalPlayer();
+                sceneCamera = Camera.main;
+                if (sceneCamera != null)
+                {
+                    sceneCamera.gameObject.SetActive(false);
+                }
             }
-        }
+        });
 
     }
     //void Update()
@@ -103,16 +108,13 @@ public class playerSetup : NetworkBehaviour
         gameObject.tag = TAGlocal;
     }
 
-    //Quando il player esce
-    void onDisable()
-    {
-        if (sceneCamera != null)
-        {
-            sceneCamera.gameObject.SetActive(true);
-        }
-
-        GameManager.instance.unRegisterPlayer(transform.name);//Lo tolgo dalla lista dei players
-
-
-    }
+    ////Quando il player esce
+    //void onDisable()
+    //{
+    //    if (sceneCamera != null)
+    //    {
+    //        sceneCamera.gameObject.SetActive(true);
+    //    }
+    //    GameManager.instance.unRegisterPlayer(transform.name);//Lo tolgo dalla lista dei players
+    //}
 }

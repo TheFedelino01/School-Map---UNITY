@@ -98,7 +98,8 @@ public class GameManager : MonoBehaviour
 
     private const string PrefixPlayer = "Player.";
     private Dictionary<string, Player> giocatori = new Dictionary<string, Player>();
-
+    private Player localPlayer; //lo salvo per la disconnessione
+    public bool isServer { get; set; }
 
     public void RegisterLocalPlayer(string netId, Player player)
     {
@@ -118,6 +119,7 @@ public class GameManager : MonoBehaviour
         Debug.Log(giocatori[plId] + "---" + syncManager.Instance.SyncPlayerInfo[0]);
 
         player.transform.name = plId;//Gli imposto il nome
+        localPlayer = player;
     }
 
     public void RegisterRemotePlayer(string netId, Player player)
@@ -140,10 +142,18 @@ public class GameManager : MonoBehaviour
     }
 
 
-    public void unRegisterPlayer(string nome)
+    public void unRegisterLocalPlayer()
     {
-        syncManager.Instance.CmdRemoveFromList(nome);
-        giocatori.Remove(nome);
+        string id = localPlayer.PlayerInfo.id;
+        syncManager.Instance.CmdRemoveFromList(id);
+        giocatori.Remove(id);
+        Debug.LogError("Player: " + id + " disconnesso!");
+    }
+
+    public void unRegisterRemotePlayer(string id)
+    {
+        giocatori.Remove(id);
+        Debug.LogError("Player: " + id + " disconnesso!");
     }
 
     public Player getPlayer(string nomePlayer)

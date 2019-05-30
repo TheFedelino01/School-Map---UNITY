@@ -76,7 +76,7 @@ public class NETcmd : NetworkBehaviour
         Debug.Log("STARTING SERVER...");
         NetworkManager.singleton.networkPort = port;
         NetworkManager.singleton.StartHost();
-
+        GameManager.instance.isServer = true;
         menuWindows.SetActive(false);
 
         //soleDaAttivareQuandoSpawno.SetActive(true);
@@ -123,7 +123,22 @@ public class NETcmd : NetworkBehaviour
         connecting = true;
     }
 
-    
+    public void disconnetti()
+    {
+        if (GameManager.instance.isServer)
+        {
+            //SE TOLGO I DEBUG.LOG NON VA PIU' QUINDI LI LASCIO QUI XD
+            Debug.Log("Sto stoppando l'host");
+            NetworkManager.singleton.StopHost();
+            Debug.Log("Host stoppato");
+        }
+        else
+        {
+            Debug.Log("Sto stoppando il client");
+            NetworkManager.singleton.StopClient();
+            Debug.Log("Client stoppato");
+        }
+    }
 
 
 }
