@@ -48,7 +48,8 @@ public class Flag : MonoBehaviour
 
     private void conqueredFlag()
     {
-        GameObject.Find(collisionPlayerName).GetComponent<Player>().capturedFlag = null;
+        Player p = GameObject.Find(collisionPlayerName).GetComponent<Player>();
+        p.capturedFlag = null;
         hideFlagId();
 
         isFlagCaptured = false; //La bandiera non è più nelle mani del player attaccante
@@ -59,6 +60,7 @@ public class Flag : MonoBehaviour
         //TO DO
         //Incrementa punteggio player
         //Incrementa punteggio squadra attaccante...
+        p.incNumBandiere();
     }
 
 

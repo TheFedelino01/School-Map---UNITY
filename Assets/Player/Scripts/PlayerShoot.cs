@@ -80,8 +80,8 @@ public class PlayerShoot : NetworkBehaviour
         Debug.Log("COLPITO> " + this.name + " HA COLPITO IL Giocatore: " + idDelPlayerColpito);
 
         Player giocatoreColpito = GameManager.Instance.getPlayer(idDelPlayerColpito);
-
-        giocatoreColpito.RpcPrendiDanno(danno, this.name);
+        if (!giocatoreColpito.PlayerInfo.isDead)
+            giocatoreColpito.RpcPrendiDanno(danno, this.name);
 
 
     }

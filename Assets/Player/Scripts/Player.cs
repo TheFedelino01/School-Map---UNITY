@@ -7,6 +7,10 @@ using UnityEngine.UI;
 
 public class Player : NetworkBehaviour
 {
+    public const int PUNTI_BANDIERA = 1000;
+    public const int PUNTI_KILL = 200;
+    public const int PUNTI_MORTE = -100;
+
     [SerializeField]
     private Behaviour[] disabilitareQuandoMorto;
     [SerializeField]
@@ -185,6 +189,7 @@ public class Player : NetworkBehaviour
         disabilitaElementiDaMorto();
 
         playerInfo.morti++;//Aumento il numero di morti
+        playerInfo.punti += PUNTI_MORTE;
         syncManager.Instance.CmdEditInList(playerInfo);
         GameManager.Instance.addUccisione(idAssassino, PlayerInfo.nome);//Aumento il numero di uccisioni di chi mi ha ucciso
 
@@ -259,6 +264,14 @@ public class Player : NetworkBehaviour
     public void addUccisione()
     {
         playerInfo.kill++;
+        playerInfo.punti += PUNTI_KILL;
+        syncManager.Instance.CmdEditInList(playerInfo);
+    }
+
+    public void incNumBandiere()
+    {
+        playerInfo.bandiere++;
+        playerInfo.punti += PUNTI_BANDIERA;
         syncManager.Instance.CmdEditInList(playerInfo);
     }
 }
