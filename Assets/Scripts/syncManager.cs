@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 public class syncManager : NetworkBehaviour
 {
     private static syncManager instance;
-    public syncManager Instance
+    public static syncManager Instance
     {
         get
         {
@@ -98,6 +98,7 @@ public class syncManager : NetworkBehaviour
             }
         Debug.LogError("Giocatore Non trovato nella lista sincronizzata: " + id);
     }
+
     [Command]
     public void CmdEditInList(PlayerInfo nuove)
     {

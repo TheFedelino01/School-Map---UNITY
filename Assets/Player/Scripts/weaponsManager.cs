@@ -45,7 +45,7 @@ public class weaponsManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!ChatManager.Instance.ChatAperta)
+        if (!ChatManager.Instance.ChatAperta && GameManager.Instance.partitaAvviata)
         {
             if (Input.GetKeyDown(KeyCode.R))
                 ricarica();
@@ -121,7 +121,7 @@ public class weaponsManager : MonoBehaviour
             return true;
         }
 
-        if (activeArma.ColpiRimanenti <= 0 && GameManager.instance.gameSettings.ricaricaAuto)
+        if (activeArma.ColpiRimanenti <= 0 && GameManager.Instance.gameSettings.ricaricaAuto)
             ricarica();
         return false;
     }

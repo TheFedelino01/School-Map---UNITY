@@ -39,12 +39,8 @@ public class playerSetup : NetworkBehaviour
                 sceneCamera.gameObject.SetActive(false);
             }
         }
-
     }
-    //void Update()
-    //{
-    //    Debug.LogError(GameManager.instance.gameObject.GetComponent<NetworkIdentity>().hasAuthority);
-    //}
+
     [Command]
     private void CmdAssegnaAutorita(NetworkIdentity toAssign, NetworkIdentity playerID)
     {
@@ -56,14 +52,14 @@ public class playerSetup : NetworkBehaviour
         }
         catch (System.NullReferenceException e) { }
         Debug.Log("Autorità GameManager assegnata: " + toAssign.AssignClientAuthority(playerID.connectionToClient));    //assegno al gameManager l'autorità del 
-        //Debug.LogError(toAssign.hasAuthority);
+                                                                                                                        //Debug.LogError(toAssign.hasAuthority);
     }
 
     //Quando entra il player
     public override void OnStartLocalPlayer()
     {
         Debug.Log("OnStartLocalPlayer");
-        CmdAssegnaAutorita(GameManager.instance.gameObject.GetComponentInChildren<NetworkIdentity>(), this.GetComponent<NetworkIdentity>());
+        CmdAssegnaAutorita(GameManager.Instance.gameObject.GetComponentInChildren<NetworkIdentity>(), this.GetComponent<NetworkIdentity>());
         //Imposto l'identia' del player
         //ogni player ha un ID unico
         string netId = GetComponent<NetworkIdentity>().netId.ToString();
@@ -78,14 +74,34 @@ public class playerSetup : NetworkBehaviour
     private IEnumerator add(string id, Player p)
     {
         yield return new WaitForEndOfFrame();
-        if (GameManager.instance.gameObject.GetComponentInChildren<NetworkIdentity>().hasAuthority)
+        if (GameManager.Instance.gameObject.GetComponentInChildren<NetworkIdentity>().hasAuthority)
         {
-            GameManager.instance.RegisterLocalPlayer(id, p);//Aggiungo il giocatore alla lista dei players
-            p.Setup();//Faccio partire il setUp
+            Debug.Log("add");
+            GameManager.Instance.RegisterLocalPlayer(id, p);//Aggiungo il giocatore alla lista dei players
+
+            SceltaNome.Instance.avvia(p);
+            aspettaSceltaNome();
+
+            //motodo che aspetta che il giocatore abbia un nome prima di fargli scegliere la squadra
+            void aspettaSceltaNome()
+            {
+                this.EseguiAspettando(new WaitForEndOfFrame(), () =>
+                {
+                    if (p.Nome != null && p.Nome != "")
+                    {
+                        GetComponent<joinTeam>().Setup();
+                        p.Setup();//Faccio partire il setUp
+                    }
+                    else
+                        aspettaSceltaNome();
+                });
+            }
+
         }
         else
             StartCoroutine(add(id, p));
     }
+
     void setAsRemotePlayer()
     {
         //Dico che questo player ha questo tag (remoteLayerName)
@@ -94,7 +110,7 @@ public class playerSetup : NetworkBehaviour
         Debug.Log("Start altro client");
         string netId = GetComponent<NetworkIdentity>().netId.ToString();
         Player _player = GetComponent<Player>();
-        GameManager.instance.RegisterRemotePlayer(netId, _player);
+        GameManager.Instance.RegisterRemotePlayer(netId, _player);
     }
 
     void setAsLocalPlayer()
@@ -111,7 +127,7 @@ public class playerSetup : NetworkBehaviour
             sceneCamera.gameObject.SetActive(true);
         }
 
-        GameManager.instance.unRegisterPlayer(transform.name);//Lo tolgo dalla lista dei players
+        GameManager.Instance.unRegisterPlayer(transform.name);//Lo tolgo dalla lista dei players
 
 
     }

@@ -27,7 +27,7 @@ public class MyMenuManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GameManager.instance.partitaAvviata && Input.GetKeyDown(KeyCode.Escape))
+        if (GameManager.Instance.partitaAvviata && Input.GetKeyDown(KeyCode.Escape))
         {
             Debug.Log("ESC");
             if (!inGameSettingsOpened)
@@ -41,7 +41,7 @@ public class MyMenuManager : MonoBehaviour
     public void apriImpostazioni()
     {
         Debug.Log("apro impostazioni");
-        if (GameManager.instance.partitaAvviata)
+        if (GameManager.Instance.partitaAvviata)
         {
             finestraStatistiche.GetComponent<Animator>().Play("Settings Out");
         }
@@ -53,14 +53,14 @@ public class MyMenuManager : MonoBehaviour
     {
         inGameSettings.SetActive(true);
         settingsWindow.GetComponent<Animator>().Play("Settings Out");
-        if (GameManager.instance.partitaAvviata)
+        if (GameManager.Instance.partitaAvviata)
         {
             finestraStatistiche.GetComponent<Animator>().Play("Settings In");
         }
     }
     public void apriExitWindow()
     {
-        if (GameManager.instance.partitaAvviata)
+        if (GameManager.Instance.partitaAvviata)
         {
             finestraStatistiche.GetComponent<Animator>().Play("Settings Out");
         }
@@ -71,7 +71,7 @@ public class MyMenuManager : MonoBehaviour
     {
         inGameSettings.SetActive(true);
         exitWindow.GetComponent<Animator>().Play("Settings Out");
-        if (GameManager.instance.partitaAvviata)
+        if (GameManager.Instance.partitaAvviata)
         {
             finestraStatistiche.GetComponent<Animator>().Play("Settings In");
         }
@@ -84,9 +84,9 @@ public class MyMenuManager : MonoBehaviour
         inGameSettings.GetComponent<Animator>().Play("Settings Out");
         canvas.GetComponent<screenOverlayManager>().ForzaDisattivazione = false;
         inGameSettingsOpened = false;
-        if (GameManager.instance.partitaAvviata)
+        if (GameManager.Instance.partitaAvviata)
         {
-            GameManager.instance.partitaAvviata = false;
+            GameManager.Instance.partitaAvviata = false;
             NetworkManager.singleton.StopHost();
             NetworkManager.singleton.StopClient();
             exitWindow.GetComponent<Animator>().Play("Exit Panel Out");

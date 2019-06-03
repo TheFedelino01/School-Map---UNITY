@@ -55,6 +55,7 @@ public class ManagerTeam : MonoBehaviour
     {
         //imgMirino.GetComponent<mirinoManager>().ForzaDisattivazione = true;
         camera.SetActive(true);
+        teamWindow.SetActive(true);
         teamWindow.GetComponent<Animator>().Play("Settings In");
         Cursor.lockState = CursorLockMode.None;
     }
@@ -64,6 +65,7 @@ public class ManagerTeam : MonoBehaviour
         teamWindow.GetComponent<Animator>().Play("Settings Out");
         camera.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
+        teamWindow.SetActive(false);
         //imgMirino.GetComponent<mirinoManager>().ForzaDisattivazione = false;
 
         //Debug.Log("LISTA RIASSUNTIVA PLAYERS:\n"+GameManager.instance.toStringAll());
@@ -71,7 +73,7 @@ public class ManagerTeam : MonoBehaviour
 
     public void setTeamBLUE()//richiamato quando clicca sul pulsante "BLUE" presente nel "joinTeamMio"
     {
-        GameManager.instance.getPlayer(playerCheStaScegliendo).SetTeam("BLUE");
+        GameManager.Instance.getPlayer(playerCheStaScegliendo).SetTeam("BLUE");
         Debug.Log("Il giocatore: " + playerCheStaScegliendo + " ha scelto il team BLUE");
 
         nascondiFinestraTeam();
@@ -79,7 +81,7 @@ public class ManagerTeam : MonoBehaviour
 
     public void setTeamRED()//richiamato quando clicca sul pulsante "RED" presente nel "joinTeamMio"
     {
-        GameManager.instance.getPlayer(playerCheStaScegliendo).SetTeam("RED");
+        GameManager.Instance.getPlayer(playerCheStaScegliendo).SetTeam("RED");
         Debug.Log("Il giocatore: " + playerCheStaScegliendo + " ha scelto il team RED");
 
         nascondiFinestraTeam();

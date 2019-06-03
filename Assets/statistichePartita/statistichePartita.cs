@@ -25,7 +25,7 @@ public class statistichePartita : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!GameManager.instance.partitaAvviata)
+        if (!GameManager.Instance.partitaAvviata)
             return;
         if (Input.GetKeyDown(KeyCode.Tab))
         {
@@ -38,7 +38,7 @@ public class statistichePartita : MonoBehaviour
 
         if (toUpdate)
         {
-            var giocatori = GameManager.instance.getAllPlayers();
+            var giocatori = GameManager.Instance.getAllPlayers();
 
             for (int i = 0; i < lista1.transform.childCount; i++)
                 Destroy(lista1.transform.GetChild(i).gameObject);
@@ -58,7 +58,7 @@ public class statistichePartita : MonoBehaviour
                 else
                     stat = Instantiate(prefabPlayer, lista2.transform);
 
-                stat.transform.Find(CAMPI_STATISTICHE[0]).GetComponent<Text>().text = player.Key + ": " + player.Value.Squadra;
+                stat.transform.Find(CAMPI_STATISTICHE[0]).GetComponent<Text>().text = player.Value.Nome;// + ": " + player.Value.Squadra;
                 stat.transform.Find(CAMPI_STATISTICHE[1]).GetComponent<Text>().text = player.Value.Kill.ToString();
                 stat.transform.Find(CAMPI_STATISTICHE[2]).GetComponent<Text>().text = player.Value.Morti.ToString();
                 stat.transform.Find(CAMPI_STATISTICHE[3]).GetComponent<Text>().text = player.Value.Bandiere.ToString();

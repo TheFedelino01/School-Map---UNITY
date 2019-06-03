@@ -45,7 +45,7 @@ public class ChatManager : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GameManager.instance.partitaAvviata)
+        if (GameManager.Instance.partitaAvviata)
         {
             if (Input.GetKeyDown(KeyCode.T) && !ChatAperta)
             {
@@ -151,7 +151,7 @@ public class ChatManager : NetworkBehaviour
         GameObject m = Instantiate(MessagePrefab, MessagesList);
         m.transform.name = mess.idMessaggio.ToString();
         m.transform.Find("Message").GetComponent<Text>().text = mess.text;
-        m.transform.Find("Player Name").GetComponent<Text>().text = mess.nomePlayer;
+        m.transform.Find("Player Name").GetComponent<Text>().text = mess.nomePlayer + ": ";
 
         this.EseguiAspettando(1, () =>
         {
@@ -161,11 +161,11 @@ public class ChatManager : NetworkBehaviour
                 ScrollRect.verticalNormalizedPosition = 0;
         });
 
-        if (coroutineChiusuraPopup != null)
-            StopCoroutine(coroutineChiusuraPopup);
         //sui client che non hanno inviato il messaggio apro un popup che si chiude dopo 5 secondi
         if (playerName != mess.nomePlayer && !ChatAperta)
         {
+            if (coroutineChiusuraPopup != null)
+                StopCoroutine(coroutineChiusuraPopup);
             mostraMessaggi();
             Debug.Log("Nascondo i messaggi tra 5 secondi... ");
             coroutineChiusuraPopup = this.EseguiAspettando(5, () =>

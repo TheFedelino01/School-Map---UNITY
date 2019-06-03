@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     private syncManager syncManager;
     public syncManager SyncManager { get => syncManager; }
     private static GameManager _instance;
-    public static GameManager instance
+    public static GameManager Instance
     {
         get
         {
@@ -146,21 +146,21 @@ public class GameManager : MonoBehaviour
         giocatori.Remove(nome);
     }
 
-    public Player getPlayer(string nomePlayer)
+    public Player getPlayer(string idPlayer)
     {
-        Debug.Log(giocatori[nomePlayer].PlayerInfo.ToString());
-        return giocatori[nomePlayer];
+        Debug.Log(giocatori[idPlayer].PlayerInfo.ToString());
+        return giocatori[idPlayer];
     }
 
     public Dictionary<string, Player> getAllPlayers()
     {
         return giocatori;
     }
-    public void addUccisione(string nome, string morto)
+    public void addUccisione(string idAssassino, string nome)
     {
-        Player tmp = giocatori[nome];
-        tmp.RpcHoKillato(morto);
-        giocatori[nome].addUccisione();
+        Player tmp = giocatori[idAssassino];
+        tmp.RpcHoKillato(nome);
+        giocatori[idAssassino].addUccisione();
         Debug.Log("Nuova uccisione: " + tmp.name + " kills updated: " + tmp.Kill);
     }
 
@@ -174,7 +174,10 @@ public class GameManager : MonoBehaviour
         return ris;
     }
 
-
+    public string getPlayerName(string id)
+    {
+        return giocatori[id].Nome;
+    }
 
     //void OnGUI()
     //{

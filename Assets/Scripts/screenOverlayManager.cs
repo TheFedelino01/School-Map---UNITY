@@ -17,7 +17,7 @@ public class screenOverlayManager : MonoBehaviour
     {
         if (!ForzaDisattivazione)
         {
-            bool partitaAvviata = GameManager.instance.partitaAvviata;
+            bool partitaAvviata = GameManager.Instance.partitaAvviata;
             foreach (GameObject g in childsToDisable)
                 if (g.active != partitaAvviata)
                     g.SetActive(partitaAvviata);

@@ -39,13 +39,19 @@ public class PlayerShoot : NetworkBehaviour
             if (Input.GetButtonDown("Fire1"))
                 spara();
         }
+
+        //Se il giocatore preme K, questo si suicida
+        if (Input.GetKeyDown(KeyCode.K) && !ChatManager.Instance.ChatAperta && GameManager.Instance.partitaAvviata)
+        {
+            CmdPlayerAsBeenShoot(GetComponent<Player>().Id, int.MaxValue);
+        }
     }
     //In questo modo questo metodo puo' essere richiamato solo dal 
     //Client e MAI dal Server
     [Client]
     void spara()
     {
-        if (GameManager.instance.partitaAvviata && GetComponent<weaponsManager>().spara())
+        if (GameManager.Instance.partitaAvviata && GetComponent<weaponsManager>().spara())
         {
             RaycastHit _hit;
 
@@ -73,7 +79,7 @@ public class PlayerShoot : NetworkBehaviour
 
         Debug.Log("COLPITO> " + this.name + " HA COLPITO IL Giocatore: " + idDelPlayerColpito);
 
-        Player giocatoreColpito = GameManager.instance.getPlayer(idDelPlayerColpito);
+        Player giocatoreColpito = GameManager.Instance.getPlayer(idDelPlayerColpito);
 
         giocatoreColpito.RpcPrendiDanno(danno, this.name);
 

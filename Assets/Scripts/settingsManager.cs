@@ -22,6 +22,6 @@ public class settingsManager : MonoBehaviour
     public void updateSensibility()
     {
         Debug.Log("LETTA: " + sliderSensibility.GetComponent<Slider>().value);
-        GameManager.instance.gameSettings.sensibilità = (int)sliderSensibility.GetComponent<Slider>().value;
+        GameManager.Instance.gameSettings.sensibilità = (int)sliderSensibility.GetComponent<Slider>().value;
     }
 }

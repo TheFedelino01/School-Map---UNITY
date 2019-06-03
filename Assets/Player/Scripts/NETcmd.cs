@@ -19,7 +19,7 @@ public class NETcmd : NetworkBehaviour
 
     public GameObject menuWindows;
 
-   
+
 
     // Start is called before the first frame update
     void Start()
@@ -36,7 +36,7 @@ public class NETcmd : NetworkBehaviour
     void Update()
     {
         //Sta provando a connettersi
-        if (connecting == true)
+        if (!GameManager.Instance.partitaAvviata && connecting == true)
         {
             //Mostro il bottone cancella connessione se non si e' connesso
             if (NetworkManager.singleton.IsClientConnected() == false)
@@ -51,6 +51,8 @@ public class NETcmd : NetworkBehaviour
                 connecting = false;
                 stopConnecting.SetActive(false);//Nascondo il bottone cancella
                 connect.SetActive(true);//visualizzo il bottone connetti
+
+                menuWindows.SetActive(false);
             }
         }
     }
@@ -102,7 +104,8 @@ public class NETcmd : NetworkBehaviour
         Debug.Log("Nuovo IP: " + ip);
     }
 
-    private void connettitiAspettando(float sec) {
+    private void connettitiAspettando(float sec)
+    {
         StartCoroutine(cnt(sec));
         //menuWindows.SetActive(false);
     }
@@ -123,7 +126,7 @@ public class NETcmd : NetworkBehaviour
         connecting = true;
     }
 
-    
+
 
 
 }

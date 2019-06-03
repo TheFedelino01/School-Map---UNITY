@@ -38,6 +38,7 @@ public class Player : NetworkBehaviour
     public int Punti { get => playerInfo.punti; }
     public string Nome { get => playerInfo.nome; }
     public string Squadra { get => playerInfo.squadra; }
+    public string Id { get => PlayerInfo.id; }
     public GameObject capturedFlag { get; set; } //Puntatore alla bandiera catturata
 
 
@@ -57,7 +58,7 @@ public class Player : NetworkBehaviour
     public void Setup()//All'inizio, parte quando la classe PlayerSetup e' partita completamente 
     {
         //Imposto la salute massima in base a quella presente nel game settings
-        playerInfo.maxSalute = GameManager.instance.gameSettings.saluteMax;
+        playerInfo.maxSalute = GameManager.Instance.gameSettings.saluteMax;
         playerInfo.currentSalute = playerInfo.maxSalute;
 
         salvaSituaIniziale();//Mi salvo gli elementi che sono attivi e disattivati all'inizio del player
@@ -65,9 +66,9 @@ public class Player : NetworkBehaviour
 
         //ASSEGNO L'ID AL NOME MOMENTANEAMENTE
         //TODO SCELTA NOME
-        playerInfo.nome = playerInfo.id;
+        //playerInfo.nome = playerInfo.id;
 
-        GameManager.instance.SyncManager.Instance.CmdEditInList(playerInfo);
+        syncManager.Instance.CmdEditInList(playerInfo);
         //imposto il nome con cui manderà i messaggi
         ChatManager.Instance.playerName = playerInfo.nome;
 
@@ -84,17 +85,19 @@ public class Player : NetworkBehaviour
         if (!isLocalPlayer)
             return;
 
-        //Se il giocatore preme K, questo si suicida
-        if (Input.GetKeyDown(KeyCode.K) && !ChatManager.Instance.ChatAperta)
-        {
-            RpcPrendiDanno(int.MaxValue, playerInfo.id);
-        }
-        //Debug.Log(playerInfo.squadra);
-        if (playerInfo.squadra == null)
-        {
-            //Debug.Log(playerInfo.nome + " non ha team quindi glilo faccio scegliere");
-            GetComponent<joinTeam>().Setup();
-        }
+
+        ////Debug.Log(playerInfo.squadra);
+        //if (playerInfo.squadra == null)
+        //{
+        //    //Debug.Log(playerInfo.nome + " non ha team quindi glilo faccio scegliere");
+        //    GetComponent<joinTeam>().Setup();
+        //}
+
+        //if (playerInfo.nome == null)
+        //{
+        //    //Debug.Log(playerInfo.nome + " non ha team quindi glilo faccio scegliere");
+        //    GetComponent<SceltaNome>().mostraFinestra();
+        //}
 
         //Se clicca 0 visualizzo o nascondo il debug visivo
         if (Input.GetKeyDown(KeyCode.Alpha0) == true)
@@ -103,14 +106,19 @@ public class Player : NetworkBehaviour
         }
     }
 
+    public void setNome(string nome)
+    {
+        playerInfo.nome = nome;
+        syncManager.Instance.CmdEditInList(playerInfo);
 
+    }
     public void SetTeam(string nome)
     {
         playerInfo.squadra = nome;
-        GameManager.instance.SyncManager.Instance.CmdEditInList(playerInfo);
+        syncManager.Instance.CmdEditInList(playerInfo);
         //imposto che sta giocando
-        GameManager.instance.partitaAvviata = true;
-        Debug.Log("Partita avviata: " + GameManager.instance.partitaAvviata + "Player: " + nome);
+        GameManager.Instance.partitaAvviata = true;
+        Debug.Log("Partita avviata: " + GameManager.Instance.partitaAvviata + "Player: " + nome);
     }
 
     [ClientRpc]
@@ -131,7 +139,7 @@ public class Player : NetworkBehaviour
             c = this.EseguiAspettando(3, () =>
             {
                 redScreen.SetActive(false);
-                
+
             });
         }
 
@@ -147,7 +155,7 @@ public class Player : NetworkBehaviour
             muori(pistolero);
         }
 
-        GameManager.instance.SyncManager.Instance.CmdEditInList(playerInfo);
+        syncManager.Instance.CmdEditInList(playerInfo);
     }
 
     [ClientRpc]
@@ -155,7 +163,7 @@ public class Player : NetworkBehaviour
     {
         if (isLocalPlayer)
         {
-            GameObject.Find("GameMessage").GetComponent<Text>().text = "KILL "+ chiHoUcciso;
+            GameObject.Find("GameMessage").GetComponent<Text>().text = "KILL " + chiHoUcciso;
             this.EseguiAspettando(3, () =>
             {
                 if (GameObject.Find("GameMessage").GetComponent<Text>().text == "KILL " + chiHoUcciso)
@@ -164,20 +172,21 @@ public class Player : NetworkBehaviour
         }
     }
 
-    private void muori(string assassino)
+    private void muori(string idAssassino)
     {
         if (isLocalPlayer)
         {
-            GameObject.Find("GameMessage").GetComponent<Text>().text = "Sei stato ucciso da: " + assassino;
-            KillWindow.Instance.CmdSetKill(assassino, PlayerInfo.nome);
+            string nomeAssassino = GameManager.Instance.getPlayerName(idAssassino);
+            GameObject.Find("GameMessage").GetComponent<Text>().text = "Sei stato ucciso da: " + nomeAssassino;
+            KillWindow.Instance.CmdSetKill(nomeAssassino, PlayerInfo.nome);
         }
         //DISABILITIAMO ALCUNI COMPONENTI COSI' NON SI PUO' MUOVERE
-        GetComponent<vanguardAnimController>().muori(GameManager.instance.gameSettings.respawnTime);
+        GetComponent<vanguardAnimController>().muori(GameManager.Instance.gameSettings.respawnTime);
         disabilitaElementiDaMorto();
 
         playerInfo.morti++;//Aumento il numero di morti
-        GameManager.instance.SyncManager.Instance.CmdEditInList(playerInfo);
-        GameManager.instance.addUccisione(assassino, PlayerInfo.nome);//Aumento il numero di uccisioni di chi mi ha ucciso
+        syncManager.Instance.CmdEditInList(playerInfo);
+        GameManager.Instance.addUccisione(idAssassino, PlayerInfo.nome);//Aumento il numero di uccisioni di chi mi ha ucciso
 
         Debug.Log(transform.name + " is now dead!");
 
@@ -191,7 +200,7 @@ public class Player : NetworkBehaviour
     private IEnumerator respawn()
     {
         //Aspetto il tempo di respawn
-        yield return new WaitForSeconds(GameManager.instance.gameSettings.respawnTime);
+        yield return new WaitForSeconds(GameManager.Instance.gameSettings.respawnTime);
 
         riportaSituaIniziale();//Riabilito i componenti
         if (isLocalPlayer)
@@ -210,7 +219,7 @@ public class Player : NetworkBehaviour
         Debug.Log(transform.name + " has just respawned!");
 
         playerInfo.isDead = false;
-        GameManager.instance.SyncManager.Instance.CmdEditInList(playerInfo);
+        syncManager.Instance.CmdEditInList(playerInfo);
     }
 
     private void disabilitaElementiDaMorto()
@@ -250,7 +259,7 @@ public class Player : NetworkBehaviour
     public void addUccisione()
     {
         playerInfo.kill++;
-        GameManager.instance.SyncManager.Instance.CmdEditInList(playerInfo);
+        syncManager.Instance.CmdEditInList(playerInfo);
     }
 }
 
