@@ -55,12 +55,15 @@ public class Flag : MonoBehaviour
         isFlagConquered = true; //La bandiera è stata conquistata
         //GetComponent<matchManager>().flagConquered++; //Viene incrementato il numero di bandiere conquistato dalla squadra d'attacco <--match manager da istanziare
         Debug.Log("La bandiera " + flagId + "è stata conquistata da " + collisionPlayerName);
-        messageFlag.showMessageConquistata();//Visualizzo il messaggio
 
-        //TO DO
-        //Incrementa punteggio player
-        //Incrementa punteggio squadra attaccante...
-        p.incNumBandiere();
+        if (p.isLocalPlayer)
+        {
+            messageFlag.showMessageConquistata();//Visualizzo il messaggio
+            //TO DO
+            //Incrementa punteggio player
+            //Incrementa punteggio squadra attaccante...
+            p.incNumBandiere();
+        }
     }
 
 
@@ -88,11 +91,15 @@ public class Flag : MonoBehaviour
 
     private void flagCaptured(Collision other)
     {
-
-        other.collider.GetComponent<Player>().capturedFlag = this.gameObject;
+        Player p = other.collider.GetComponent<Player>();
+        p.capturedFlag = this.gameObject;
         isFlagCaptured = true;
 
-        messageFlag.showMessagePresa();//Visualizzo il messaggio
+        if (p.isLocalPlayer)
+        {
+            messageFlag.showMessagePresa();//Visualizzo il messaggio
+            cassa.Play();
+        }
 
         this.gameObject.SetActive(false); //La bandiera viene nascosta
         collisionPlayerName = other.collider.name;
@@ -102,7 +109,6 @@ public class Flag : MonoBehaviour
         Debug.Log(flagId + ": Flag captured !!");
         attivaEffetti();
 
-        cassa.Play();
 
     }
 
@@ -151,14 +157,16 @@ public class Flag : MonoBehaviour
 
     public void dropTheFlag() //Da richiamare nel momento in cui il player viene ucciso
     {
-
-        GameObject.Find(collisionPlayerName).GetComponent<Player>().capturedFlag = null;
+        Player p = GameObject.Find(collisionPlayerName).GetComponent<Player>();
+        p.capturedFlag = null;
         hideFlagId();
         isFlagCaptured = false;
         this.gameObject.transform.position = getPlayerTransform().position;
         this.gameObject.SetActive(true);
         aspettaPlayerVaVia = true;
-        messageFlag.showMessagePersa();//Visualizzo il messaggio
+
+        if (p.isLocalPlayer)
+            messageFlag.showMessagePersa();//Visualizzo il messaggio
 
         StartCoroutine(respawnBandiera());
 
