@@ -11,7 +11,7 @@ public class Flag : MonoBehaviour
     public bool isFlagConquered { get; set; }
 
     private string collisionPlayerName;
-    private string flagId; // <-- Da implementare a breve !!
+    public int flagId;
     public GameObject[] effetti;
 
     private GameObject spawnPoint1, spawnPoint2;
@@ -19,9 +19,9 @@ public class Flag : MonoBehaviour
     public AudioSource cassa;
     public AudioClip suonoCattura;
 
-    private bool aspettaPlayerVaVia=false;
+    private bool aspettaPlayerVaVia = false;
 
-    
+    private messageFlag messageFlag;
 
     private void showFlagId()
     {
@@ -31,7 +31,6 @@ public class Flag : MonoBehaviour
     {
         GameObject.Find(collisionPlayerName).transform.GetChild(6).gameObject.SetActive(false); //L'icona della bandiera sopra al player viene disattivata
     }
-
 
 
     private Transform getPlayerTransform()
@@ -46,7 +45,7 @@ public class Flag : MonoBehaviour
         //la bandiera per motivi di performance non segue il player
     }
 
-    private void conqueredFlag()
+    public void conqueredFlag()
     {
         Player p = GameObject.Find(collisionPlayerName).GetComponent<Player>();
         p.capturedFlag = null;
@@ -56,6 +55,7 @@ public class Flag : MonoBehaviour
         isFlagConquered = true; //La bandiera è stata conquistata
         //GetComponent<matchManager>().flagConquered++; //Viene incrementato il numero di bandiere conquistato dalla squadra d'attacco <--match manager da istanziare
         Debug.Log("La bandiera " + flagId + "è stata conquistata da " + collisionPlayerName);
+        messageFlag.showMessageConquistata();//Visualizzo il messaggio
 
         //TO DO
         //Incrementa punteggio player
@@ -92,7 +92,7 @@ public class Flag : MonoBehaviour
         other.collider.GetComponent<Player>().capturedFlag = this.gameObject;
         isFlagCaptured = true;
 
-        GameObject.Find("FlagsManager").GetComponent<messageFlag>().showMessagePresa();//Visualizzo il messaggio
+        messageFlag.showMessagePresa();//Visualizzo il messaggio
 
         this.gameObject.SetActive(false); //La bandiera viene nascosta
         collisionPlayerName = other.collider.name;
@@ -103,13 +103,13 @@ public class Flag : MonoBehaviour
         attivaEffetti();
 
         cassa.Play();
-        
+
     }
-    
+
 
     private void attivaEffetti()
     {
-        for(int i=0; i< effetti.Length; i++)
+        for (int i = 0; i < effetti.Length; i++)
         {
             effetti[i].SetActive(true);
         }
@@ -126,8 +126,9 @@ public class Flag : MonoBehaviour
 
     void Start()
     {
+        messageFlag = GameObject.Find("FlagsManager").GetComponent<messageFlag>();
         isFlagCaptured = false;
-        flagId = "FlagMIA";
+        //flagId = "FlagMIA";
         spawnPoint1 = GameObject.Find("spawn1");
         spawnPoint2 = GameObject.Find("spawn2");
         Debug.Log(flagId + ": Start");
@@ -141,7 +142,7 @@ public class Flag : MonoBehaviour
     {
         if (isFlagCaptured)
         {
-            chkPlayerPosition();
+            //chkPlayerPosition();
             followThePlayer();
         }
 
@@ -150,17 +151,17 @@ public class Flag : MonoBehaviour
 
     public void dropTheFlag() //Da richiamare nel momento in cui il player viene ucciso
     {
-        
+
         GameObject.Find(collisionPlayerName).GetComponent<Player>().capturedFlag = null;
         hideFlagId();
         isFlagCaptured = false;
         this.gameObject.transform.position = getPlayerTransform().position;
         this.gameObject.SetActive(true);
         aspettaPlayerVaVia = true;
-        GameObject.Find("FlagsManager").GetComponent<messageFlag>().showMessagePersa();//Visualizzo il messaggio
+        messageFlag.showMessagePersa();//Visualizzo il messaggio
 
         StartCoroutine(respawnBandiera());
-        
+
     }
 
     private IEnumerator respawnBandiera()
@@ -172,10 +173,5 @@ public class Flag : MonoBehaviour
 
         Debug.Log("Bandiera rilasciata!");
     }
-
-    
-
-
-
 
 }
