@@ -78,7 +78,7 @@ public class NETcmd : NetworkBehaviour
         Debug.Log("STARTING SERVER...");
         NetworkManager.singleton.networkPort = port;
         NetworkManager.singleton.StartHost();
-
+        matchManager.Instance.StartMatch();
         menuWindows.SetActive(false);
 
         //soleDaAttivareQuandoSpawno.SetActive(true);

@@ -43,7 +43,7 @@ public class PlayerShoot : NetworkBehaviour
         //Se il giocatore preme K, questo si suicida
         if (Input.GetKeyDown(KeyCode.K) && !ChatManager.Instance.ChatAperta && GameManager.Instance.partitaAvviata)
         {
-            CmdPlayerAsBeenShoot(GetComponent<Player>().Id, int.MaxValue);
+            CmdPlayerAsBeenShoot(GetComponent<Player>().Id, int.MaxValue, true);
         }
     }
     //In questo modo questo metodo puo' essere richiamato solo dal 
@@ -66,14 +66,14 @@ public class PlayerShoot : NetworkBehaviour
                 {
                     //Dico che ho colpito il player e gli passo il nome
                     //del player colpito
-                    CmdPlayerAsBeenShoot(_hit.collider.name, GetComponentInChildren<arma>().danno);
+                    CmdPlayerAsBeenShoot(_hit.collider.name, GetComponentInChildren<arma>().danno, false);
                 }
             }
         }
     }
 
     [Command]
-    void CmdPlayerAsBeenShoot(string idDelPlayerColpito, float danno)
+    void CmdPlayerAsBeenShoot(string idDelPlayerColpito, float danno, bool suicidio)
     {
         //Metodo fatto dal server
 
@@ -81,7 +81,7 @@ public class PlayerShoot : NetworkBehaviour
 
         Player giocatoreColpito = GameManager.Instance.getPlayer(idDelPlayerColpito);
         if (!giocatoreColpito.PlayerInfo.isDead)
-            giocatoreColpito.RpcPrendiDanno(danno, this.name);
+            giocatoreColpito.RpcPrendiDanno(danno, this.name, suicidio);
 
 
     }

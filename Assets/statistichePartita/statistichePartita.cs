@@ -11,15 +11,18 @@ public class statistichePartita : MonoBehaviour
     public GameObject lista;
     public GameObject lista1;
     public GameObject lista2;
+    public GameObject ptTeam1;
+    public GameObject ptTeam2;
     public GameObject prefabPlayer;
     private bool toUpdate = false;
+    public bool partitaFinita { get; set; }
 
     private static readonly string[] CAMPI_STATISTICHE = { "Content/Name", "Content/Kill", "Content/Morti", "Content/Bandiere", "Content/Punti" };
 
     // Start is called before the first frame update
     void Start()
     {
-
+        partitaFinita = false;
     }
 
     // Update is called once per frame
@@ -27,7 +30,7 @@ public class statistichePartita : MonoBehaviour
     {
         if (!GameManager.Instance.partitaAvviata)
             return;
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.Tab) || partitaFinita)
         {
             Debug.Log("TAB");
             mostraFinestra();
@@ -38,6 +41,9 @@ public class statistichePartita : MonoBehaviour
 
         if (toUpdate)
         {
+            ptTeam1.GetComponent<Text>().text = "SQUADRA ROSSA\n" + matchManager.Instance.RedTeamScore.ToString() + " Punti";
+            ptTeam2.GetComponent<Text>().text = "SQUADRA BLU\n" + matchManager.Instance.BlueTeamScore.ToString() + " Punti";
+
             var giocatori = GameManager.Instance.getAllPlayers();
 
             for (int i = 0; i < lista1.transform.childCount; i++)
@@ -55,7 +61,7 @@ public class statistichePartita : MonoBehaviour
                 {
                     stat = Instantiate(prefabPlayer, lista1.transform);
                 }
-                else
+                else //BLUE
                     stat = Instantiate(prefabPlayer, lista2.transform);
 
                 stat.transform.Find(CAMPI_STATISTICHE[0]).GetComponent<Text>().text = player.Value.Nome;// + ": " + player.Value.Squadra;

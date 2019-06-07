@@ -53,7 +53,7 @@ public class syncManager : NetworkBehaviour
         //    test[0] = p;
         //}
         foreach (PlayerInfo PI in syncPlayerInfo)
-            Debug.Log(PI.ToString());
+            Debug.Log(PI.ToString() + " Morti: " + PI.morti);
         //foreach (PlayerInfo PI in test)
         //    Debug.Log(PI.ToString());
         //Debug.Log(base.isServer);
@@ -108,8 +108,41 @@ public class syncManager : NetworkBehaviour
             {
                 //syncPlayerInfo[i].copiaDa(nuove);
                 syncPlayerInfo[i] = nuove;
+                Debug.Log("Morti: " + nuove.morti + " - " + syncPlayerInfo[i].morti);
+                Debug.Log("Kill: " + nuove.morti + " - " + syncPlayerInfo[i].morti);
+                Debug.Log(syncPlayerInfo[i].ToString() + " Morti: " + syncPlayerInfo[i].morti);
                 return;
             }
         Debug.LogError("Giocatore Non trovato nella lista sincronizzata: " + nuove.id + "\n" + nuove.ToString());
     }
+
+    [Command]
+    public void CmdIncKill(string id)
+    {
+        Debug.Log("CmdIncKill");
+        for (int i = 0; i < syncPlayerInfo.Count; i++)
+            if (syncPlayerInfo[i].id == id)
+            {
+                PlayerInfo p = syncPlayerInfo[i];
+                p.kill++;
+                syncPlayerInfo[i] = p;
+                return;
+            }
+        Debug.LogError("Giocatore Non trovato nella lista sincronizzata: " + id);
+    }
+    [Command]
+    public void CmdIncMorti(string id)
+    {
+        Debug.Log("CmdIncMorti");
+        for (int i = 0; i < syncPlayerInfo.Count; i++)
+            if (syncPlayerInfo[i].id == id)
+            {
+                PlayerInfo p = syncPlayerInfo[i];
+                p.morti++;
+                syncPlayerInfo[i] = p;
+                return;
+            }
+        Debug.LogError("Giocatore Non trovato nella lista sincronizzata: " + id);
+    }
+
 }

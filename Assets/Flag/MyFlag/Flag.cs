@@ -92,6 +92,10 @@ public class Flag : MonoBehaviour
     private void flagCaptured(Collision other)
     {
         Player p = other.collider.GetComponent<Player>();
+
+        if (!p.Attacco)
+            return;
+
         p.capturedFlag = this.gameObject;
         isFlagCaptured = true;
 
@@ -108,7 +112,6 @@ public class Flag : MonoBehaviour
 
         Debug.Log(flagId + ": Flag captured !!");
         attivaEffetti();
-
 
     }
 

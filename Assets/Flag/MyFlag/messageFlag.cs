@@ -7,6 +7,7 @@ public class messageFlag : MonoBehaviour
     public GameObject bandieraPersaTxt;
     public GameObject bandieraCatturataTxt;
     public GameObject bandieraConquistataTxt;
+    public GameObject bandieraRecuparata;
     public int tempoVisualizzazioneMsg = 5;
     // Start is called before the first frame update
     void Start()
@@ -52,6 +53,15 @@ public class messageFlag : MonoBehaviour
         this.EseguiAspettando(tempoVisualizzazioneMsg, () =>
         {
             bandieraConquistataTxt.SetActive(false);
+        });
+    }
+
+    public void showMessageRecuperata()
+    {
+        bandieraRecuparata.SetActive(true);
+        this.EseguiAspettando(tempoVisualizzazioneMsg, () =>
+        {
+            bandieraRecuparata.SetActive(false);
         });
     }
 }

@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class Player : NetworkBehaviour
 {
     public const int PUNTI_BANDIERA = 1000;
+    public const int PUNTI_BANDIERA_RECUPERATA = 200;
     public const int PUNTI_KILL = 200;
     public const int PUNTI_MORTE = -100;
 
@@ -42,9 +43,12 @@ public class Player : NetworkBehaviour
     public int Punti { get => playerInfo.punti; }
     public string Nome { get => playerInfo.nome; }
     public string Squadra { get => playerInfo.squadra; }
-    public string Id { get => PlayerInfo.id; }
+    public string Id { get => playerInfo.id; }
+    public bool Attacco { get => playerInfo.attacco; }
     public GameObject capturedFlag { get; set; } //Puntatore alla bandiera catturata
 
+    private GameObject canvasRuolo;
+    private messageFlag messageFlag;
 
     public Player() { }
     public Player(PlayerInfo info) { playerInfo = info; }
@@ -56,8 +60,10 @@ public class Player : NetworkBehaviour
     }
     void Start()
     {
+        canvasRuolo = GameObject.Find("Canvas").transform.Find("Ruolo").gameObject;
         redScreen = GameObject.Find("Canvas").transform.Find("rosso").gameObject;
         capturedFlag = null;
+        messageFlag = GameObject.Find("FlagsManager").GetComponent<messageFlag>();
     }
     public void Setup()//All'inizio, parte quando la classe PlayerSetup e' partita completamente 
     {
@@ -119,20 +125,24 @@ public class Player : NetworkBehaviour
     public void SetTeam(string nome)
     {
         playerInfo.squadra = nome;
+        playerInfo.attacco = matchManager.Instance.AttackTeam == Squadra;
+        //Debug.Log("Squadra player impostata: " + playerInfo.squadra);
         syncManager.Instance.CmdEditInList(playerInfo);
         //imposto che sta giocando
         GameManager.Instance.partitaAvviata = true;
-        Debug.Log("Partita avviata: " + GameManager.Instance.partitaAvviata + "Player: " + nome);
+        Debug.Log("Partita avviata: " + GameManager.Instance.partitaAvviata + "Player: " + Nome + " squadra: " + Squadra);
+        canvasRuolo.GetComponent<Text>().text = Attacco ? "ATTACCO" : "DIFESA";
     }
 
     [ClientRpc]
-    public void RpcPrendiDanno(float danno, string pistolero)
+    public void RpcPrendiDanno(float danno, string pistolero, bool suicidio)
     {
         float futureSalute = playerInfo.currentSalute - danno;
         Debug.LogError(danno);
         Debug.LogError(futureSalute);
         if (futureSalute <= 0)
             playerInfo.isDead = true;
+        syncManager.Instance.CmdEditInList(playerInfo);
 
         if (isLocalPlayer)
         {
@@ -151,22 +161,28 @@ public class Player : NetworkBehaviour
         if (playerInfo.isDead == false)
         {
             playerInfo.currentSalute = futureSalute;
+            syncManager.Instance.CmdEditInList(playerInfo);
             Debug.Log("TEAM: " + playerInfo.squadra + " - " + transform.name + " salute aggiornata: " + playerInfo.currentSalute);
         }
         else
         {
             //E' morto
-            muori(pistolero);
+            muori(pistolero, suicidio);
         }
-
-        syncManager.Instance.CmdEditInList(playerInfo);
     }
 
-    [ClientRpc]
-    public void RpcHoKillato(string chiHoUcciso)
+    //[ClientRpc]
+    public void RpcHoKillato(string chiHoUcciso, bool hadBandiera)
     {
         if (isLocalPlayer)
         {
+            if (hadBandiera)
+            {
+                playerInfo.punti += PUNTI_BANDIERA_RECUPERATA;
+                syncManager.Instance.CmdEditInList(playerInfo);
+                matchManager.Instance.CmdIncTeamScore(Squadra, PUNTI_BANDIERA_RECUPERATA);
+                messageFlag.showMessageRecuperata();
+            }
             GameObject.Find("GameMessage").GetComponent<Text>().text = "KILL " + chiHoUcciso;
             this.EseguiAspettando(3, () =>
             {
@@ -176,22 +192,32 @@ public class Player : NetworkBehaviour
         }
     }
 
-    private void muori(string idAssassino)
+    private void muori(string idAssassino, bool suicidio)
     {
         if (isLocalPlayer)
         {
             string nomeAssassino = GameManager.Instance.getPlayerName(idAssassino);
             GameObject.Find("GameMessage").GetComponent<Text>().text = "Sei stato ucciso da: " + nomeAssassino;
             KillWindow.Instance.CmdSetKill(nomeAssassino, PlayerInfo.nome);
+            matchManager.Instance.CmdIncTeamScore(Squadra, PUNTI_MORTE);
         }
+
+        Debug.Log("Suicidio: " + suicidio);
+        if (!suicidio)
+        {
+            Debug.Log("morti++");
+            PlayerInfo temp = playerInfo;
+            temp.morti++;//Aumento il numero di morti
+            temp.punti += PUNTI_MORTE;
+            //syncManager.Instance.CmdEditInList(temp);
+            syncManager.Instance.CmdIncMorti(Id);
+            GameManager.Instance.addUccisione(idAssassino, PlayerInfo.nome, capturedFlag != null);//Aumento il numero di uccisioni di chi mi ha ucciso
+        }
+
         //DISABILITIAMO ALCUNI COMPONENTI COSI' NON SI PUO' MUOVERE
         GetComponent<vanguardAnimController>().muori(GameManager.Instance.gameSettings.respawnTime);
         disabilitaElementiDaMorto();
 
-        playerInfo.morti++;//Aumento il numero di morti
-        playerInfo.punti += PUNTI_MORTE;
-        syncManager.Instance.CmdEditInList(playerInfo);
-        GameManager.Instance.addUccisione(idAssassino, PlayerInfo.nome);//Aumento il numero di uccisioni di chi mi ha ucciso
 
         Debug.Log(transform.name + " is now dead!");
 
@@ -263,16 +289,29 @@ public class Player : NetworkBehaviour
 
     public void addUccisione()
     {
-        playerInfo.kill++;
-        playerInfo.punti += PUNTI_KILL;
-        syncManager.Instance.CmdEditInList(playerInfo);
+        if (isLocalPlayer)
+        {
+            matchManager.Instance.CmdIncTeamScore(Squadra, PUNTI_KILL);
+            //syncManager.Instance.CmdIncKill(Id);
+        }
+        Debug.Log("addUccisione");
+        PlayerInfo temp = playerInfo;
+        temp.kill++;
+        temp.punti += PUNTI_KILL;
+        syncManager.Instance.CmdEditInList(temp);
     }
 
     public void incNumBandiere()
     {
-        playerInfo.bandiere++;
-        playerInfo.punti += PUNTI_BANDIERA;
-        syncManager.Instance.CmdEditInList(playerInfo);
+        if (isLocalPlayer)
+        {
+            PlayerInfo temp = playerInfo;
+            temp.bandiere++;
+            temp.punti += PUNTI_BANDIERA;
+            syncManager.Instance.CmdEditInList(temp);
+            matchManager.Instance.CmdIncBandiereConquistate();
+            matchManager.Instance.CmdIncTeamScore(Squadra, PUNTI_BANDIERA);
+        }
     }
 }
 
@@ -292,6 +331,7 @@ public struct PlayerInfo
     public int punti;
     public string nome;
     public string squadra;
+    public bool attacco;
 
     public PlayerInfo(string id) : this()
     {
@@ -311,6 +351,7 @@ public struct PlayerInfo
             punti = p.punti;
             nome = p.nome;
             squadra = p.squadra;
+            attacco = p.attacco;
         }
         else
             Debug.LogError("ERRORE AGGIORNAMENTO PLAYER REMOTO: " + id);
@@ -320,3 +361,4 @@ public struct PlayerInfo
         return id + " nome: " + nome + "- Squadra: " + squadra;
     }
 }
+

@@ -65,8 +65,15 @@ public class GameManager : MonoBehaviour
             try
             {
                 if (giocatori.ContainsKey(id))
+                {
                     //giocatori[id].PlayerInfo.copiaDa(syncManager.Instance.SyncPlayerInfo[i]);
                     giocatori[id].PlayerInfo = syncManager.Instance.SyncPlayerInfo[i];
+                    Debug.Log("[Client] " + syncManager.Instance.SyncPlayerInfo[i].morti);
+                    //PlayerInfo p = syncManager.Instance.SyncPlayerInfo[i];
+                    //Debug.Log(p.squadra);
+                    //p.squadra = syncManager.Instance.SyncPlayerInfo[i].squadra;
+                    //giocatori[id].PlayerInfo = p;
+                }
                 else
                     Debug.LogError("PLAYER NON TROVATO: " + id);
             }
@@ -156,11 +163,11 @@ public class GameManager : MonoBehaviour
     {
         return giocatori;
     }
-    public void addUccisione(string idAssassino, string nome)
+    public void addUccisione(string idAssassino, string nome, bool hadBandiera)
     {
         Player tmp = giocatori[idAssassino];
-        tmp.RpcHoKillato(nome);
-        giocatori[idAssassino].addUccisione();
+        tmp.RpcHoKillato(nome, hadBandiera);
+        tmp.addUccisione();
         Debug.Log("Nuova uccisione: " + tmp.name + " kills updated: " + tmp.Kill);
     }
 
@@ -177,6 +184,15 @@ public class GameManager : MonoBehaviour
     public string getPlayerName(string id)
     {
         return giocatori[id].Nome;
+    }
+
+    public List<Player> getPlayerOfTeam(string nome)
+    {
+        List<Player> players = new List<Player>();
+        foreach (Player p in giocatori.Values)
+            if (p.Squadra == nome)
+                players.Add(p);
+        return players;
     }
 
     //void OnGUI()
